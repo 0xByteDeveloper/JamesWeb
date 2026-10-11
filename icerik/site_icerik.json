@@ -2,8 +2,8 @@
   "sema": "epinsitesi-icerik",
   "semaSurum": "1.0",
   "surum": "3.09",
-  "zaman": 1791720804,
-  "olusturma": "2026-10-11T11:47:58Z",
+  "zaman": 1791720948,
+  "olusturma": "2026-10-11T12:15:48Z",
   "varsayilanDil": "en",
   "diller": [
     "en",
@@ -67,6 +67,13 @@
         "degerler": {
           "en": "in action",
           "tr": "çalışırken"
+        }
+      },
+      "baslikSag": {
+        "anahtar": "— live now",
+        "degerler": {
+          "en": "— live now",
+          "tr": "izle"
         }
       },
       "aciklama": {
@@ -178,7 +185,7 @@
           "ad": "M2God",
           "logo": "m2god_logo.png",
           "fiyat": {
-            "tutar": 9,
+            "tutar": 8.0,
             "paraBirimi": "USD"
           },
           "periyot": "MONTH",
