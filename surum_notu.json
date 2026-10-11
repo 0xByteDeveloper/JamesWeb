@@ -1,0 +1,18 @@
+{
+  "schema": "epin-surum/1.0",
+  "surum": "E177.20261011.1",
+  "tarih": "2026-10-11",
+  "site_surumu": "v3.11",
+  "not": "Kalkan dosyalari ve resimler icin surum notu kapili tarayici onbellek sistemi eklendi. Site her acilista yalniz bu dosyayi GitHub'dan ceker; surum degismedikce koruma/ + resimler/ dosyalari tarayici onbellekten calisir.",
+  "degisiklikler": [
+    "E177: surum_notu.json eklendi — her acilista yalniz bu kucuk dosya GitHub'dan cekilir (1 istek)",
+    "Surum degismedikce koruma/ (kilit_rkm.js, site_rkm.js, kalkan.min.js) ve resimler/ tarayici onbellekten calisir — GitHub'a 0 dosya istegi",
+    "Surum degisirse onbellek temizlenip dosyalar tazeden cekilip kaydedilir",
+    "Onbellek iskasi (kismi temizlik) tek tek tazelenir — oz-iyilesme",
+    "site_icerik.json onbellek DISI: panel otomasyonu her acilista taze veriyle calisir",
+    "GitHub erisilemezse kayitli onbellek kullanilir; o da yoksa yerel dosyalar (eski davranis)"
+  ],
+  "surum_nasil_degistirilir": "Bu dosyadaki 'surum' alaninin degerini degistirin (orn. E178.20261012.1). Yeni surum degerini goren tum ziyaretci tarayiclari onbelleklerini temizleyip koruma/ + resimler/ dosyalarini tazeden ceker. Koruma veya resim dosyalarini guncellediginizde bu alanı MUTLAKA degistirin.",
+  "yonetilen_klasorler": ["koruma/", "resimler/"],
+  "onbellek_disi": ["icerik/site_icerik.json"]
+}
