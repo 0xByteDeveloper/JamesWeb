@@ -1,0 +1,184 @@
+═══════════════════════════════════════════════════════════════════════
+ EPINSITESI — KALKAN SİTE SAVUNMASI (E172 KALKAN)
+ Tasarım + kod + gövde: tamamen şifreli · kaynakta OKUNABİLİR hiçbir
+ tasarım bilgisi yok · resimler zaten dosyasız RKM (50/50)
+═══════════════════════════════════════════════════════════════════════
+
+┌─ E173 DÜZELTİMLERİ (bu sürümde) ─────────────────────────────────────┐
+│ 1) BANNER GÖRÜNÜM DÜZELTİMİ: E172 dönüşümünde banner canvas'ına      │
+│    'fill' aynası eklenmemişti — motorun canvas.rkm-logo{contain}     │
+│    kuralı .bnr-slide-cover{fill} kuralını eziyordu; banner letterbox │
+│    gibi küçük/ortalanmış görünüyordu. Motor CSS'ine                  │
+│    canvas.bnr-slide-cover{width:100%;height:100%;object-fit:fill}    │
+│    aynası eklendi → banner, eski <img> görünümüne birebir döndü      │
+│    (banner/banner2/banner3 + dil değişimi dahil).                    │
+│ 2) KONSOL TEMİZLİĞİ: [EPIN][OK] E141 açıklama satırı (11 KB'lık      │
+│    sürüm notu) ve E155 DONATE KEY usage satırı artık konsola         │
+│    yazılmıyor. DEBUG paneli, [RKM] ve [EPIN][WALLET] logları aynen.  │
+│ 3) Sürüm çipleri: v3.07 (E170) → v3.08 (E173).                       │
+│ Üretim yöntemi: site_rkm.js paket-düzeyinde yamalandı (çöz → düzenle │
+│ → aynı protokolle yeniden şifrele). Kabuk HTML, kilit, motor         │
+│ (kalkan.min.js) ve 50 resim paketi E172 ile BİREBİR AYNI.            │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌─ E174 · İÇERİK JSON + JAMESWEB GITHUB SİSTEMİ (bu sürümde) ──────────┐
+│ 1) TEK İÇERİK KAYNAĞI: icerik/site_icerik.json — oyunlar, ürünler,    │
+│    fiyatlar, paketler, client/trailer, videolar, metinler. Site       │
+│    açılışta sırayla çeker: GitHub (JamesWeb/main) → yerel icerik/ →   │
+│    gömülü veri. Veri değişmişse sayfa bir kez yenilenir.              │
+│ 2) SİTELOGO: eski 'logomuz' adı → SiteLogo (SiteLogo_rkm.js + motor   │
+│    manifesti + header damgası). Eski logomuz_rkm.js kaldırıldı.       │
+│ 3) VİDEO GALERİ bölümü İNGİLİZCE default (etiket/başlık/açıklama/     │
+│    sekme/düğmeler); TR seçilince Türkçe'ye döner (i18n sözlüğü).      │
+│ 4) KONTROL PANELİ: kontrol_paneli.html — GitHub'dan çeker, dosyadan   │
+│    yükler, GitHub'a yükler, JSON indirir/doğrular. Token tarayıcıda   │
+│    saklanır (localStorage), dosyaya gömülmez.                         │
+│ 5) GitHub JamesWeb deposu: resimler/ (şifreli resim paketleri),       │
+│    koruma/ (kalkan.min.js, site_rkm.js, kilit_rkm.js, kurallar),      │
+│    icerik/site_icerik.json.                                           │
+│ 6) DİL KARARI: metinler JSON'da dillere ayrı yazılır (en+tr dolu).    │
+│    Çeviri API'si YOK — deterministik, çevrimdışı, maliyetsiz.         │
+│ 7) Sürüm çipleri: v3.08 (E173) → v3.09 (E174).                        │
+│ Üretim: site_rkm.js paket-düzeyinde yamalandı (çöz → düzenle → aynı   │
+│ protokolle yeniden şifrele). Kalkan motoru, kilit, kabuk ve diğer     │
+│ 49 resim paketi E173 ile BİREBİR AYNI.                                │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌─ BU NEDİR? ──────────────────────────────────────────────────────────┐
+│  PoC "Tasarım Kalkanı"nın (E172_tasarim-kalkani-poc) TAM SİTEye     │
+│  uygulanmış hâlidir. EpinSitesi_v2_1x.html artık BOŞ bir kabuktur:  │
+│                                                                      │
+│    curl / view-source / Ctrl+S / kaydet  →  yalnız 927 baytlık      │
+│    kabuk: başlık + meta açıklama (herkese açık SEO metni) + 3       │
+│    script adı. CSS YOK, HTML YOK, JS YOK, font adı YOK, CDN adı YOK.│
+│                                                                      │
+│  Sitenin TAMAMI (6+1 CSS bloğu 188 KB · gövde HTML 75 KB · 22 JS    │
+│  bloğu 665 KB · font/ikon CDN referansları) zlib-9 + 64 bayt XOR +  │
+│  base64 ile site_rkm.js İÇİNDE ŞİFRELİDİR. Resim RKM protokolünün   │
+│  aynısıdır; anahtarlar dosyada düz metin olarak ASLA tutulmaz.      │
+└──────────────────────────────────────────────────────────────────────┘
+
+KATMANLAR
+─────────
+ 1) BOŞ KABUK          → scraper'a verilen sayfada içerik sıfır
+ 2) ŞİFRELİ SİTE PAKETİ→ css+html+js tek pakette (site_rkm.js, 411 KB)
+ 3) ŞİFRELİ KİLİT      → alan adı listesi (kilit_rkm.js, fail-closed:
+                          izinsiz adres / file:// → kilit ekranı,
+                          tasarım paketi HİÇ çözülmez)
+ 4) CSS ENJEKSİYONU    → Constructed Stylesheet (adoptedStyleSheets);
+                          kaynakta ve DOM'da <style> YOK; dış font/
+                          ikon CSS'leri CORS fetch ile bellekten takılır
+                          (document.styleSheets temiz kalır)
+ 5) GÖVDE ENJEKSİYONU  → body HTML'i runtime'da doğar
+ 6) KOD ENJEKSİYONU    → 22 blok orijinal sırada, orijinal semantikle
+                          (global kapsam, onclick, 'use strict' korunur)
+                          çalışınca etiket DOM'dan silinir
+ 7) MOTOR OBFUSCATION  → kalkan.min.js: control-flow-flattening(1) +
+                          rc4 dizge tablosu + self-defending + dead-code
+                          (EN AĞIR ayar — ASLA beautify etmeyin)
+ 8) SESSİZ DEVTOOLS    → 1.5 sn'lik ölçü farkı; yalnız konsol notu,
+                          deneyim hiç bozulmaz
+ 9) RESİM RKM (50/50)  → mevcut E172 sistemi aynen korunur; açılışta
+                          0 <img>, 0 png isteği
+
+KURULUM (XAMPP / htdocs)
+────────────────────────
+ 1) ZIP'i açın; TÜM dosyaları htdocs köküne (veya klasöre) koyun.
+ 2) ESKİ EpinSitesi_v2_1x.html'İ SİLİN / üzerine yazın — bu ZIP'teki
+    kabuk onun yerine geçer. Eski (açık kaynak) sürümü sunucuda
+    BIRAKMAYIN: onun varlığı tüm savunmayı geçersiz kılar.
+ 3) epinpay/ klasörünüz ve veritabanınız olduğu gibi kalır.
+ 4) Tarayıcıda açın → site tam çalışır; kaynağı görüntüleyin → boş.
+
+GELİŞTİRME AKIŞI (ÖNEMLİ!)
+──────────────────────────
+ · Üretici artık BU ZIP'TE YANINIZDA — uretici/ klasörü:
+     site_paketi_uret.py → kabuk + site_rkm.js + kilit_rkm.js üretir
+     donusum.py          → zlib-9 + XOR(64) + base64 şifreleyici
+     site_kalkan.js      → motorun okunabilir kaynağı (referans)
+     kalkan.min.js       → obfuscate motor (üretime hazır kopya)
+ · Kurulum (tek seferlik): uretici/ klasörünü GELİŞTİRME klasörünüzün
+   İÇİNE kopyalayın — yani E172_rkm-hepsi paketinden çıkan, içinde
+   EpinSitesi_v2_1x.html (düzenlenebilir kaynak) + 50 *_rkm.js olan
+   klasöre.
+ · Üretim:
+       python3 uretici/site_paketi_uret.py
+   → kalkan_cikti/ klasörüne sunucuya gidecek HER ŞEY çıkar:
+     kabuk HTML + kilit_rkm.js + site_rkm.js + kalkan.min.js +
+     50 resim paketi. kalkan_cikti içeriğini htdocs'a koyun;
+     geliştirme klasörünü ve uretici/'yi sunucuya ASLA kopyalamayın.
+ · Site değişikliği: geliştirme html'ini düzenle → üreticiyi tekrar
+   çalıştır. Motor değişmedikçe yeniden obfuscation GEREKMEZ.
+ · Kalkan motorunu (uretici/site_kalkan.js) değiştirdiyseniz ayrıca
+   yeniden obfuscate edin:
+       npx javascript-obfuscator uretici/site_kalkan.js \
+         --output uretici/kalkan.min.js \
+         --control-flow-flattening true --control-flow-flattening-threshold 1 \
+         --dead-code-injection true --dead-code-injection-threshold 0.8 \
+         --string-array true --string-array-encoding rc4 \
+         --string-array-threshold 1 --string-array-rotate true \
+         --string-array-shuffle true --split-strings true \
+         --split-strings-chunk-length 4 --self-defending true \
+         --identifier-names-generator hexadecimal
+
+ALAN ADI EKLEME
+───────────────
+   uretici/site_paketi_uret.py içindeki ALAN_ADLARI listesine ekleyin:
+       "epinsitesi.com", "www.epinsitesi.com",
+   → python3 uretici/site_paketi_uret.py  → kilit_rkm.js yenilenir.
+   Motor ve diğer dosyalar DEĞİŞMEZ; sadece 56 baytlık kilit paketi.
+   (Alternatif: KAYNAK_HTML ortam değişkeniyle kaynak yolu gösterilebilir.)
+
+OPSİYON: SİTE JS'E EK SİGİRİM
+─────────────────────────────
+   Paket şifreli olduğu için kod kaynakta zaten görünmez. İsterseniz
+   çözülmüş koddaki dizgeler de rc4 ile gizlensin (DevTools "Sources"
+   sekmesinde okunamaz hâle gelir; Node/npx gerekir):
+       SIGIRIM=1 python3 uretici/site_paketi_uret.py
+   Test edildi (0 hata, 133–162 ms açılış). Bedeli: paket 411 KB →
+   1.18 MB (3x) ve düşük donanımlı telefonda biraz ekstra parse süresi.
+   Varsayılan: KAPALI (önerilen). Kapalı için:
+       python3 uretici/site_paketi_uret.py
+
+CANLI TEST KANITLARI (agent-browser, 127.0.0.1:8911)
+────────────────────────────────────────────────────
+ · curl kabuk: 927 B — tasarım dizgesi 0 (11 yasaklı dizge taraması)
+ · site_rkm.js: '.site-hdr' / 'Oyununu' / '@keyframes' / 'Orbitron' /
+   'm2godPlusDivs' / 'addEventListener' = 0 · kilit_rkm.js:
+   'localhost' = 0 · kalkan.min.js: 'body_html' = 0
+ · DOM: <style> 0 (yalnız Tailwind'in runtime üretimi + RKM motorun
+   rkm-css'i — orijinal sayfayla birebir) · <img> 0 · canvas 70 ·
+   adoptedStyleSheets 8 (7 dış CSS + site CSS)
+ · Ağ: 0 adet .png isteği; fontlar gstatic'ten (30 dosya) fetch ile
+ · İşlev: dil değişimi EN→TR (başlık + hero + lang="tr") ✓ · slider
+   m2godPlusDivs ✓ · kullanıcı paneli (Giriş) ✓ · metin seçimi SERBEST
+   (Range ile 60+ karakter seçildi) ✓ · 0 konsol hatası · DCL 133 ms
+ · file:// → kilit ekranı: "Bu yazılım yalnızca lisanslı alan adında
+   çalışır." (tasarım paketi hiç çözülmedi, DOM 278 bayt)
+
+DÜRÜST SINIRLAR (client-side'ın doğası)
+───────────────────────────────────────
+ · Sayfayı AÇAN herkes tarayıcıda çözülmüş DOM'u görür (Elements
+   paneli) — bu her web sitesi için geçerlidir; savunma, kaynağı ve
+   aktarımı kapatarak "kopyala-yapıştır" hırsızlığını imkânsız kılar.
+ · Kır birimli bir saldırgan motoru tersine çevirebilir; karşılığında
+   eline geçecek: yine şifreli paket + lisans kilitli çalışma.
+ · Erişilebilirlik ağacı metin etiketlerini yayınlar (tarayıcı kuralı).
+ · Sunucu taraflı koruma (PHP) bu paketin kapsamı dışındadır;
+   epinpay/ kendi sunucu güvenliğiyle çalışmaya devam eder.
+
+DOSYALAR
+────────
+ EpinSitesi_v2_1x.html   → BOŞ KABUK — sunucuya giden sayfa
+ site_rkm.js             → şifreli tam site paketi (411 KB)
+ kilit_rkm.js            → şifreli alan adı listesi (56 B)
+ kalkan.min.js           → obfuscate motor (91 KB) — beautify ETME
+ uretici/                → PAKET ÜRETİCİ (sunucuya KOYMA):
+   · site_paketi_uret.py   geliştirme kopyasından kabuk + paket üretir
+   · donusum.py            zlib+XOR+base64 şifreleyici (metin_paketi)
+   · site_kalkan.js        motorun okunabilir kaynağı (referans)
+   · kalkan.min.js         motorun üretime hazır obfuscate kopyası
+ *_rkm.js (50 adet)      → dosyasız resim paketleri (E172'den)
+ test_1/2/3*.png         → canlı test kanıtları (açılış / TR / kilit)
+ sha256.txt              → dosya bütünlüğü
+═══════════════════════════════════════════════════════════════════════
