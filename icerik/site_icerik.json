@@ -2,8 +2,8 @@
   "sema": "epinsitesi-icerik",
   "semaSurum": "1.0",
   "surum": "3.09",
-  "zaman": 1791722354,
-  "olusturma": "2026-10-11T12:15:48Z",
+  "zaman": 1791727285,
+  "olusturma": "2026-10-11T14:01:25.221Z",
   "varsayilanDil": "en",
   "diller": [
     "en",
@@ -901,6 +901,6 @@
         "trailer-desc"
       ]
     },
-    "not": "Silkroad/Cabal/RAN/Rakion/CS:GO'nun ürünü yok (satışta değil). M2God'un client başlığı ve trailer term/desc alanları tanımsız — panelde ekleyebilirsiniz (eklenince site otomatik kullanır)."
+    "not": "Otomatik: ürünü olmayan oyunlar, client başlığı boş olan ürünler, trailer alanı eksik ürünler."
   }
 }
