@@ -2,7 +2,7 @@
   "sema": "epinsitesi-icerik",
   "semaSurum": "1.0",
   "surum": "3.09",
-  "zaman": 1791721973,
+  "zaman": 1791722354,
   "olusturma": "2026-10-11T12:15:48Z",
   "varsayilanDil": "en",
   "diller": [
@@ -185,7 +185,7 @@
           "ad": "M2God",
           "logo": "m2god_logo.png",
           "fiyat": {
-            "tutar": 8.0,
+            "tutar": 8,
             "paraBirimi": "USD"
           },
           "periyot": "MONTH",
@@ -210,7 +210,7 @@
             {
               "ad": "30 GÜNLÜK",
               "gun": 30,
-              "fiyat": 8.0,
+              "fiyat": 8,
               "hediye": 6
             },
             {
@@ -224,27 +224,27 @@
             {
               "ad": "Darkside Aylık",
               "gun": 30,
-              "fiyat": 20.0,
+              "fiyat": 20,
               "hediye": 0
             },
             {
               "ad": "Darkside 2 Aylık",
               "gun": 60,
-              "fiyat": 36.0,
+              "fiyat": 36,
               "hediye": 0
             }
           ],
           "parasalEgri": [
             {
-              "gun": 3.0,
+              "gun": 3,
               "fiyat": 0.8
             },
             {
-              "gun": 30.0,
-              "fiyat": 8.0
+              "gun": 30,
+              "fiyat": 8
             },
             {
-              "gun": 31.0,
+              "gun": 31,
               "fiyat": 8.27
             }
           ],
@@ -291,7 +291,7 @@
           "ad": "Example Farmbot",
           "logo": "example_farmbot_logo.png",
           "fiyat": {
-            "tutar": 16.0,
+            "tutar": 16,
             "paraBirimi": "USD"
           },
           "periyot": "MONTH",
@@ -304,7 +304,7 @@
             "shopbot": false,
             "slotYok": true
           },
-          "donatorMin": 23.0,
+          "donatorMin": 23,
           "paketKur": "USD",
           "paketler": [
             {
@@ -316,7 +316,7 @@
             {
               "ad": "30 GÜNLÜK",
               "gun": 30,
-              "fiyat": 16.0,
+              "fiyat": 16,
               "hediye": 6
             },
             {
@@ -330,27 +330,27 @@
             {
               "ad": "Darkside Aylık",
               "gun": 30,
-              "fiyat": 20.0,
+              "fiyat": 20,
               "hediye": 0
             },
             {
               "ad": "Darkside 2 Aylık",
               "gun": 60,
-              "fiyat": 36.0,
+              "fiyat": 36,
               "hediye": 0
             }
           ],
           "parasalEgri": [
             {
-              "gun": 3.0,
+              "gun": 3,
               "fiyat": 1.6
             },
             {
-              "gun": 30.0,
-              "fiyat": 16.0
+              "gun": 30,
+              "fiyat": 16
             },
             {
-              "gun": 31.0,
+              "gun": 31,
               "fiyat": 16.53
             }
           ],
@@ -434,7 +434,7 @@
           "ad": "Example Koxp",
           "logo": "example_koxp_logo.png",
           "fiyat": {
-            "tutar": 24.0,
+            "tutar": 24,
             "paraBirimi": "USD"
           },
           "periyot": "MONTH",
@@ -459,7 +459,7 @@
             {
               "ad": "30 GÜNLÜK",
               "gun": 30,
-              "fiyat": 24.0,
+              "fiyat": 24,
               "hediye": 6
             },
             {
@@ -473,27 +473,27 @@
             {
               "ad": "Darkside Aylık",
               "gun": 30,
-              "fiyat": 29.0,
+              "fiyat": 29,
               "hediye": 0
             },
             {
               "ad": "Darkside 2 Aylık",
               "gun": 60,
-              "fiyat": 52.0,
+              "fiyat": 52,
               "hediye": 0
             }
           ],
           "parasalEgri": [
             {
-              "gun": 3.0,
+              "gun": 3,
               "fiyat": 2.4
             },
             {
-              "gun": 30.0,
-              "fiyat": 24.0
+              "gun": 30,
+              "fiyat": 24
             },
             {
-              "gun": 31.0,
+              "gun": 31,
               "fiyat": 24.8
             }
           ],
