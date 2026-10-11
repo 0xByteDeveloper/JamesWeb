@@ -2,7 +2,7 @@
   "sema": "epinsitesi-icerik",
   "semaSurum": "1.0",
   "surum": "3.09",
-  "zaman": 1791720948,
+  "zaman": 1791721375,
   "olusturma": "2026-10-11T12:15:48Z",
   "varsayilanDil": "en",
   "diller": [
@@ -185,7 +185,7 @@
           "ad": "M2God",
           "logo": "m2god_logo.png",
           "fiyat": {
-            "tutar": 8.0,
+            "tutar": 9,
             "paraBirimi": "USD"
           },
           "periyot": "MONTH",
