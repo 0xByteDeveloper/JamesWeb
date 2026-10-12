@@ -1,6 +1,6 @@
 {
   "schema": "epin-surum/1.0",
-  "surum": "E178.20261012.1",
+  "surum": "E178.20261012.2",
   "tarih": "2026-10-12",
   "site_surumu": "v3.12",
   "not": "E178: RKMP resim paket sistemi. Resimler artik paketli cekilir: 7 oyun logosu tek paket (compressed_games), her urunun resimleri tek paket (M2God_product vb.), banner paketleri dile gore (banner_en/banner_tr/...). Site yalniz IHTIYACI olan paketi çeker; paketler de surum notu kapili tarayici onbelleğinde tutulur.",
