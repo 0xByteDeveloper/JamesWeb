@@ -1,7 +1,7 @@
 {
   "sema": "epinsitesi-icerik",
   "semaSurum": "1.0",
-  "surum": "3.09",
+  "surum": "3.12",
   "zaman": 1791727285,
   "olusturma": "2026-10-11T14:01:25.221Z",
   "varsayilanDil": "en",
@@ -902,5 +902,259 @@
       ]
     },
     "not": "Otomatik: ürünü olmayan oyunlar, client başlığı boş olan ürünler, trailer alanı eksik ürünler."
+  },
+  "paketler": {
+    "sema": "epin-paket/1.0",
+    "aciklama": "RKM resim paketleri (RKMP v1): N adet <ad>_rkm.js tek şifreli dosyada. Site yalnız ihtiyacı olan paketi çeker; öğeler paketten ayrıştırılıp tekil dosyayla birebir aynı şekilde kullanılır. Panel 'Toplu Sıkıştır' sekmesi bu listeyi düzenler ve paketleri üretir.",
+    "kaynakKlasor": "resimler",
+    "hedefKlasor": "paketler",
+    "oyunlar": {
+      "ad": "compressed_games",
+      "aciklama": "7 oyun logosu tek istekte",
+      "ogeler": [
+        {
+          "ad": "cabal_logo_rkm.js"
+        },
+        {
+          "ad": "csgo_logo_rkm.js"
+        },
+        {
+          "ad": "knight_logo_rkm.js"
+        },
+        {
+          "ad": "metin2_logo_rkm.js"
+        },
+        {
+          "ad": "rakion_logo_rkm.js"
+        },
+        {
+          "ad": "ranonline_logo_rkm.js"
+        },
+        {
+          "ad": "sro_logo_rkm.js"
+        }
+      ]
+    },
+    "urunler": [
+      {
+        "urun": "M2God",
+        "ad": "M2God_product",
+        "aciklama": "logo + client_1(b1) + client_2(b3) + trailer(xxxx-img) — 4 resim tek istekte",
+        "ogeler": [
+          {
+            "ad": "m2god_logo_rkm.js"
+          },
+          {
+            "ad": "M2God_client_1_rkm.js",
+            "kaynak": "b1_rkm.js",
+            "takma": [
+              "b1_rkm.js"
+            ]
+          },
+          {
+            "ad": "M2God_client_2_rkm.js",
+            "kaynak": "b3_rkm.js",
+            "takma": [
+              "b3_rkm.js"
+            ]
+          },
+          {
+            "ad": "M2God_trailer_rkm.js",
+            "kaynak": "xxxx-img_rkm.js",
+            "takma": [
+              "xxxx-img_rkm.js"
+            ]
+          }
+        ]
+      },
+      {
+        "urun": "Example Farmbot",
+        "ad": "example_farmbot_product",
+        "ogeler": [
+          {
+            "ad": "example_farmbot_logo_rkm.js"
+          },
+          {
+            "ad": "example_farmbot_trailer_rkm.js"
+          },
+          {
+            "ad": "example_farmbot_client_1_rkm.js"
+          },
+          {
+            "ad": "example_farmbot_client_2_rkm.js"
+          }
+        ]
+      },
+      {
+        "urun": "Example Koxp",
+        "ad": "example_koxp_product",
+        "ogeler": [
+          {
+            "ad": "example_koxp_logo_rkm.js"
+          },
+          {
+            "ad": "example_koxp_trailer_rkm.js"
+          },
+          {
+            "ad": "example_koxp_client_1_rkm.js"
+          },
+          {
+            "ad": "example_koxp_client_2_rkm.js"
+          }
+        ]
+      }
+    ],
+    "banner": [
+      {
+        "dil": "en",
+        "ad": "banner_en",
+        "ogeler": [
+          {
+            "ad": "banner_en_rkm.js"
+          },
+          {
+            "ad": "banner2_en_rkm.js"
+          },
+          {
+            "ad": "banner3_en_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "tr",
+        "ad": "banner_tr",
+        "ogeler": [
+          {
+            "ad": "banner_tr_rkm.js"
+          },
+          {
+            "ad": "banner2_tr_rkm.js"
+          },
+          {
+            "ad": "banner3_tr_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "ar",
+        "ad": "banner_ar",
+        "ogeler": [
+          {
+            "ad": "banner_ar_rkm.js"
+          },
+          {
+            "ad": "banner2_ar_rkm.js"
+          },
+          {
+            "ad": "banner3_ar_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "cn",
+        "ad": "banner_cn",
+        "ogeler": [
+          {
+            "ad": "banner_cn_rkm.js"
+          },
+          {
+            "ad": "banner2_cn_rkm.js"
+          },
+          {
+            "ad": "banner3_cn_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "de",
+        "ad": "banner_de",
+        "ogeler": [
+          {
+            "ad": "banner_de_rkm.js"
+          },
+          {
+            "ad": "banner2_de_rkm.js"
+          },
+          {
+            "ad": "banner3_de_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "ja",
+        "ad": "banner_ja",
+        "ogeler": [
+          {
+            "ad": "banner_ja_rkm.js"
+          },
+          {
+            "ad": "banner2_ja_rkm.js"
+          },
+          {
+            "ad": "banner3_ja_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "pl",
+        "ad": "banner_pl",
+        "ogeler": [
+          {
+            "ad": "banner_pl_rkm.js"
+          },
+          {
+            "ad": "banner2_pl_rkm.js"
+          },
+          {
+            "ad": "banner3_pl_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "ro",
+        "ad": "banner_ro",
+        "ogeler": [
+          {
+            "ad": "banner_ro_rkm.js"
+          },
+          {
+            "ad": "banner2_ro_rkm.js"
+          },
+          {
+            "ad": "banner3_ro_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "ru",
+        "ad": "banner_ru",
+        "ogeler": [
+          {
+            "ad": "banner_ru_rkm.js"
+          },
+          {
+            "ad": "banner2_ru_rkm.js"
+          },
+          {
+            "ad": "banner3_ru_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "vi",
+        "ad": "banner_vi",
+        "ogeler": [
+          {
+            "ad": "banner_vi_rkm.js"
+          },
+          {
+            "ad": "banner2_vi_rkm.js"
+          },
+          {
+            "ad": "banner3_vi_rkm.js"
+          }
+        ]
+      }
+    ]
   }
 }
