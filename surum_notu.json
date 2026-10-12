@@ -1,6 +1,6 @@
 {
   "schema": "epin-surum/1.0",
-  "surum": "E178.20261012.2",
+  "surum": "E178.20261012.3",
   "tarih": "2026-10-12",
   "site_surumu": "v3.12",
   "not": "E178: RKMP resim paket sistemi. Resimler artik paketli cekilir: 7 oyun logosu tek paket (compressed_games), her urunun resimleri tek paket (M2God_product vb.), banner paketleri dile gore (banner_en/banner_tr/...). Site yalniz IHTIYACI olan paketi çeker; paketler de surum notu kapili tarayici onbelleğinde tutulur.",
@@ -30,7 +30,6 @@
     "hedefKlasor": "paketler",
     "oyunlar": {
       "ad": "compressed_games",
-      "aciklama": "7 oyun logosu tek istekte",
       "ogeler": [
         {
           "ad": "cabal_logo_rkm.js"
@@ -53,13 +52,13 @@
         {
           "ad": "sro_logo_rkm.js"
         }
-      ]
+      ],
+      "aciklama": "7 oyun logosu tek istekte"
     },
     "urunler": [
       {
         "urun": "M2God",
         "ad": "M2God_product",
-        "aciklama": "logo + client_1(b1) + client_2(b3) + trailer(xxxx-img) — 4 resim tek istekte",
         "ogeler": [
           {
             "ad": "m2god_logo_rkm.js"
@@ -85,7 +84,8 @@
               "xxxx-img_rkm.js"
             ]
           }
-        ]
+        ],
+        "aciklama": "logo + client_1(b1) + client_2(b3) + trailer(xxxx-img) — 4 resim tek istekte"
       },
       {
         "urun": "Example Farmbot",
