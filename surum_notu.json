@@ -1,18 +1,280 @@
 {
   "schema": "epin-surum/1.0",
-  "surum": "E177.20261011.1",
-  "tarih": "2026-10-11",
-  "site_surumu": "v3.11",
-  "not": "Kalkan dosyalari ve resimler icin surum notu kapili tarayici onbellek sistemi eklendi. Site her acilista yalniz bu dosyayi GitHub'dan ceker; surum degismedikce koruma/ + resimler/ dosyalari tarayici onbellekten calisir.",
+  "surum": "E178.20261012.1",
+  "tarih": "2026-10-12",
+  "site_surumu": "v3.12",
+  "not": "E178: RKMP resim paket sistemi. Resimler artik paketli cekilir: 7 oyun logosu tek paket (compressed_games), her urunun resimleri tek paket (M2God_product vb.), banner paketleri dile gore (banner_en/banner_tr/...). Site yalniz IHTIYACI olan paketi çeker; paketler de surum notu kapili tarayici onbelleğinde tutulur.",
   "degisiklikler": [
-    "E177: surum_notu.json eklendi — her acilista yalniz bu kucuk dosya GitHub'dan cekilir (1 istek)",
-    "Surum degismedikce koruma/ (kilit_rkm.js, site_rkm.js, kalkan.min.js) ve resimler/ tarayici onbellekten calisir — GitHub'a 0 dosya istegi",
-    "Surum degisirse onbellek temizlenip dosyalar tazeden cekilip kaydedilir",
-    "Onbellek iskasi (kismi temizlik) tek tek tazelenir — oz-iyilesme",
-    "site_icerik.json onbellek DISI: panel otomasyonu her acilista taze veriyle calisir",
-    "GitHub erisilemezse kayitli onbellek kullanilir; o da yoksa yerel dosyalar (eski davranis)"
+    "E178: RKMP v1 paket formati — N adet _rkm.js tek base64 dosyada (SHA-256 akis sifresi, motor icinde)",
+    "compressed_games.rkm: 7 oyun logosu tek istekte (eskiden 7 istek)",
+    "M2God_product.rkm: 4 resim tek istekte — ogeler yeniden adlandirildi: b1→M2God_client_1, b3→M2God_client_2, xxxx-img→M2God_trailer (eski adlar takma olarak korunur)",
+    "example_farmbot_product.rkm + example_koxp_product.rkm: her urun 4 resim tek istekte",
+    "banner_<dil>.rkm (10 dil): SADECE secili dilin banner paketi indirilir (eskiden 3 istek, simdi 1)",
+    "Paketler de surum-notu-kapili onbellekte: surum degismedikce 0 istek",
+    "surum_notu.json icerigi 'paketler' bolumu tasir — motor paket listesini acilista buradan okur",
+    "Kontrol paneli Python'a tasinan: kontrol_paneli.py — Toplu Sikistir sekmesi ile paket uretim/push"
   ],
-  "surum_nasil_degistirilir": "Bu dosyadaki 'surum' alaninin degerini degistirin (orn. E178.20261012.1). Yeni surum degerini goren tum ziyaretci tarayiclari onbelleklerini temizleyip koruma/ + resimler/ dosyalarini tazeden ceker. Koruma veya resim dosyalarini guncellediginizde bu alanı MUTLAKA degistirin.",
-  "yonetilen_klasorler": ["koruma/", "resimler/"],
-  "onbellek_disi": ["icerik/site_icerik.json"]
+  "surum_nasil_degistirilir": "Bu dosyadaki 'surum' alaninin degerini degistirin (orn. E179.20261013.1). Yeni surumu goren tum ziyaretci tarayicilari onbelleklerini temizleyip koruma/ + resimler/ + paketler/ dosyalarini tazeden ceker. Koruma, resim veya PAKET dosyalarini guncellediginizde bu alani MUTLAKA degistirin (kontrol paneli paket yukledikten sonra bunu otomatik yapar).",
+  "yonetilen_klasorler": [
+    "koruma/",
+    "resimler/",
+    "paketler/"
+  ],
+  "onbellek_disi": [
+    "icerik/site_icerik.json"
+  ],
+  "paketler": {
+    "sema": "epin-paket/1.0",
+    "aciklama": "RKM resim paketleri (RKMP v1): N adet <ad>_rkm.js tek şifreli dosyada. Site yalnız ihtiyacı olan paketi çeker; öğeler paketten ayrıştırılıp tekil dosyayla birebir aynı şekilde kullanılır. Panel 'Toplu Sıkıştır' sekmesi bu listeyi düzenler ve paketleri üretir.",
+    "kaynakKlasor": "resimler",
+    "hedefKlasor": "paketler",
+    "oyunlar": {
+      "ad": "compressed_games",
+      "aciklama": "7 oyun logosu tek istekte",
+      "ogeler": [
+        {
+          "ad": "cabal_logo_rkm.js"
+        },
+        {
+          "ad": "csgo_logo_rkm.js"
+        },
+        {
+          "ad": "knight_logo_rkm.js"
+        },
+        {
+          "ad": "metin2_logo_rkm.js"
+        },
+        {
+          "ad": "rakion_logo_rkm.js"
+        },
+        {
+          "ad": "ranonline_logo_rkm.js"
+        },
+        {
+          "ad": "sro_logo_rkm.js"
+        }
+      ]
+    },
+    "urunler": [
+      {
+        "urun": "M2God",
+        "ad": "M2God_product",
+        "aciklama": "logo + client_1(b1) + client_2(b3) + trailer(xxxx-img) — 4 resim tek istekte",
+        "ogeler": [
+          {
+            "ad": "m2god_logo_rkm.js"
+          },
+          {
+            "ad": "M2God_client_1_rkm.js",
+            "kaynak": "b1_rkm.js",
+            "takma": [
+              "b1_rkm.js"
+            ]
+          },
+          {
+            "ad": "M2God_client_2_rkm.js",
+            "kaynak": "b3_rkm.js",
+            "takma": [
+              "b3_rkm.js"
+            ]
+          },
+          {
+            "ad": "M2God_trailer_rkm.js",
+            "kaynak": "xxxx-img_rkm.js",
+            "takma": [
+              "xxxx-img_rkm.js"
+            ]
+          }
+        ]
+      },
+      {
+        "urun": "Example Farmbot",
+        "ad": "example_farmbot_product",
+        "ogeler": [
+          {
+            "ad": "example_farmbot_logo_rkm.js"
+          },
+          {
+            "ad": "example_farmbot_trailer_rkm.js"
+          },
+          {
+            "ad": "example_farmbot_client_1_rkm.js"
+          },
+          {
+            "ad": "example_farmbot_client_2_rkm.js"
+          }
+        ]
+      },
+      {
+        "urun": "Example Koxp",
+        "ad": "example_koxp_product",
+        "ogeler": [
+          {
+            "ad": "example_koxp_logo_rkm.js"
+          },
+          {
+            "ad": "example_koxp_trailer_rkm.js"
+          },
+          {
+            "ad": "example_koxp_client_1_rkm.js"
+          },
+          {
+            "ad": "example_koxp_client_2_rkm.js"
+          }
+        ]
+      }
+    ],
+    "banner": [
+      {
+        "dil": "en",
+        "ad": "banner_en",
+        "ogeler": [
+          {
+            "ad": "banner_en_rkm.js"
+          },
+          {
+            "ad": "banner2_en_rkm.js"
+          },
+          {
+            "ad": "banner3_en_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "tr",
+        "ad": "banner_tr",
+        "ogeler": [
+          {
+            "ad": "banner_tr_rkm.js"
+          },
+          {
+            "ad": "banner2_tr_rkm.js"
+          },
+          {
+            "ad": "banner3_tr_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "ar",
+        "ad": "banner_ar",
+        "ogeler": [
+          {
+            "ad": "banner_ar_rkm.js"
+          },
+          {
+            "ad": "banner2_ar_rkm.js"
+          },
+          {
+            "ad": "banner3_ar_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "cn",
+        "ad": "banner_cn",
+        "ogeler": [
+          {
+            "ad": "banner_cn_rkm.js"
+          },
+          {
+            "ad": "banner2_cn_rkm.js"
+          },
+          {
+            "ad": "banner3_cn_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "de",
+        "ad": "banner_de",
+        "ogeler": [
+          {
+            "ad": "banner_de_rkm.js"
+          },
+          {
+            "ad": "banner2_de_rkm.js"
+          },
+          {
+            "ad": "banner3_de_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "ja",
+        "ad": "banner_ja",
+        "ogeler": [
+          {
+            "ad": "banner_ja_rkm.js"
+          },
+          {
+            "ad": "banner2_ja_rkm.js"
+          },
+          {
+            "ad": "banner3_ja_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "pl",
+        "ad": "banner_pl",
+        "ogeler": [
+          {
+            "ad": "banner_pl_rkm.js"
+          },
+          {
+            "ad": "banner2_pl_rkm.js"
+          },
+          {
+            "ad": "banner3_pl_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "ro",
+        "ad": "banner_ro",
+        "ogeler": [
+          {
+            "ad": "banner_ro_rkm.js"
+          },
+          {
+            "ad": "banner2_ro_rkm.js"
+          },
+          {
+            "ad": "banner3_ro_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "ru",
+        "ad": "banner_ru",
+        "ogeler": [
+          {
+            "ad": "banner_ru_rkm.js"
+          },
+          {
+            "ad": "banner2_ru_rkm.js"
+          },
+          {
+            "ad": "banner3_ru_rkm.js"
+          }
+        ]
+      },
+      {
+        "dil": "vi",
+        "ad": "banner_vi",
+        "ogeler": [
+          {
+            "ad": "banner_vi_rkm.js"
+          },
+          {
+            "ad": "banner2_vi_rkm.js"
+          },
+          {
+            "ad": "banner3_vi_rkm.js"
+          }
+        ]
+      }
+    ]
+  }
 }
