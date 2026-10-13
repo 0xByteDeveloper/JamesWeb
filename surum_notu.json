@@ -1,9 +1,9 @@
 {
   "schema": "epin-surum/1.0",
-  "surum": "E178.20261012.4",
-  "tarih": "2026-10-12",
-  "site_surumu": "v3.12",
-  "not": "E178: RKMP resim paket sistemi. Resimler artik paketli cekilir: 7 oyun logosu tek paket (compressed_games), her urunun resimleri tek paket (M2God_product vb.), banner paketleri dile gore (banner_en/banner_tr/...). Site yalniz IHTIYACI olan paketi çeker; paketler de surum notu kapili tarayici onbelleğinde tutulur.",
+  "surum": "E185.20261013.1",
+  "tarih": "2026-10-13",
+  "site_surumu": "v3.14",
+  "not": "E185: depo sadelesti. TUM resimler artik PAKETLERDE (paketler/*.rkm); resimler/ klasorunde yalniz SiteLogo_rkm.js kaldi (site logosi tekil cekilir). Kullanilmayan tekil _rkm.js dosyalari, README.md, koruma/KOPYALANAMAZLIK-KURALLARI.md, koruma/OKUBENI_KALKAN.txt ve M2G/ cop klasoru GitHubdan silindi. rkm dosyalarindaki Turkce yorum basliklari (/* RKM VERI ... */) uretici + tum mevcut dosyalardan kaldirildi. site_icerik.json: M2God urunu gorselleri paket adlariyla M2God_client_1/2 + M2God_trailer (b1/b3/xxxx-img takma olarak pakette durur); basliklar 10 dilde M2God Community; surum 3.14.",
   "degisiklikler": [
     "E178: RKMP v1 paket formati — N adet _rkm.js tek base64 dosyada (SHA-256 akis sifresi, motor icinde)",
     "compressed_games.rkm: 7 oyun logosu tek istekte (eskiden 7 istek)",
@@ -12,7 +12,12 @@
     "banner_<dil>.rkm (10 dil): SADECE secili dilin banner paketi indirilir (eskiden 3 istek, simdi 1)",
     "Paketler de surum-notu-kapili onbellekte: surum degismedikce 0 istek",
     "surum_notu.json icerigi 'paketler' bolumu tasir — motor paket listesini acilista buradan okur",
-    "Kontrol paneli Python'a tasinan: kontrol_paneli.py — Toplu Sikistir sekmesi ile paket uretim/push"
+    "Kontrol paneli Python'a tasinan: kontrol_paneli.py — Toplu Sikistir sekmesi ile paket uretim/push",
+    "E185: resimler/ temizlendi — yalniz SiteLogo_rkm.js kaldi; diger tum gorseller paketler/ altinda",
+    "E185: rkm dosyalarindan Turkce yorum basliklari silindi (uretici donusum.py artik baslik uretmez)",
+    "E185: README.md + koruma/KOPYALANAMAZLIK-KURALLARI.md + koruma/OKUBENI_KALKAN.txt + M2G/ silindi",
+    "E185: site_icerik.json M2God urunu: b1/b3/xxxx-img yerine M2God_client_1/M2God_client_2/M2God_trailer",
+    "E185: kontrol paneli Metinler bolumu katlandi: satirda tek kaynak dil, ▸ N/M dolu sayaci, Tumunu Cevir dugmesi"
   ],
   "surum_nasil_degistirilir": "Bu dosyadaki 'surum' alaninin degerini degistirin (orn. E179.20261013.1). Yeni surumu goren tum ziyaretci tarayicilari onbelleklerini temizleyip koruma/ + resimler/ + paketler/ dosyalarini tazeden ceker. Koruma, resim veya PAKET dosyalarini guncellediginizde bu alani MUTLAKA degistirin (kontrol paneli paket yukledikten sonra bunu otomatik yapar).",
   "yonetilen_klasorler": [
