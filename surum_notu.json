@@ -1,10 +1,13 @@
 {
   "schema": "epin-surum/1.0",
-  "surum": "E185.20261013.2",
-  "tarih": "2026-10-13",
-  "site_surumu": "v3.14",
-  "not": "E185: depo sadelesti. TUM resimler artik PAKETLERDE (paketler/*.rkm); resimler/ klasorunde yalniz SiteLogo_rkm.js kaldi (site logosi tekil cekilir). Kullanilmayan tekil _rkm.js dosyalari, README.md, koruma/KOPYALANAMAZLIK-KURALLARI.md, koruma/OKUBENI_KALKAN.txt ve M2G/ cop klasoru GitHubdan silindi. rkm dosyalarindaki Turkce yorum basliklari (/* RKM VERI ... */) uretici + tum mevcut dosyalardan kaldirildi. site_icerik.json: M2God urunu gorselleri paket adlariyla M2God_client_1/2 + M2God_trailer (b1/b3/xxxx-img takma olarak pakette durur); basliklar 10 dilde M2God Community; surum 3.14.",
+  "surum": "E186.20261014.1",
+  "tarih": "2026-10-14",
+  "site_surumu": "v3.15",
+  "not": "E186 HIZ PAKETI: 1) RKM motor LISTE tablosuna m2god_client_1/2 + m2god_trailer eslemeleri eklendi (E185 yeniden adlandirmasinda motor tablosu atlanmisti — site M2God_client_1.png istekleri atiyor, 404 + gorsel gecikmesi). 2) Motor acilista TUM oyun+urun paketlerini (compressed_games + 3 urun paketi + secili dil banner) PARALEL ceker (eski akista her resim kendi paketini SIRAYLA bekliyordu: logo cizilmeden sonraki paket istenmiyordu — acilis zinciri uzundu). 3) Kabuk 3 kalkan dosyasini PARALEL ceker (sirali 3 tur yerine 1 tur), site_icerik.json acilisle beraber erken cekilip localStorage a yazilir — ilk ziyaret verisiz-fallback + location.reload() cift yuklemesi YERINE gercek veriyle TEK yuklemede acilir. Paket dosyalari ve site_icerik.json DEGISMEDE — RKMP yapisinda kayma yok, panel Toplu Sikistirma akisi aynen calisir.",
   "degisiklikler": [
+    "E186: motor LISTE duzeltmesi — m2god_client_1/2.png + m2god_trailer.png artik paketteki M2God_client_1/2 + M2God_trailer verilerine baglaniyor (404 img istekleri bitti)",
+    "E186: acilis paket on-yuklemesi — oyun/urun/banner paketleri paralel cekiliyor, cizim kuyrugu ag beklemiyor",
+    "E186: kabuk paralel kalkan zinciri + icerik erken cekim (ilk ziyaret tek yuklemede)",
     "E178: RKMP v1 paket formati — N adet _rkm.js tek base64 dosyada (SHA-256 akis sifresi, motor icinde)",
     "compressed_games.rkm: 7 oyun logosu tek istekte (eskiden 7 istek)",
     "M2God_product.rkm: 4 resim tek istekte — ogeler yeniden adlandirildi: b1→M2God_client_1, b3→M2God_client_2, xxxx-img→M2God_trailer (eski adlar takma olarak korunur)",
