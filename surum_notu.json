@@ -1,6 +1,6 @@
 {
   "schema": "epin-surum/1.0",
-  "surum": "E185.20261013.1",
+  "surum": "E185.20261013.2",
   "tarih": "2026-10-13",
   "site_surumu": "v3.14",
   "not": "E185: depo sadelesti. TUM resimler artik PAKETLERDE (paketler/*.rkm); resimler/ klasorunde yalniz SiteLogo_rkm.js kaldi (site logosi tekil cekilir). Kullanilmayan tekil _rkm.js dosyalari, README.md, koruma/KOPYALANAMAZLIK-KURALLARI.md, koruma/OKUBENI_KALKAN.txt ve M2G/ cop klasoru GitHubdan silindi. rkm dosyalarindaki Turkce yorum basliklari (/* RKM VERI ... */) uretici + tum mevcut dosyalardan kaldirildi. site_icerik.json: M2God urunu gorselleri paket adlariyla M2God_client_1/2 + M2God_trailer (b1/b3/xxxx-img takma olarak pakette durur); basliklar 10 dilde M2God Community; surum 3.14.",
@@ -70,21 +70,18 @@
           },
           {
             "ad": "M2God_client_1_rkm.js",
-            "kaynak": "b1_rkm.js",
             "takma": [
               "b1_rkm.js"
             ]
           },
           {
             "ad": "M2God_client_2_rkm.js",
-            "kaynak": "b3_rkm.js",
             "takma": [
               "b3_rkm.js"
             ]
           },
           {
             "ad": "M2God_trailer_rkm.js",
-            "kaynak": "xxxx-img_rkm.js",
             "takma": [
               "xxxx-img_rkm.js"
             ]
