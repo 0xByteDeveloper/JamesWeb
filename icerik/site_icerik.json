@@ -1,9 +1,9 @@
 {
   "sema": "epinsitesi-icerik",
   "semaSurum": "1.0",
-  "surum": "3.14",
-  "zaman": 1791904292,
-  "olusturma": "2026-10-13T15:11:32Z",
+  "surum": "3.09",
+  "zaman": 1791727285,
+  "olusturma": "2026-10-11T14:01:25.221Z",
   "varsayilanDil": "en",
   "diller": [
     "en",
@@ -12,7 +12,7 @@
   "kullanim": {
     "not": "Bu dosya sitenin TEK içerik kaynağıdır. Kontrol paneli (kontrol_paneli.html) ile düzenlenip GitHub'a (JamesWeb) yüklenir; site açılışta buradan çeker. Bilinmeyen alanlar korunur — dilediğiniz anahtarı ekleyebilirsiniz.",
     "ozellikEkleme": "Herhangi bir oyuna/ürüne yeni anahtar ekleyin; site bilinmeyenleri yok sayar, panel korur.",
-    "dilEkleme": "degerler içine yeni dil kodu (de, ru…) ekleyin; site o dili otomatik kullanır. Panelde (Metinler) 🔄 düğmesi boş dil alanlarını otomatik çevirir (Google Çeviri, MyMemory yedeği); elle düzeltme her zaman mümkündür."
+    "dilEkleme": "degerler içine yeni dil kodu (de, ru…) ekleyin; site o dili otomatik kullanır. Çeviri API'si YOK — metinler elle yönetilir (deterministik, çevrimdışı, maliyetsiz)."
   },
   "github": {
     "sahip": "0xByteDeveloper",
@@ -26,16 +26,16 @@
   "site": {
     "ad": "M2God",
     "baslik": {
-      "tr": "M2God Community",
-      "en": "M2God Community",
-      "de": "M2God Community",
-      "pl": "M2God Community",
-      "vi": "M2God Community",
-      "ro": "M2God Community",
-      "ru": "M2God Community",
-      "cn": "M2God Community",
-      "ja": "M2God Community",
-      "ar": "M2God Community"
+      "tr": "Türkiye'nin En Güvenilir Oyun Alışveriş Sitesi | M2God",
+      "en": "Türkiye's Most Reliable Game Shopping Site | M2God",
+      "de": "Türkiyes zuverlässigste Spiele-Shopping-Site | M2Gott",
+      "pl": "Najbardziej niezawodna witryna zakupów gier w Turcji | M2Bóg",
+      "vi": "Trang web mua sắm trò chơi đáng tin cậy nhất của Türkiye | M2Chúa",
+      "ro": "Cel mai de încredere site de cumpărături de jocuri din Türkiye | M2Doamne",
+      "ru": "Самый надежный сайт по продаже игр в Турции | M2God",
+      "cn": "土耳其最可靠的游戏购物网站 | M2神",
+      "ja": "M2God — 最も信頼できるゲームショップ",
+      "ar": "موقع تسوق الألعاب الأكثر موثوقية في تركيا | M2God"
     },
     "logo": {
       "dosya": "SiteLogo.png",
@@ -252,8 +252,8 @@
             "baslik": "",
             "aciklama": "M2God farm botu arayüzü, sade ama güçlü. Karakterini seç, rotanı belirle, \"Start\"a bas. Gerisini program halleder — sen uyurken yang farmlar.",
             "fotolar": [
-              "M2God_client_1.png",
-              "M2God_client_2.png"
+              "b1.png",
+              "b3.png"
             ],
             "ozellikler": [
               {
@@ -284,7 +284,7 @@
             "slogan": "Working All Servers. (900+ Server)",
             "term": "",
             "aciklama": "",
-            "foto": "M2God_trailer.png"
+            "foto": "xxxx-img.png"
           }
         },
         {
@@ -902,259 +902,5 @@
       ]
     },
     "not": "Otomatik: ürünü olmayan oyunlar, client başlığı boş olan ürünler, trailer alanı eksik ürünler."
-  },
-  "paketler": {
-    "sema": "epin-paket/1.0",
-    "aciklama": "RKM resim paketleri (RKMP v1): N adet <ad>_rkm.js tek şifreli dosyada. Site yalnız ihtiyacı olan paketi çeker; öğeler paketten ayrıştırılıp tekil dosyayla birebir aynı şekilde kullanılır. Panel 'Toplu Sıkıştır' sekmesi bu listeyi düzenler ve paketleri üretir.",
-    "kaynakKlasor": "resimler",
-    "hedefKlasor": "paketler",
-    "oyunlar": {
-      "ad": "compressed_games",
-      "aciklama": "7 oyun logosu tek istekte",
-      "ogeler": [
-        {
-          "ad": "cabal_logo_rkm.js"
-        },
-        {
-          "ad": "csgo_logo_rkm.js"
-        },
-        {
-          "ad": "knight_logo_rkm.js"
-        },
-        {
-          "ad": "metin2_logo_rkm.js"
-        },
-        {
-          "ad": "rakion_logo_rkm.js"
-        },
-        {
-          "ad": "ranonline_logo_rkm.js"
-        },
-        {
-          "ad": "sro_logo_rkm.js"
-        }
-      ]
-    },
-    "urunler": [
-      {
-        "urun": "M2God",
-        "ad": "M2God_product",
-        "aciklama": "logo + client_1(b1) + client_2(b3) + trailer(xxxx-img) — 4 resim tek istekte",
-        "ogeler": [
-          {
-            "ad": "m2god_logo_rkm.js"
-          },
-          {
-            "ad": "M2God_client_1_rkm.js",
-            "kaynak": "b1_rkm.js",
-            "takma": [
-              "b1_rkm.js"
-            ]
-          },
-          {
-            "ad": "M2God_client_2_rkm.js",
-            "kaynak": "b3_rkm.js",
-            "takma": [
-              "b3_rkm.js"
-            ]
-          },
-          {
-            "ad": "M2God_trailer_rkm.js",
-            "kaynak": "xxxx-img_rkm.js",
-            "takma": [
-              "xxxx-img_rkm.js"
-            ]
-          }
-        ]
-      },
-      {
-        "urun": "Example Farmbot",
-        "ad": "example_farmbot_product",
-        "ogeler": [
-          {
-            "ad": "example_farmbot_logo_rkm.js"
-          },
-          {
-            "ad": "example_farmbot_trailer_rkm.js"
-          },
-          {
-            "ad": "example_farmbot_client_1_rkm.js"
-          },
-          {
-            "ad": "example_farmbot_client_2_rkm.js"
-          }
-        ]
-      },
-      {
-        "urun": "Example Koxp",
-        "ad": "example_koxp_product",
-        "ogeler": [
-          {
-            "ad": "example_koxp_logo_rkm.js"
-          },
-          {
-            "ad": "example_koxp_trailer_rkm.js"
-          },
-          {
-            "ad": "example_koxp_client_1_rkm.js"
-          },
-          {
-            "ad": "example_koxp_client_2_rkm.js"
-          }
-        ]
-      }
-    ],
-    "banner": [
-      {
-        "dil": "en",
-        "ad": "banner_en",
-        "ogeler": [
-          {
-            "ad": "banner_en_rkm.js"
-          },
-          {
-            "ad": "banner2_en_rkm.js"
-          },
-          {
-            "ad": "banner3_en_rkm.js"
-          }
-        ]
-      },
-      {
-        "dil": "tr",
-        "ad": "banner_tr",
-        "ogeler": [
-          {
-            "ad": "banner_tr_rkm.js"
-          },
-          {
-            "ad": "banner2_tr_rkm.js"
-          },
-          {
-            "ad": "banner3_tr_rkm.js"
-          }
-        ]
-      },
-      {
-        "dil": "ar",
-        "ad": "banner_ar",
-        "ogeler": [
-          {
-            "ad": "banner_ar_rkm.js"
-          },
-          {
-            "ad": "banner2_ar_rkm.js"
-          },
-          {
-            "ad": "banner3_ar_rkm.js"
-          }
-        ]
-      },
-      {
-        "dil": "cn",
-        "ad": "banner_cn",
-        "ogeler": [
-          {
-            "ad": "banner_cn_rkm.js"
-          },
-          {
-            "ad": "banner2_cn_rkm.js"
-          },
-          {
-            "ad": "banner3_cn_rkm.js"
-          }
-        ]
-      },
-      {
-        "dil": "de",
-        "ad": "banner_de",
-        "ogeler": [
-          {
-            "ad": "banner_de_rkm.js"
-          },
-          {
-            "ad": "banner2_de_rkm.js"
-          },
-          {
-            "ad": "banner3_de_rkm.js"
-          }
-        ]
-      },
-      {
-        "dil": "ja",
-        "ad": "banner_ja",
-        "ogeler": [
-          {
-            "ad": "banner_ja_rkm.js"
-          },
-          {
-            "ad": "banner2_ja_rkm.js"
-          },
-          {
-            "ad": "banner3_ja_rkm.js"
-          }
-        ]
-      },
-      {
-        "dil": "pl",
-        "ad": "banner_pl",
-        "ogeler": [
-          {
-            "ad": "banner_pl_rkm.js"
-          },
-          {
-            "ad": "banner2_pl_rkm.js"
-          },
-          {
-            "ad": "banner3_pl_rkm.js"
-          }
-        ]
-      },
-      {
-        "dil": "ro",
-        "ad": "banner_ro",
-        "ogeler": [
-          {
-            "ad": "banner_ro_rkm.js"
-          },
-          {
-            "ad": "banner2_ro_rkm.js"
-          },
-          {
-            "ad": "banner3_ro_rkm.js"
-          }
-        ]
-      },
-      {
-        "dil": "ru",
-        "ad": "banner_ru",
-        "ogeler": [
-          {
-            "ad": "banner_ru_rkm.js"
-          },
-          {
-            "ad": "banner2_ru_rkm.js"
-          },
-          {
-            "ad": "banner3_ru_rkm.js"
-          }
-        ]
-      },
-      {
-        "dil": "vi",
-        "ad": "banner_vi",
-        "ogeler": [
-          {
-            "ad": "banner_vi_rkm.js"
-          },
-          {
-            "ad": "banner2_vi_rkm.js"
-          },
-          {
-            "ad": "banner3_vi_rkm.js"
-          }
-        ]
-      }
-    ]
   }
 }
