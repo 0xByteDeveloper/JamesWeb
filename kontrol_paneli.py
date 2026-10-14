@@ -44,7 +44,6 @@ REPO = "JamesWeb"
 DAL = "main"
 ICERIK_YOLU = "icerik/site_icerik.json"
 RESIM_KLASORU = "resimler"
-PAKET_KLASORU = "paketler"
 SURUM_YOLU = "surum_notu.json"
 RAW_KOK = "https://raw.githubusercontent.com/%s/%s/%s" % (SAHIP, REPO, DAL)
 API_KOK = "https://api.github.com/repos/%s/%s/contents" % (SAHIP, REPO)
@@ -147,7 +146,7 @@ def ayar_yaz(a):
 
 # ═══════════════════ SUNUCU ═══════════════════
 class Panel(BaseHTTPRequestHandler):
-    server_version = "EpinPanelE182/3.1"
+    server_version = "EpinPanelE188/3.1"
 
     def log_message(self, fmt, *args):
         sys.stderr.write("[panel] %s\n" % (fmt % args))
@@ -189,10 +188,10 @@ class Panel(BaseHTTPRequestHandler):
             return
         if yol == "/api/durum":
             t = token_al()
-            self.json_gonder({"ok": True, "sunucu": "E182-python", "port": self.server.server_address[1],
+            self.json_gonder({"ok": True, "sunucu": "E188-python", "port": self.server.server_address[1],
                               "token": bool(t), "tokenSon4": (t[-4:] if t else ""),
                               "repo": {"sahip": SAHIP, "repo": REPO, "dal": DAL,
-                                       "icerikYolu": ICERIK_YOLU, "paketKlasoru": PAKET_KLASORU}})
+                                       "icerikYolu": ICERIK_YOLU}})
             return
         if yol == "/api/gh/icerik":
             try:
@@ -238,7 +237,7 @@ class Panel(BaseHTTPRequestHandler):
                 try:
                     a = ayar_oku()
                     a["token"] = t
-                    ayar_yaz(a)      # E182: iki token deposu ortak tutulur
+                    ayar_yaz(a)      # iki token deposu ortak tutulur
                 except Exception:
                     pass
                 self.json_gonder({"ok": True, "tokenSon4": t[-4:],
