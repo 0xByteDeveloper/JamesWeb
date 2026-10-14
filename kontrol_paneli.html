@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M2God Kontrol Paneli v3 — İçerik Otomasyonu (E188 · Python)</title>
+<!--
+  E188 · M2GOD KONTROL PANELİ v3 — İÇERİK OTOMASYONU (Python sunuculu)
+  ═════════════════════════════════════════════
+  Panel artık JSON EDİTÖRÜ değil, JSON ÜRETİCİSİDİR:
+  · Sol ağaçta oyunlar + ürünler görünür; oyun/ürün ekle, sil, güncelle
+  · Fiyat, paketler, parasal eğri, client, trailer, videolar, metinler…
+    her şey formlardan yönetilir; JSON arka planda otomatik üretilir
+  · JSON'u görmek isteyen "JSON'u Gör" çekmecesini açar (isteğe bağlı)
+  · GitHub'dan çek / GitHub'a yükle / dosyadan yükle / JSON indir korunur
+  Panel yalnız site_icerik.json ile çalışır; sitenin kendisine dokunmaz.
+  Bilinmeyen anahtarlar (genişletilebilirlik) D objesinde aynen korunur.
+-->
+<style>
+:root{
+  --bg:#0b0e14;--panel:#121826;--panel2:#0d1320;--satir:#1a2233;
+  --hat:#232c40;--yazi:#dbe2ef;--soluk:#8a93a6;--altin:#d9a441;
+  --yesil:#3fb950;--kirmizi:#f85149;--amber:#d29922;--mavi:#58a6ff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--yazi);font:14px/1.5 'Segoe UI',system-ui,Arial,sans-serif;display:flex;flex-direction:column}
+button{font:inherit;cursor:pointer;border:0;border-radius:6px;padding:7px 12px;background:var(--satir);color:var(--yazi)}
+button:hover{filter:brightness(1.25)}
+button.ana{background:var(--altin);color:#151006;font-weight:600}
+button.tehlike{color:#ffb4ae;background:#3a1a1a}
+button.kck{padding:3px 8px;font-size:12px;border-radius:5px}
+input,select,textarea{font:inherit;background:var(--panel2);border:1px solid var(--hat);color:var(--yazi);border-radius:6px;padding:7px 9px;width:100%}
+input:focus,select:focus,textarea:focus{outline:1px solid var(--altin)}
+input[type=color]{padding:2px;height:36px;width:52px}
+textarea{resize:vertical;min-height:60px}
+label.aln{display:block;font-size:12px;color:var(--soluk);margin:10px 0 4px;text-transform:uppercase;letter-spacing:.4px}
+code{background:var(--panel2);border:1px solid var(--hat);border-radius:4px;padding:1px 5px;font-size:12px}
+
+/* ── üst bar ── */
+#ustbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:var(--panel);border-bottom:1px solid var(--hat)}
+#ustbar h1{font-size:16px;color:var(--altin);margin-right:6px}
+#ustbar .bosluk{flex:1}
+#durumCip{font-size:12px;color:var(--soluk);white-space:nowrap}
+#durumCip b{color:var(--yesil)}
+
+/* ── gövde ── */
+#govde{flex:1;display:flex;min-height:0}
+aside{width:300px;min-width:230px;background:var(--panel2);border-right:1px solid var(--hat);overflow-y:auto;padding:10px}
+main{flex:1;overflow-y:auto;padding:16px 20px;min-width:0}
+
+/* ── ağaç ── */
+.agBaslik{display:flex;align-items:center;gap:6px;margin:14px 0 6px;font-size:12px;font-weight:700;letter-spacing:1px;color:var(--soluk);text-transform:uppercase}
+.agBaslik:first-child{margin-top:2px}
+.agBaslik .bosluk{flex:1}
+.agSatir{display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:7px;cursor:pointer;border:1px solid transparent;margin-bottom:2px}
+.agSatir:hover{background:var(--satir)}
+.agSatir.secili{background:#221b0e;border-color:var(--altin)}
+.agSatir .ad{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.agSatir .muhur{font-size:11px;color:var(--soluk)}
+.agSatir .arac{display:none;gap:2px}
+.agSatir:hover .arac,.agSatir.secili .arac{display:flex}
+.agUrunler{margin:2px 0 6px 22px;border-left:1px dashed var(--hat);padding-left:8px}
+.bosNot{color:var(--soluk);font-size:12px;font-style:italic;padding:4px 9px}
+
+/* ── form panelleri ── */
+.fPanel{max-width:980px}
+.fPanel h2{color:var(--altin);font-size:19px;margin-bottom:2px}
+.fPanel .altYazi{color:var(--soluk);font-size:12px;margin-bottom:14px}
+.izgara{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:0 14px}
+.izgaraGenis{grid-template-columns:repeat(auto-fill,minmax(430px,1fr))}
+.kutu{background:var(--panel);border:1px solid var(--hat);border-radius:10px;padding:14px 16px;margin-bottom:16px}
+.kutu h3{font-size:13px;color:var(--altin);letter-spacing:.6px;text-transform:uppercase;margin-bottom:4px}
+.kutu .ipucu{font-size:12px;color:var(--soluk);margin-bottom:8px}
+.satirListe{display:flex;flex-direction:column;gap:6px}
+.satirListe .oSatir{display:flex;gap:6px;align-items:center}
+.satirListe .oSatir input[type=text],.satirListe .oSatir input[type=number]{flex:1}
+.chkGrup{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px}
+.chkGrup label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--yazi);cursor:pointer}
+.chkGrup input{width:auto}
+.yatay{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.yatay>div{flex:1;min-width:120px}
+.yatay input[type=color]{flex:0 0 52px;width:52px}
+.yatay input[type=text]{flex:1;min-width:0}
+
+/* ── sonuç listesi ── */
+.sonuc{padding:8px 11px;border-radius:7px;margin-bottom:6px;font-size:13px;border:1px solid var(--hat)}
+.sonuc.ok{background:#0f2315;border-color:#1f4d2a;color:#7ee2a0}
+.sonuc.uyari{background:#2a230d;border-color:#5a4a17;color:#e7c56a}
+.sonuc.hata{background:#2d1212;border-color:#5a2020;color:#ff9d95}
+
+/* ── JSON çekmecesi ── */
+#jsonCekmece{position:fixed;right:0;top:0;bottom:0;width:min(560px,60vw);background:var(--panel);border-left:1px solid var(--hat);z-index:50;display:none;flex-direction:column;box-shadow:-18px 0 40px rgba(0,0,0,.5)}
+#jsonCekmece.acik{display:flex}
+#jsonCekmece .baslik{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--hat)}
+#jsonCekmece .baslik h3{flex:1;color:var(--altin);font-size:14px}
+#jsonCekmece pre{flex:1;overflow:auto;padding:12px 14px;font:12px/1.45 Consolas,monospace;color:#c9d4e8;white-space:pre-wrap;word-break:break-word}
+
+/* ── sekmeler (metinler grupları) ── */
+.sekmeBar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.sekmeBar button.sec{background:#221b0e;color:var(--altin);border:1px solid var(--altin)}
+</style>
+</head>
+<body>
+<div id="ustbar">
+  <h1>⚙ Kontrol Paneli v2</h1>
+  <span id="durumCip">içerik yüklenmedi</span>
+  <span class="bosluk"></span>
+  <button id="bCek" title="GitHub raw'dan site_icerik.json çeker">⬇ GitHub'dan Çek</button>
+  <button id="bDosya" title="Bilgisayardan site_icerik.json yükler">📂 Dosyadan Yükle</button>
+  <input type="file" id="dosyaGiris" accept=".json,application/json" style="display:none">
+  <button id="bYukle" class="ana" title="Değişiklikleri GitHub'a push eder (zaman otomatik tazelenir)">⬆ GitHub'a Yükle</button>
+  <button id="bIndir" title="Üretilen JSON'u dosya olarak indirir">💾 JSON İndir</button>
+  <button id="bJson" title="Üretilen JSON'u görüntüle (isteğe bağlı)">👁 JSON'u Gör</button>
+  <button id="bDogrula" title="İçerik doğrulaması çalıştır">✓ Doğrula</button>
+  <button id="bGitHub" title="GitHub ayarları">🐙 Ayarlar</button>
+</div>
+
+<div id="githubAlani" style="display:none;background:var(--panel);border-bottom:1px solid var(--hat);padding:12px 14px">
+  <div class="izgara">
+    <div><label class="aln">Sahip (owner)</label><input id="ghSahip" type="text"></div>
+    <div><label class="aln">Depo (repo)</label><input id="ghRepo" type="text"></div>
+    <div><label class="aln">Dal (branch)</label><input id="ghDal" type="text" value="main"></div>
+    <div><label class="aln">İçerik yolu</label><input id="ghYol" type="text" value="icerik/site_icerik.json"></div>
+    <div style="grid-column:span 2"><label class="aln">Token (fine-grained PAT — yalnız bu tarayıcıda, localStorage'da tutulur; hiçbir dosyaya yazılmaz)</label>
+      <input id="ghToken" type="password" placeholder="github_pat_…"></div>
+  </div>
+  <div class="yatay" style="margin-top:10px">
+    <button id="ghKaydet" class="kck ana">Ayarları Kaydet</button>
+    <span class="ipucu" style="color:var(--soluk);font-size:12px">Not: raw CDN yaklaşık 5 dk önbellekler; push sonrası sitede güncel verinin gelmesi 5 dk sürebilir. Public depoda token yalnız YÜKLEME (push) için gerekir — GitHub'dan Çek token'sız da çalışır.</span>
+  </div>
+  <div id="ghSonuc" style="margin-top:8px"></div>
+</div>
+
+<div id="govde">
+  <aside id="agac"></aside>
+  <main id="sahne"></main>
+</div>
+
+<div id="jsonCekmece">
+  <div class="baslik">
+    <h3>Üretilen JSON — site_icerik.json</h3>
+    <button id="jsonKopyala" class="kck">Kopyala</button>
+    <button id="jsonIndir2" class="kck">İndir</button>
+    <button id="jsonKapat" class="kck tehlike">✕ Kapat</button>
+  </div>
+  <pre id="jsonOnIzleme">(boş)</pre>
+</div>
+<script>
+"use strict";
+/* ════════════════════════════════════════════════════════════════════
+   E179 · KONTROL PANELİ v3 ÇEKİRDEĞİ
+   D = site_icerik.json dokümanı. Panel = D'nin görsel editörü.
+   JSON her an D'den otomatik üretilir (JSON.stringify(D,null,2)).
+   ════════════════════════════════════════════════════════════════════ */
+var D=null;                              /* aktif doküman */
+var secim={tur:'oyun',oyun:0,urun:0};    /* sahne seçimi */
+var metinGrup=null;                      /* metinler sekmesi */
+var RESIMLER=['SiteLogo.png','metin2_logo.png','knight_logo.png','sro_logo.png','cabal_logo.png','ranonline_logo.png','rakion_logo.png','csgo_logo.png','m2god_logo.png','example_farmbot_logo.png','example_koxp_logo.png','example_farmbot_trailer.png','example_farmbot_client_1.png','example_farmbot_client_2.png','example_koxp_trailer.png','example_koxp_client_1.png','example_koxp_client_2.png','b1.png','b3.png','xxxx-img.png'];
+var LS_TASLAK='kp2_taslak',LS_TOKEN='jw_gh_token',LS_CFG='jw_gh_cfg';
+var taslakZam=null,agacZam=null;
+
+/* ── küçük yardımcılar ── */
+function $(x){return document.getElementById(x);}
+function nSay(v){var n=parseFloat(String(v==null?'':v).replace(',','.'));return isNaN(n)?0:n;}
+function nInt(v){return Math.round(nSay(v));}
+function sGuven(v){return (v==null?'':String(v));}
+function esc(s){return sGuven(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function saat(){var d=new Date();return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+':'+('0'+d.getSeconds()).slice(-2);}
+
+/* ── doküman normalizasyonu: bilinen alanları garantiye al, yabancı anahtara dokunma ── */
+function normalize(d){
+  if(!d||typeof d!=='object')return null;
+  d.sema=(d.sema||'epinsitesi-icerik');d.semaSurum=(d.semaSurum||'1.0');
+  d.zaman=nInt(d.zaman)||Math.floor(Date.now()/1000);
+  if(!d.site||typeof d.site!=='object')d.site={};
+  d.site.ad=(d.site.ad||'M2God');
+  if(!d.site.baslik||typeof d.site.baslik!=='object')d.site.baslik={};
+  if(!d.site.logo||typeof d.site.logo!=='object')d.site.logo={};
+  if(!d.metinler||typeof d.metinler!=='object')d.metinler={};
+  if(!Array.isArray(d.oyunlar))d.oyunlar=[];
+  d.oyunlar.forEach(function(o){
+    if(!o||typeof o!=='object')return;
+    if(!Array.isArray(o.urunler))o.urunler=[];
+    if(!Array.isArray(o.rozetler))o.rozetler=[];
+    if(!Array.isArray(o.versiyonlar))o.versiyonlar=[];
+    if(!Array.isArray(o.ozellikler))o.ozellikler=[];
+    o.urunler.forEach(function(u){
+      if(!u||typeof u!=='object')return;
+      if(!u.fiyat||typeof u.fiyat!=='object')u.fiyat={tutar:0,paraBirimi:'USD'};
+      if(!Array.isArray(u.paketler))u.paketler=[];
+      if(!Array.isArray(u.darksidePaketler))u.darksidePaketler=[];
+      if(!Array.isArray(u.parasalEgri))u.parasalEgri=[];
+      if(!u.client||typeof u.client!=='object')u.client={};
+      if(!Array.isArray(u.client.fotolar))u.client.fotolar=[];
+      if(!Array.isArray(u.client.ozellikler))u.client.ozellikler=[];
+      if(!u.trailer||typeof u.trailer!=='object')u.trailer={};
+    });
+  });
+  if(!d.videolar||typeof d.videolar!=='object')d.videolar={};
+  if(!Array.isArray(d.videolar.sekmeler))d.videolar.sekmeler=[];
+  if(!Array.isArray(d.videolar.videolar))d.videolar.videolar=[];
+  if(!d.videolar.ikonlar||typeof d.videolar.ikonlar!=='object')d.videolar.ikonlar={};
+  return d;
+}
+function taslakKaydet(){try{localStorage.setItem(LS_TASLAK,JSON.stringify(D));}catch(e){}}
+function tazele(hep){
+  $('durumCip').innerHTML='<b>'+D.oyunlar.length+' oyun</b> · '+
+    D.oyunlar.reduce(function(t,o){return t+(o.urunler||[]).length;},0)+' ürün · '+
+    (D.videolar.videolar||[]).length+' video · taslak '+saat();
+  clearTimeout(taslakZam);taslakZam=setTimeout(taslakKaydet,600);
+  if($('jsonCekmece').classList.contains('acik'))jsonCiz();
+  clearTimeout(agacZam);agacZam=setTimeout(agacCiz,700);
+}
+function dokun(){tazele(false);}
+
+/* ══════════ SOL AĞAÇ ══════════ */
+function agacCiz(){
+  var a=$('agac');a.innerHTML='';
+  /* SITE */
+  var h0=document.createElement('div');h0.className='agBaslik';h0.textContent='Site';a.appendChild(h0);
+  var s0=agacSatir('🏛️',D.site.ad||'Site','',secim.tur==='site');
+  s0.onclick=function(){secim={tur:'site'};sahneCiz();agacCiz();};
+  a.appendChild(s0);
+    /* OYUNLAR */
+  var h=document.createElement('div');h.className='agBaslik';
+  h.innerHTML='<span>Oyunlar ('+D.oyunlar.length+')</span><span class="bosluk"></span>';
+  var bEkle=document.createElement('button');bEkle.className='kck ana';bEkle.textContent='+ Oyun Ekle';
+  bEkle.onclick=function(){oyunEkle();};
+  h.appendChild(bEkle);a.appendChild(h);
+  if(!D.oyunlar.length){var y=document.createElement('div');y.className='bosNot';y.textContent='(oyun yok — + Oyun Ekle ile başla)';a.appendChild(y);}
+  D.oyunlar.forEach(function(o,i){
+    var sat=agacSatir(o.ikon||'🎮',o.ad||'(adsız oyun)',(o.urunler||[]).length?((o.urunler).length+' ürün'):'ürün yok',secim.tur==='oyun'&&secim.oyun===i&&!secim.urunSabit);
+    sat.onclick=function(){secim={tur:'oyun',oyun:i};sahneCiz();agacCiz();};
+    var ar=sat.querySelector('.arac');
+    ar.appendChild(aracBtn('↑',function(){oyunTasi(i,-1);}));
+    ar.appendChild(aracBtn('↓',function(){oyunTasi(i,1);}));
+    ar.appendChild(aracBtn('✕',function(){oyunSil(i);},'tehlike'));
+    a.appendChild(sat);
+    if(secim.tur==='oyun'&&secim.oyun===i){
+      var kapsa=document.createElement('div');kapsa.className='agUrunler';
+      var hu=document.createElement('div');hu.className='agBaslik';
+      hu.innerHTML='<span>Ürünler ('+(o.urunler||[]).length+')</span><span class="bosluk"></span>';
+      var bU=document.createElement('button');bU.className='kck ana';bU.textContent='+ Ürün Ekle';
+      bU.onclick=function(){urunEkle(i);};
+      hu.appendChild(bU);kapsa.appendChild(hu);
+      if(!(o.urunler||[]).length){var y2=document.createElement('div');y2.className='bosNot';y2.textContent='(bu oyunun ürünü yok)';kapsa.appendChild(y2);}
+      (o.urunler||[]).forEach(function(u,j){
+        var et=(u.fiyat&&nSay(u.fiyat.tutar))?('$'+nSay(u.fiyat.tutar)):'—';
+        var su=agacSatir('📦',u.ad||'(adsız ürün)',et,secim.tur==='urun'&&secim.oyun===i&&secim.urun===j);
+        su.onclick=function(){secim={tur:'urun',oyun:i,urun:j};sahneCiz();agacCiz();};
+        var ar2=su.querySelector('.arac');
+        ar2.appendChild(aracBtn('✕',function(){urunSil(i,j);},'tehlike'));
+        kapsa.appendChild(su);
+      });
+      a.appendChild(kapsa);
+    }
+  });
+  /* diğer bölümler */
+  [['🎬','VİDEOLAR','videolar',((D.videolar.videolar||[]).length+' video')],
+   ['🌐','METİNLER','metinler',Object.keys(D.metinler).length+' grup'],
+   ['🧩','EKSİKLER','eksikler','otomatik']]
+  .forEach(function(x){
+    var sat=agacSatir(x[0],x[1],x[3],secim.tur===x[2]);
+    sat.onclick=function(){secim={tur:x[2]};sahneCiz();agacCiz();};
+    a.appendChild(sat);
+  });
+}
+function agacSatir(ikon,ad,muhur,sec){
+  var d=document.createElement('div');d.className='agSatir'+(sec?' secili':'');
+  d.innerHTML='<span>'+esc(ikon)+'</span><span class="ad">'+esc(ad)+'</span>'+
+    '<span class="muhur">'+esc(muhur)+'</span><span class="arac"></span>';
+  return d;
+}
+function aracBtn(etiket,fn,cls){
+  var b=document.createElement('button');b.className='kck '+(cls||'');b.textContent=etiket;
+  b.onclick=function(ev){ev.stopPropagation();fn();};
+  return b;
+}
+function oyunEkle(){
+  D.oyunlar.push({ad:'Yeni Oyun',vitrinAd:'',logo:'',ikon:'🎮',tur:'MMORPG',surum:'v1.0',guncelleme:'',mimari:'x32/x64',baslatma:'Start',renk:'#d9a441',gelistirici:'',puan:0,kullanici:0,songun:0,rozetler:[],versiyonlar:['v1.0'],aciklama:'',ozellikler:[],urunler:[]});
+  secim={tur:'oyun',oyun:D.oyunlar.length-1};
+  dokun();sahneCiz();agacCiz();
+}
+function oyunSil(i){
+  var ad=D.oyunlar[i]&&D.oyunlar[i].ad||'oyunu';
+  if(!confirm('"'+ad+'" ve içindeki tüm ürünler silinsin mi?'))return;
+  D.oyunlar.splice(i,1);
+  secim={tur:'oyun',oyun:Math.min(i,D.oyunlar.length-1)};
+  if(!D.oyunlar.length)secim={tur:'site'};
+  dokun();sahneCiz();agacCiz();
+}
+function oyunTasi(i,yon){
+  var h=i+yon;if(h<0||h>=D.oyunlar.length)return;
+  var g=D.oyunlar[i];D.oyunlar[i]=D.oyunlar[h];D.oyunlar[h]=g;
+  secim={tur:'oyun',oyun:h};dokun();sahneCiz();agacCiz();
+}
+function urunEkle(oi){
+  var o=D.oyunlar[oi];if(!o)return;
+  o.urunler.push({ad:'Yeni Ürün',logo:'',fiyat:{tutar:0,paraBirimi:'USD'},periyot:'MONTH',surum:'v1.0',guncelleme:'',aciklama:'',bayraklar:{darkside:false,farmbot:false,shopbot:false,slotYok:false},donatorMin:11.5,paketKur:'USD',paketler:[],darksidePaketler:[],parasalEgri:[],client:{baslik:'',aciklama:'',fotolar:[],ozellikler:[]},trailer:{oyun:'',urun:'',slogan:'',term:'',aciklama:'',foto:''}});
+  secim={tur:'urun',oyun:oi,urun:o.urunler.length-1};
+  dokun();sahneCiz();agacCiz();
+}
+function urunSil(oi,ui){
+  var o=D.oyunlar[oi];if(!o)return;
+  var ad=o.urunler[ui]&&o.urunler[ui].ad||'ürünü';
+  if(!confirm('"'+ad+'" silinsin mi?'))return;
+  o.urunler.splice(ui,1);
+  secim={tur:'oyun',oyun:oi};
+  dokun();sahneCiz();agacCiz();
+}
+
+/* ══════════ FORM YARDIMCILARI (her değişiklik D'ye yazılır) ══════════ */
+function aln(kapsa,etiket){
+  var l=document.createElement('label');l.className='aln';l.textContent=etiket;kapsa.appendChild(l);
+}
+function txt(obj,anahtar,etiket,kapsa,ph){
+  aln(kapsa,etiket);
+  var i=document.createElement('input');i.type='text';i.value=sGuven(obj[anahtar]);
+  if(ph)i.placeholder=ph;
+  i.oninput=function(){obj[anahtar]=i.value;dokun();};
+  kapsa.appendChild(i);return i;
+}
+function txtAlan(obj,anahtar,etiket,kapsa,ph){
+  aln(kapsa,etiket);
+  var t=document.createElement('textarea');t.value=sGuven(obj[anahtar]);
+  if(ph)t.placeholder=ph;
+  t.oninput=function(){obj[anahtar]=t.value;dokun();};
+  kapsa.appendChild(t);return t;
+}
+function num(obj,anahtar,etiket,kapsa,adim){
+  aln(kapsa,etiket);
+  var i=document.createElement('input');i.type='number';i.step=adim||'any';i.value=obj[anahtar]||0;
+  i.oninput=function(){obj[anahtar]=nSay(i.value);dokun();};
+  kapsa.appendChild(i);return i;
+}
+function renkAlan(obj,anahtar,etiket,kapsa){
+  aln(kapsa,etiket);
+  var s=document.createElement('div');s.className='yatay';
+  var c=document.createElement('input');c.type='color';c.value=obj[anahtar]||'#d9a441';
+  var t=document.createElement('input');t.type='text';t.value=sGuven(obj[anahtar]);
+  c.oninput=function(){obj[anahtar]=c.value;t.value=c.value;dokun();};
+  t.oninput=function(){obj[anahtar]=t.value;c.value=t.value;dokun();};
+  s.appendChild(c);s.appendChild(t);kapsa.appendChild(s);
+}
+function secAlan(obj,anahtar,etiket,kapsa,listele){
+  aln(kapsa,etiket);
+  var s=document.createElement('select');
+  listele.forEach(function(v){
+    var o=document.createElement('option');o.value=v;o.textContent=v;
+    if(sGuven(obj[anahtar])===v)o.selected=true;s.appendChild(o);
+  });
+  s.onchange=function(){obj[anahtar]=s.value;dokun();};
+  kapsa.appendChild(s);return s;
+}
+function logoSec(obj,anahtar,etiket,kapsa){
+  aln(kapsa,etiket+' (resim adı — boşsa yok)');
+  var d=document.createElement('datalist');var did='dl_'+Math.random().toString(36).slice(2,8);d.id=did;
+  RESIMLER.forEach(function(r){var o=document.createElement('option');o.value=r;d.appendChild(o);});
+  var i=document.createElement('input');i.type='text';i.setAttribute('list',did);i.value=sGuven(obj[anahtar]);
+  i.oninput=function(){obj[anahtar]=i.value;dokun();};
+  kapsa.appendChild(d);kapsa.appendChild(i);return i;
+}
+function chkSatir(obj,anahtar,etiket,kapsa){
+  var l=document.createElement('label');
+  var c=document.createElement('input');c.type='checkbox';c.checked=!!obj[anahtar];
+  c.onchange=function(){obj[anahtar]=c.checked;dokun();};
+  l.appendChild(c);l.appendChild(document.createTextNode(' '+etiket));
+  kapsa.appendChild(l);return c;
+}
+
+/* satır listesi editörleri */
+function listeOzellikler(o,etiket,ipucu){
+  var k=document.createElement('div');k.className='kutu';
+  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">'+esc(ipucu)+'</div>';
+  var L=document.createElement('div');L.className='satirListe';k.appendChild(L);
+  function ciz(){
+    L.innerHTML='';
+    (o||[]).forEach(function(f,i){
+      var r=document.createElement('div');r.className='oSatir';
+      var inp=document.createElement('input');inp.type='text';inp.value=sGuven(f.ad);inp.placeholder='özellik adı';
+      inp.oninput=function(){f.ad=inp.value;dokun();};
+      var p=document.createElement('label');p.style.whiteSpace='nowrap';
+      var pc=document.createElement('input');pc.type='checkbox';pc.checked=!!f.pro;
+      pc.onchange=function(){f.pro=pc.checked;dokun();};
+      p.appendChild(pc);p.appendChild(document.createTextNode(' pro'));
+      r.appendChild(inp);r.appendChild(p);r.appendChild(aracBtn('✕',function(){o.splice(i,1);ciz();dokun();},'tehlike'));
+      L.appendChild(r);
+    });
+  }
+  ciz();
+  var b=document.createElement('button');b.className='kck';b.textContent='+ Ekle';
+  b.onclick=function(){o.push({ad:'',pro:false});ciz();dokun();};
+  k.appendChild(b);
+  return k;
+}
+function listePaket(o,etiket){
+  var k=document.createElement('div');k.className='kutu';
+  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">ad · gün · fiyat · hediye (gün) — boş bırakılırsa sitede bu paket görünmez</div>';
+  var L=document.createElement('div');L.className='satirListe';k.appendChild(L);
+  function ciz(){
+    L.innerHTML='';
+    (o||[]).forEach(function(p,i){
+      var r=document.createElement('div');r.className='oSatir';
+      [['ad','paket adı','text'],['gun','gün','number'],['fiyat','$','number'],['hediye','hediye','number']].forEach(function(x){
+        var inp=document.createElement('input');inp.type=x[2];inp.placeholder=x[1];
+        inp.value=x[2]==='number'?nSay(p[x[0]]):sGuven(p[x[0]]);
+        inp.oninput=function(){p[x[0]]=x[2]==='number'?nSay(inp.value):inp.value;dokun();};
+        r.appendChild(inp);
+      });
+      r.appendChild(aracBtn('✕',function(){o.splice(i,1);ciz();dokun();},'tehlike'));
+      L.appendChild(r);
+    });
+  }
+  ciz();
+  var b=document.createElement('button');b.className='kck';b.textContent='+ Paket Ekle';
+  b.onclick=function(){o.push({ad:'',gun:30,fiyat:0,hediye:0});ciz();dokun();};
+  k.appendChild(b);
+  return k;
+}
+function listeEgri(o,etiket){
+  var k=document.createElement('div');k.className='kutu';
+  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">parasal eğri: gün → fiyat eşlemesi (site aralıkları buna göre hesaplar)</div>';
+  var L=document.createElement('div');L.className='satirListe';k.appendChild(L);
+  function ciz(){
+    L.innerHTML='';
+    (o||[]).forEach(function(p,i){
+      var r=document.createElement('div');r.className='oSatir';
+      var g=document.createElement('input');g.type='number';g.placeholder='gün';g.value=nSay(p.gun);
+      g.oninput=function(){p.gun=nSay(g.value);dokun();};
+      var f=document.createElement('input');f.type='number';f.placeholder='fiyat $';f.value=nSay(p.fiyat);
+      f.oninput=function(){p.fiyat=nSay(f.value);dokun();};
+      r.appendChild(g);r.appendChild(f);r.appendChild(aracBtn('✕',function(){o.splice(i,1);ciz();dokun();},'tehlike'));
+      L.appendChild(r);
+    });
+  }
+  ciz();
+  var b=document.createElement('button');b.className='kck';b.textContent='+ Nokta Ekle';
+  b.onclick=function(){o.push({gun:0,fiyat:0});ciz();dokun();};
+  k.appendChild(b);
+  return k;
+}
+function listeMetin(o,etiket){
+  var k=document.createElement('div');k.className='kutu';
+  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">ad · açıklama</div>';
+  var L=document.createElement('div');L.className='satirListe';k.appendChild(L);
+  function ciz(){
+    L.innerHTML='';
+    (o||[]).forEach(function(p,i){
+      var r=document.createElement('div');r.className='oSatir';
+      var a=document.createElement('input');a.type='text';a.placeholder='ad';a.value=sGuven(p.ad);
+      a.oninput=function(){p.ad=a.value;dokun();};
+      var b=document.createElement('input');b.type='text';b.placeholder='açıklama';b.value=sGuven(p.aciklama);
+      b.oninput=function(){p.aciklama=b.value;dokun();};
+      r.appendChild(a);r.appendChild(b);r.appendChild(aracBtn('✕',function(){o.splice(i,1);ciz();dokun();},'tehlike'));
+      L.appendChild(r);
+    });
+  }
+  ciz();
+  var b=document.createElement('button');b.className='kck';b.textContent='+ Ekle';
+  b.onclick=function(){o.push({ad:'',aciklama:''});ciz();dokun();};
+  k.appendChild(b);
+  return k;
+}
+function listeFoto(o,etiket){
+  var k=document.createElement('div');k.className='kutu';
+  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">client fotoğrafları — sırayla görünür</div>';
+  var L=document.createElement('div');L.className='satirListe';k.appendChild(L);
+  function ciz(){
+    L.innerHTML='';
+    (o||[]).forEach(function(v,i){
+      var r=document.createElement('div');r.className='oSatir';
+      var inp=document.createElement('input');inp.type='text';inp.setAttribute('list','dl_foto');inp.value=sGuven(v);
+      inp.oninput=function(){o[i]=inp.value;dokun();};
+      r.appendChild(inp);r.appendChild(aracBtn('✕',function(){o.splice(i,1);ciz();dokun();},'tehlike'));
+      L.appendChild(r);
+    });
+  }
+  if(!document.getElementById('dl_foto')){
+    var d=document.createElement('datalist');d.id='dl_foto';
+    RESIMLER.forEach(function(r){var o2=document.createElement('option');o2.value=r;d.appendChild(o2);});
+    document.body.appendChild(d);
+  }
+  ciz();
+  var b=document.createElement('button');b.className='kck';b.textContent='+ Foto Ekle';
+  b.onclick=function(){o.push('');ciz();dokun();};
+  k.appendChild(b);
+  return k;
+}
+</script>
+<script>
+"use strict";
+/* ══════════ SAHNE ══════════ */
+function sahneCiz(){
+  var s=$('sahne');s.innerHTML='';
+  if(!D){s.innerHTML='<div class="fPanel"><h2>İçerik yüklenmedi</h2><div class="altYazi">Üstteki "GitHub\'dan Çek" veya "Dosyadan Yükle" ile site_icerik.json yükleyin; ya da sıfırdan başlamak için boş şablon oluşturun.</div><button class="ana" id="bBosSablon">Boş Şablon Oluştur</button></div>';
+    $('bBosSablon').onclick=function(){D=bosSablon();dokun();sahneCiz();agacCiz();};
+    return;}
+  switch(secim.tur){
+    case 'site':renderSite();break;
+    case 'oyun':renderOyun(D.oyunlar[secim.oyun]);break;
+    case 'urun':var o=D.oyunlar[secim.oyun];if(o)renderUrun(o,o.urunler[secim.urun]);break;
+    case 'videolar':renderVideolar();break;
+    case 'metinler':renderMetinler();break;
+    case 'eksikler':renderEksikler();break;
+  }
+}
+function bosSablon(){
+  return normalize({sema:'epinsitesi-icerik',semaSurum:'1.0',surum:'3.10',
+    zaman:Math.floor(Date.now()/1000),olusturma:new Date().toISOString(),
+    varsayilanDil:'en',diller:['en','tr'],
+    kullanim:'Bu dosya EpinSitesi içeriğini tanımlar. Kontrol paneli bu dosyayı üretir/düzenler; site GitHub → yerel icerik/ → gömülü sırasıyla okur.',
+    github:{sahip:'0xByteDeveloper',repo:'JamesWeb',dal:'main',icerikYolu:'icerik/site_icerik.json',resimKlasoru:'resimler',korumaKlasoru:'koruma',rawKok:'https://raw.githubusercontent.com/0xByteDeveloper/JamesWeb/main/'},
+    site:{ad:'M2God',baslik:{en:'Most Reliable Game Shopping Site | M2God',tr:'En Güvenilir Oyun Alışveriş Sitesi | M2God'},logo:{rkmTaban:'SiteLogo'}},
+    metinler:{},oyunlar:[],videolar:{listedeGosterilen:6,sekmeler:['All'],ikonlar:{},videolar:[]},eksikler:{}});
+}
+
+/* ══════════ SITE FORMU ══════════ */
+function renderSite(){
+  var s=$('sahne');
+  var p=document.createElement('div');p.className='fPanel';s.appendChild(p);
+  p.innerHTML='<h2>🏛️ Site</h2><div class="altYazi">Site genelinde: ad, tarayıcı başlıkları (dil başına) ve logo RKM tabanı.</div>';
+  var k1=document.createElement('div');k1.className='kutu';k1.innerHTML='<h3>Genel</h3>';p.appendChild(k1);
+  var g1=document.createElement('div');g1.className='izgara';k1.appendChild(g1);
+  txt(D.site,'ad','Site Adı',g1);
+  logoSec(D.site.logo,'rkmTaban','Logo (RKM taban)',g1);
+  /* başlıklar: dil başına */
+  var k2=document.createElement('div');k2.className='kutu';
+  k2.innerHTML='<h3>Tarayıcı Başlıkları</h3><div class="ipucu">Her dil için bir başlık; sitenin &lt;title&gt; alanı dil seçimine göre bunu kullanır.</div>';
+  p.appendChild(k2);
+  var diller=dilListesi();
+  var g2=document.createElement('div');g2.className='izgara';k2.appendChild(g2);
+  diller.forEach(function(dl){txt(D.site.baslik,dl,'Başlık ('+dl+')',g2);});
+  /* yeni dil ekle */
+  var r2=document.createElement('div');r2.className='yatay';k2.appendChild(r2);
+  var ni=document.createElement('input');ni.type='text';ni.placeholder='yeni dil kodu (ör. de, ja, ru)';ni.style.maxWidth='260px';
+  var nb=document.createElement('button');nb.className='kck';nb.textContent='+ Dil Ekle (başlıklar)';
+  nb.onclick=function(){var v=(ni.value||'').trim().toLowerCase();if(!v)return;
+    if(D.site.baslik[v]==null)D.site.baslik[v]='';
+    if((D.diller||[]).indexOf(v)<0){if(!Array.isArray(D.diller))D.diller=[];D.diller.push(v);}
+    ni.value='';dokun();sahneCiz();};
+  r2.appendChild(ni);r2.appendChild(nb);
+}
+function dilListesi(){
+  var d=[];
+  if(Array.isArray(D.diller))D.diller.forEach(function(x){d.push(x);});
+  Object.keys(D.site.baslik||{}).forEach(function(k){if(d.indexOf(k)<0)d.push(k);});
+  if(!d.length)d=['en','tr'];
+  return d;
+}
+
+/* ══════════ OYUN FORMU ══════════ */
+function renderOyun(o){
+  var s=$('sahne');
+  if(!o){s.innerHTML='<div class="fPanel"><h2>Oyun bulunamadı</h2></div>';return;}
+  var p=document.createElement('div');p.className='fPanel';s.appendChild(p);
+  p.innerHTML='<h2>'+esc(o.ikon||'🎮')+' '+esc(o.ad||'(adsız oyun)')+'</h2>'+
+    '<div class="altYazi">Oyun kartı: vitrin adı, logo, ikon, rozetler, açıklama, özellikler. Ürünler sol ağaçtan yönetilir.</div>';
+  var sil=document.createElement('button');sil.className='tehlike';sil.textContent='🗑 Bu Oyunu Sil';
+  sil.onclick=function(){oyunSil(secim.oyun);};
+  p.appendChild(sil);
+  var k1=document.createElement('div');k1.className='kutu';k1.innerHTML='<h3>Kimlik</h3>';p.appendChild(k1);
+  var g1=document.createElement('div');g1.className='izgara';k1.appendChild(g1);
+  txt(o,'ad','Oyun Adı (anahtar)',g1);
+  txt(o,'vitrinAd','Vitrin Adı (kart üstü — boşsa ad kullanılır)',g1);
+  txt(o,'ikon','İkon (emoji)',g1);
+  logoSec(o,'logo','Logo (resim adı)',g1);
+  txt(o,'tur','Tür',g1);
+  txt(o,'surum','Sürüm',g1);
+  txt(o,'guncelleme','Güncelleme (tarih)',g1);
+  txt(o,'mimari','Mimari',g1);
+  txt(o,'baslatma','Başlatma Komutu',g1);
+  renkAlan(o,'renk','Vurgu Rengi',g1);
+  txt(o,'gelistirici','Geliştirici',g1);
+  num(o,'puan','Puan (0-5)',g1,'0.1');
+  num(o,'kullanici','Kullanıcı Sayısı',g1,'1');
+  num(o,'songun','Son Gün (rozet)',g1,'1');
+  var k2=document.createElement('div');k2.className='kutu';k2.innerHTML='<h3>Rozetler</h3>';p.appendChild(k2);
+  var cg=document.createElement('div');cg.className='chkGrup';k2.appendChild(cg);
+  o.rozetler=o.rozetler||[];
+  [['hot','🔥 HOT'],['new','✨ NEW'],['prem','👑 PREM'],['fav','⭐ FAV']].forEach(function(x){
+    var r=x[0];
+    var l=document.createElement('label');
+    var c=document.createElement('input');c.type='checkbox';
+    c.checked=o.rozetler.indexOf(r)>-1;
+    c.onchange=function(){
+      if(c.checked){if(o.rozetler.indexOf(r)<0)o.rozetler.push(r);}
+      else{var ix=o.rozetler.indexOf(r);if(ix>-1)o.rozetler.splice(ix,1);}
+      dokun();
+    };
+    l.appendChild(c);l.appendChild(document.createTextNode(' '+x[1]));
+    cg.appendChild(l);
+  });
+  var k3=document.createElement('div');k3.className='kutu';k3.innerHTML='<h3>Versiyonlar</h3><div class="ipucu">Virgülle ayırın — örn. v2.4, v2.3, v2.1</div>';p.appendChild(k3);
+  var vI=document.createElement('input');vI.type='text';vI.value=(o.versiyonlar||[]).join(', ');
+  vI.oninput=function(){o.versiyonlar=vI.value.split(',').map(function(x){return x.trim();}).filter(function(x){return x;});dokun();};
+  k3.appendChild(vI);
+  var k4=document.createElement('div');k4.className='kutu';k4.innerHTML='<h3>Açıklama</h3>';p.appendChild(k4);
+  txtAlan(o,'aciklama','Açıklama',k4);
+  p.appendChild(listeOzellikler(o.ozellikler,'Oyun Özellikleri','kart üzerindeki özellik listesi; "pro" işaretlenenler pro rozetli görünür'));
+}
+
+/* ══════════ ÜRÜN FORMU ══════════ */
+function renderUrun(o,u){
+  var s=$('sahne');
+  if(!u){s.innerHTML='<div class="fPanel"><h2>Ürün bulunamadı</h2></div>';return;}
+  var p=document.createElement('div');p.className='fPanel';s.appendChild(p);
+  p.innerHTML='<h2>📦 '+esc(u.ad||'(adsız ürün)')+' <span style="color:var(--soluk);font-size:13px">— '+esc(o.ad)+'</span></h2>'+
+    '<div class="altYazi">Ürünün her şeyi: fiyat, paketler, darkside paketler, parasal eğri, client bölümü, trailer.</div>';
+  var sil=document.createElement('button');sil.className='tehlike';sil.textContent='🗑 Bu Ürünü Sil';
+  sil.onclick=function(){urunSil(secim.oyun,secim.urun);};
+  p.appendChild(sil);
+  var k1=document.createElement('div');k1.className='kutu';k1.innerHTML='<h3>Kimlik</h3>';p.appendChild(k1);
+  var g1=document.createElement('div');g1.className='izgara';k1.appendChild(g1);
+  txt(u,'ad','Ürün Adı',g1);
+  logoSec(u,'logo','Ürün Logosu (resim adı)',g1);
+  txt(u,'periyot','Periyot',g1);
+  txt(u,'surum','Sürüm',g1);
+  txt(u,'guncelleme','Güncelleme (tarih)',g1);
+  num(u,'donatorMin','Donator Min ($ — bağış kilidi)',g1,'0.5');
+  var k2=document.createElement('div');k2.className='kutu';k2.innerHTML='<h3>Fiyat</h3>';p.appendChild(k2);
+  var g2=document.createElement('div');g2.className='izgara';k2.appendChild(g2);
+  num(u.fiyat,'tutar','Fiyat (tutar)',g2,'0.01');
+  secAlan(u.fiyat,'paraBirimi','Para Birimi',g2,['USD','TL','EU']);
+  secAlan(u,'paketKur','Paket Kur Simgesi',g2,['USD','TL','EU']);
+  var k3=document.createElement('div');k3.className='kutu';k3.innerHTML='<h3>Bayraklar</h3><div class="ipucu">ürün kartı etiketleri ve filtreler</div>';p.appendChild(k3);
+  if(!u.bayraklar||typeof u.bayraklar!=='object')u.bayraklar={};
+  var cg3=document.createElement('div');cg3.className='chkGrup';k3.appendChild(cg3);
+  chkSatir(u.bayraklar,'darkside','🩸 Darkside',cg3);
+  chkSatir(u.bayraklar,'farmbot','🌾 Farmbot',cg3);
+  chkSatir(u.bayraklar,'shopbot','🛒 Shopbot',cg3);
+  chkSatir(u.bayraklar,'slotYok','🚫 Slot Yok',cg3);
+  var k4=document.createElement('div');k4.className='kutu';k4.innerHTML='<h3>Açıklama</h3>';p.appendChild(k4);
+  txtAlan(u,'aciklama','Ürün Açıklaması',k4);
+  p.appendChild(listePaket(u.paketler,'Paketler'));
+  p.appendChild(listePaket(u.darksidePaketler,'Darkside Paketler'));
+  p.appendChild(listeEgri(u.parasalEgri,'Parasal Eğri'));
+  /* CLIENT */
+  var kc=document.createElement('div');kc.className='kutu';kc.innerHTML='<h3>Client Bölümü</h3><div class="ipucu">satın alma panelindeki tanıtım bölümü</div>';p.appendChild(kc);
+  var gc=document.createElement('div');gc.className='izgara izgaraGenis';kc.appendChild(gc);
+  txt(u.client,'baslik','Client Başlığı',gc);
+  txtAlan(u.client,'aciklama','Client Açıklaması',kc);
+  kc.appendChild(listeFoto(u.client.fotolar,'Client Fotoğrafları'));
+  kc.appendChild(listeMetin(u.client.ozellikler,'Client Özellikleri'));
+  /* TRAILER */
+  var kt=document.createElement('div');kt.className='kutu';kt.innerHTML='<h3>Trailer</h3>';p.appendChild(kt);
+  var gt=document.createElement('div');gt.className='izgara';kt.appendChild(gt);
+  txt(u.trailer,'oyun','Trailer Oyun (büyük harf)',gt);
+  txt(u.trailer,'urun','Trailer Ürün (büyük harf)',gt);
+  txt(u.trailer,'slogan','Slogan',gt);
+  txt(u.trailer,'term','Term',gt);
+  txt(u.trailer,'foto','Foto (resim adı)',gt);
+  txtAlan(u.trailer,'aciklama','Trailer Açıklaması',kt);
+}
+</script>
+<script>
+"use strict";
+/* ══════════ VİDEOLAR ══════════ */
+function renderVideolar(){
+  var s=$('sahne');var V=D.videolar;
+  var p=document.createElement('div');p.className='fPanel';s.appendChild(p);
+  p.innerHTML='<h2>🎬 Videolar</h2><div class="altYazi">VİDEO GALERİ bölümünün tamamı: gösterim sayısı, sekmeler, ikonlar ve video listesi.</div>';
+  var k1=document.createElement('div');k1.className='kutu';k1.innerHTML='<h3>Genel</h3>';p.appendChild(k1);
+  var g1=document.createElement('div');g1.className='izgara';k1.appendChild(g1);
+  num(V,'listedeGosterilen','Listede Gösterilen Video Sayısı',g1,'1');
+  /* sekmeler */
+  var k2=document.createElement('div');k2.className='kutu';k2.innerHTML='<h3>Sekmeler</h3><div class="ipucu">galeri üstündeki kategori sekmeleri — sırayla görünür</div>';p.appendChild(k2);
+  var L2=document.createElement('div');L2.className='satirListe';k2.appendChild(L2);
+  if(!Array.isArray(V.sekmeler))V.sekmeler=[];
+  function sekCiz(){
+    L2.innerHTML='';
+    V.sekmeler.forEach(function(v,i){
+      var r=document.createElement('div');r.className='oSatir';
+      var inp=document.createElement('input');inp.type='text';inp.value=sGuven(v);
+      inp.oninput=function(){V.sekmeler[i]=inp.value;dokun();};
+      r.appendChild(inp);r.appendChild(aracBtn('✕',function(){V.sekmeler.splice(i,1);sekCiz();dokun();},'tehlike'));
+      L2.appendChild(r);
+    });
+  }
+  sekCiz();
+  var b2=document.createElement('button');b2.className='kck';b2.textContent='+ Sekme Ekle';
+  b2.onclick=function(){V.sekmeler.push('');sekCiz();dokun();};
+  k2.appendChild(b2);
+  /* ikonlar */
+  var k3=document.createElement('div');k3.className='kutu';k3.innerHTML='<h3>İkonlar</h3><div class="ipucu">kategori → emoji haritası, JSON biçiminde. Örn: {"Metin2":"🐉","All":"🎯"}</div>';p.appendChild(k3);
+  var t3=document.createElement('textarea');t3.style.minHeight='90px';
+  try{t3.value=JSON.stringify(V.ikonlar||{},null,2);}catch(e){t3.value='{}';}
+  t3.oninput=function(){
+    try{V.ikonlar=JSON.parse(t3.value||'{}');t3.style.borderColor='';dokun();}
+    catch(e){t3.style.borderColor='var(--kirmizi)';}
+  };
+  k3.appendChild(t3);
+  /* video listesi */
+  var k4=document.createElement('div');k4.className='kutu';k4.innerHTML='<h3>Videolar ('+(V.videolar||[]).length+')</h3><div class="ipucu">oyun · kategori · başlık · süre · link (embed/adres)</div>';p.appendChild(k4);
+  var L4=document.createElement('div');L4.className='satirListe';k4.appendChild(L4);
+  function vidCiz(){
+    L4.innerHTML='';
+    (V.videolar||[]).forEach(function(v,i){
+      var r=document.createElement('div');r.className='oSatir';
+      var mk=function(alan,ph,genis){
+        var inp=document.createElement('input');inp.type='text';inp.placeholder=ph;inp.value=sGuven(v[alan]);
+        if(genis)inp.style.minWidth='170px';
+        inp.oninput=function(){v[alan]=inp.value;dokun();};
+        return inp;
+      };
+      r.appendChild(mk('oyun','oyun'));
+      r.appendChild(mk('kategori','kategori'));
+      r.appendChild(mk('baslik','başlık',true));
+      r.appendChild(mk('sure','süre'));
+      r.appendChild(mk('link','link',true));
+      r.appendChild(aracBtn('✕',function(){V.videolar.splice(i,1);vidCiz();dokun();},'tehlike'));
+      L4.appendChild(r);
+    });
+  }
+  vidCiz();
+  var b4=document.createElement('button');b4.className='kck';b4.textContent='+ Video Ekle';
+  b4.onclick=function(){if(!Array.isArray(V.videolar))V.videolar=[];V.videolar.push({oyun:'',kategori:'',baslik:'',sure:'',link:''});vidCiz();dokun();};
+  k4.appendChild(b4);
+}
+
+/* ══════════ METİNLER ══════════ */
+function renderMetinler(){
+  var s=$('sahne');var M=D.metinler;
+  var p=document.createElement('div');p.className='fPanel';s.appendChild(p);
+  p.innerHTML='<h2>🌐 Metinler</h2><div class="altYazi">Site metinleri dil başına: grup → anahtar → dil değerleri. "aria" işaretlenen anahtarlar erişilebilirlik özniteliğine (title/aria-label) yazılır.</div>';
+  var bar=document.createElement('div');bar.className='sekmeBar';p.appendChild(bar);
+  var gruplar=Object.keys(M);
+  if(!metinGrup||gruplar.indexOf(metinGrup)<0)metinGrup=gruplar[0]||null;
+  gruplar.forEach(function(g){
+    var b=document.createElement('button');b.className='kck'+(g===metinGrup?' sec':'');
+    b.textContent=g+' ('+Object.keys(M[g]).length+')';
+    b.onclick=function(){metinGrup=g;sahneCiz();};
+    bar.appendChild(b);
+  });
+  /* yeni grup */
+  var ngi=document.createElement('input');ngi.type='text';ngi.placeholder='yeni grup';ngi.style.maxWidth='180px';
+  var ngb=document.createElement('button');ngb.className='kck';ngb.textContent='+ Grup Ekle';
+  ngb.onclick=function(){var v=(ngi.value||'').trim();if(!v)return;
+    if(!M[v])M[v]={};ngi.value='';metinGrup=v;dokun();sahneCiz();};
+  bar.appendChild(ngi);bar.appendChild(ngb);
+  if(!metinGrup){var y=document.createElement('div');y.className='boşNot';y.textContent='(grup yok — Grup Ekle ile başla)';p.appendChild(y);return;}
+  var G=M[metinGrup];
+  var diller=dilListesi();
+  var k1=document.createElement('div');k1.className='kutu';
+  k1.innerHTML='<h3>'+esc(metinGrup)+'</h3><div class="ipucu">anahtar · dil değerleri · aria</div>';p.appendChild(k1);
+  var L=document.createElement('div');L.className='satirListe';k1.appendChild(L);
+  function satCiz(){
+    L.innerHTML='';
+    Object.keys(G).forEach(function(an){
+      var e=G[an];
+      if(!e||typeof e!=='object'){e=G[an]={anahtar:an,degerler:{}};}
+      if(!e.anahtar)e.anahtar=an;
+      if(!e.degerler||typeof e.degerler!=='object')e.degerler={};
+      var r=document.createElement('div');r.className='oSatir';
+      var k=document.createElement('input');k.type='text';k.value=sGuven(an);k.title='grup içindeki anahtar';k.style.maxWidth='190px';
+      k.oninput=function(){var yeni=k.value.trim();if(!yeni||yeni===an)return;if(G[yeni]){k.style.borderColor='var(--kirmizi)';return;}k.style.borderColor='';
+        G[yeni]=e;delete G[an];e.anahtar=yeni;an=yeni;dokun();};
+      r.appendChild(k);
+      diller.forEach(function(dl){
+        var d=document.createElement('input');d.type='text';d.placeholder=dl;d.value=sGuven(e.degerler[dl]);
+        d.oninput=function(){e.degerler[dl]=d.value;dokun();};
+        r.appendChild(d);
+      });
+      var ar=document.createElement('label');ar.style.whiteSpace='nowrap';
+      var ac=document.createElement('input');ac.type='checkbox';ac.checked=!!e.aria;
+      ac.onchange=function(){if(ac.checked)e.aria=true;else delete e.aria;dokun();};
+      ar.appendChild(ac);ar.appendChild(document.createTextNode(' aria'));
+      r.appendChild(ar);
+      r.appendChild(aracBtn('✕',function(){delete G[an];satCiz();dokun();},'tehlike'));
+      L.appendChild(r);
+    });
+  }
+  satCiz();
+  var yb=document.createElement('button');yb.className='kck';yb.textContent='+ Anahtar Ekle';
+  yb.onclick=function(){var n='yeni_anahtar';var i=2;while(G[n])n='yeni_anahtar'+(i++);
+    G[n]={anahtar:n,degerler:{}};satCiz();dokun();};
+  k1.appendChild(yb);
+  var yip=document.createElement('div');yip.className='ipucu';yip.style.marginTop='8px';
+  yip.textContent='Diller: '+diller.join(', ')+' — yeni dil eklemek için Site bölümündeki "Dil Ekle"yi kullanın.';
+  k1.appendChild(yip);
+}
+
+/* ══════════ EKSİKLER (otomatik hesap) ══════════ */
+function eksikleriHesapla(){
+  var e={urunsuzOyunlar:[],clientBaslikYok:[],trailerKismiEksik:{},not:'Otomatik: ürünü olmayan oyunlar, client başlığı boş olan ürünler, trailer alanı eksik ürünler.'};
+  (D.oyunlar||[]).forEach(function(o){
+    if(!(o.urunler||[]).length)e.urunsuzOyunlar.push(o.ad);
+    (o.urunler||[]).forEach(function(u){
+      if(!sGuven((u.client||{}).baslik))e.clientBaslikYok.push(u.ad);
+      var t=u.trailer||{},eks=[];
+      if(!sGuven(t.term))eks.push('trailer-term');
+      if(!sGuven(t.aciklama))eks.push('trailer-desc');
+      if(eks.length)e.trailerKismiEksik[u.ad]=eks;
+    });
+  });
+  if(!e.trailerKismiEksik||!Object.keys(e.trailerKismiEksik).length)delete e.trailerKismiEksik;
+  return e;
+}
+function renderEksikler(){
+  var s=$('sahne');
+  var p=document.createElement('div');p.className='fPanel';s.appendChild(p);
+  p.innerHTML='<h2>🧩 Eksikler</h2><div class="altYazi">JSON\'daki "eksikler" bölümü her kayıtta otomatik hesaplanır ve güncellenir — elle düzenlemeye gerek yok.</div>';
+  var k=document.createElement('div');k.className='kutu';p.appendChild(k);
+  var e=eksikleriHesapla();
+  k.innerHTML='<h3>Otomatik Rapor</h3>'+
+    '<div class="sonuc '+(e.urunsuzOyunlar.length?'uyari':'ok')+'">Ürünsüz oyunlar: <b>'+esc(e.urunsuzOyunlar.join(', ')||'yok')+'</b></div>'+
+    '<div class="sonuc '+(e.clientBaslikYok.length?'uyari':'ok')+'">Client başlığı boş ürünler: <b>'+esc(e.clientBaslikYok.join(', ')||'yok')+'</b></div>'+
+    '<div class="sonuc '+(Object.keys(e.trailerKismiEksik||{}).length?'uyari':'ok')+'">Trailer alanı eksik ürünler: <b>'+esc(Object.keys(e.trailerKismiEksik||{}).join(', ')||'yok')+'</b></div>';
+  var b=document.createElement('button');b.className='kck';b.textContent='Eksikleri Şimdi JSON\'a Yaz';
+  b.onclick=function(){D.eksikler=eksikleriHesapla();dokun();sonucYaz($('sahne'),'Eksikler JSON\'a yazıldı.','ok');};
+  k.appendChild(b);
+}
+function sonucYaz(kapsa,metin,tur){
+  var d=document.createElement('div');d.className='sonuc '+(tur||'ok');d.textContent=metin;
+  kapsa.insertBefore(d,kapsa.firstChild);
+  setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d);},4000);
+}
+
+/* ══════════ JSON ÇEKMECESİ ══════════ */
+function jsonCiz(){
+  try{$('jsonOnIzleme').textContent=JSON.stringify(D,null,2);}catch(e){$('jsonOnIzleme').textContent='JSON üretilemedi: '+e;}
+}
+function jsonAc(){jsonCiz();$('jsonCekmece').classList.add('acik');}
+function jsonKapatFn(){$('jsonCekmece').classList.remove('acik');}
+function jsonIndir(){
+  if(!D)return;
+  var blob=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='site_icerik.json';document.body.appendChild(a);a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},300);
+}
+</script>
+<script>
+"use strict";
+/* ══════════ GITHUB ══════════ */
+function ghCfg(){
+  return {sahip:$('ghSahip').value.trim(),repo:$('ghRepo').value.trim(),
+    dal:$('ghDal').value.trim()||'main',yol:$('ghYol').value.trim()||'icerik/site_icerik.json'};
+}
+function ghCfgKaydet(){
+  var c=ghCfg();
+  try{localStorage.setItem(LS_CFG,JSON.stringify(c));}catch(e){}
+  try{localStorage.setItem('epin_gh_taban','https://raw.githubusercontent.com/'+c.sahip+'/'+c.repo+'/'+c.dal);}catch(e){}
+  try{var t=$('ghToken').value.trim();if(t)localStorage.setItem(LS_TOKEN,t);}catch(e){}
+  ghSonuc('Ayarlar kaydedildi (token bu tarayıcıda kalır; site çekim tabanı da güncellendi).','ok');
+}
+function ghSonuc(metin,tur){
+  $('ghSonuc').innerHTML='<div class="sonuc '+(tur||'ok')+'">'+esc(metin)+'</div>';
+}
+function ghRawUrl(){
+  var c=ghCfg();
+  return 'https://raw.githubusercontent.com/'+c.sahip+'/'+c.repo+'/'+c.dal+'/'+c.yol;
+}
+function ghApiUrl(){
+  var c=ghCfg();
+  return 'https://api.github.com/repos/'+c.sahip+'/'+c.repo+'/contents/'+c.yol+'?ref='+c.dal;
+}
+function ghCek(){
+  if(!ghCfg().sahip||!ghCfg().repo){ghSonuc('GitHub ayarları eksik — Ayarlar bölümünü doldurun.','hata');return;}
+  ghSonuc('GitHub\'dan çekiliyor…');
+  fetch('/api/gh/icerik',{cache:'no-store'})
+  .then(function(r){if(!r.ok)throw new Error('BEK-'+r.status);return r.text();})
+  .catch(function(){return fetch(ghRawUrl(),{cache:'no-store'})
+  .then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.text();});})
+  .then(function(t){
+    var j=null;try{j=JSON.parse(t);}catch(e){throw new Error('JSON parse hatası: '+e);}
+    if(!j||j.sema!=='epinsitesi-icerik')throw new Error('sema "epinsitesi-icerik" değil — bu dosya site içeriği değil.');
+    D=normalize(j);metinGrup=null;
+    secim={tur:'oyun',oyun:0,urun:0};
+    dokun();sahneCiz();agacCiz();
+    ghSonuc('GitHub\'dan yüklendi: '+ghRawUrl()+' ('+t.length+' bayt)','ok');
+  })
+  .catch(function(e){ghSonuc('Çekme hatası: '+e.message,'hata');});
+}
+function ghYukle(){
+  if(!D){ghSonuc('İçerik yok — önce yükle veya oluştur.','hata');return;}
+  var t=$('ghToken').value.trim();
+  if(!t){ghSonuc('Token boş — Ayarlar bölümüne github_pat_… yazın.','hata');return;}
+  var c=ghCfg();
+  if(!c.sahip||!c.repo){ghSonuc('GitHub ayarları eksik.','hata');return;}
+  /* E174 dersi: her push'ta zaman otomatik tazelenir — site "eski veri" sayıp reddetmesin */
+  D.zaman=Math.floor(Date.now()/1000);
+  D.olusturma=new Date().toISOString();
+  if(D.eksikler)D.eksikler=eksikleriHesapla();
+  ghSonuc('Push ediliyor (zaman '+D.zaman+' tazelendi)…');
+  var govde=JSON.stringify(D,null,2);
+  fetch(ghApiUrl(),{headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+t}})
+  .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+  .then(function(x){
+    var putGovde={message:'site_icerik.json — kontrol paneli v3 (E179) '+new Date().toISOString(),
+      content:btoa(unescape(encodeURIComponent(govde))),branch:c.dal};
+    if(x.ok&&x.j&&x.j.sha)putGovde.sha=x.j.sha;
+    return fetch('https://api.github.com/repos/'+c.sahip+'/'+c.repo+'/contents/'+c.yol,{
+      method:'PUT',
+      headers:{'Accept':'application/vnd.github+json','Authorization':'Bearer '+t,'Content-Type':'application/json'},
+      body:JSON.stringify(putGovde)});
+  })
+  .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+  .then(function(x){
+    if(!x.ok){var ms=(x.j&&x.j.message)||('HTTP '+x.ok);throw new Error(ms);}
+    ghSonuc('Push tamam: '+(x.j.commit&&x.j.commit.sha?x.j.commit.sha.slice(0,7):'commit')+' — raw CDN ~5 dk içinde güncellenir.','ok');
+    dokun();
+  })
+  .catch(function(e){ghSonuc('Yükleme hatası: '+e.message+' (token izinleri: Contents: write olmalı; depo erişimi doğru mu?)','hata');});
+}
+function dosyaYukleFn(dosya){
+  var oku=new FileReader();
+  oku.onload=function(){
+    try{
+      var j=JSON.parse(String(oku.result));
+      if(!j||j.sema!=='epinsitesi-icerik')throw new Error('sema "epinsitesi-icerik" değil');
+      D=normalize(j);metinGrup=null;secim={tur:'oyun',oyun:0,urun:0};
+      dokun();sahneCiz();agacCiz();
+      sonucYaz($('sahne'),'Dosyadan yüklendi: '+dosya.name,'ok');
+    }catch(e){alert('Dosya yüklenemedi: '+e.message);}
+  };
+  oku.readAsText(dosya);
+}
+
+/* ══════════ DOĞRULAMA ══════════ */
+function dogrula(){
+  if(!D){alert('İçerik yok — önce yükle veya oluştur.');return;}
+  var s=$('sahne');s.innerHTML='';
+  var p=document.createElement('div');p.className='fPanel';
+  p.innerHTML='<h2>✓ Doğrulama</h2><div class="altYazi">Üretilen JSON\'un site tarafından okunabilirliği kontrol edilir.</div>';
+  s.appendChild(p);
+  var R=[];
+  function ekle(tur,m){R.push([tur,m]);}
+  ekle(D.sema==='epinsitesi-icerik'?'ok':'hata','sema: '+sGuven(D.sema));
+  ekle(nInt(D.zaman)>0?'ok':'hata','zaman: '+sGuven(D.zaman));
+  ekle((D.oyunlar||[]).length?'ok':'uyari','oyunlar: '+(D.oyunlar||[]).length+' adet');
+  (D.oyunlar||[]).forEach(function(o,i){
+    if(!sGuven(o.ad))ekle('hata','oyun['+i+']: ad boş');
+    (o.urunler||[]).forEach(function(u,j){
+      var yol='oyun['+sGuven(o.ad)+'] ürün['+sGuven(u.ad)+']';
+      if(!sGuven(u.ad))ekle('hata',yol+': ad boş');
+      if(!(u.fiyat&&nSay(u.fiyat.tutar)>0)&&!(u.paketler||[]).length)
+        ekle('uyari',yol+': fiyat 0 ve paket yok');
+      (u.paketler||[]).forEach(function(pk,k){
+        if(!sGuven(pk.ad)||nSay(pk.gun)<=0||nSay(pk.fiyat)<=0)
+          ekle('hata',yol+' paket['+k+']: ad/gün/fiyat eksik');
+      });
+      if(u.trailer&&!sGuven(u.trailer.term)&&!sGuven(u.trailer.aciklama))
+        ekle('uyari',yol+': trailer term/desc boş');
+    });
+  });
+  var vids=(D.videolar&&D.videolar.videolar)||[];
+  ekle(vids.length?'ok':'uyari','videolar: '+vids.length+' adet');
+  vids.forEach(function(v,i){if(!sGuven(v.link))ekle('uyari','video['+i+'] ('+sGuven(v.baslik)+'): link boş — site placeholder gösterir');});
+  var grp=Object.keys(D.metinler||{});var anahtarSay=0;
+  grp.forEach(function(g){anahtarSay+=Object.keys(D.metinler[g]).length;});
+  ekle('ok','metinler: '+grp.length+' grup / '+anahtarSay+' anahtar');
+  var e=D.eksikler||{};
+  if(e.urunsuzOyunlar&&e.urunsuzOyunlar.length)ekle('uyari','eksikler.urunsuzOyunlar: '+e.urunsuzOyunlar.join(', '));
+  R.forEach(function(x){
+    var d=document.createElement('div');d.className='sonuc '+x[0];d.textContent=x[1];p.appendChild(d);
+  });
+  var oz=document.createElement('div');oz.className='sonuc ok';
+  oz.textContent='ÖZET: '+R.filter(function(x){return x[0]==='ok';}).length+' ok · '+
+    R.filter(function(x){return x[0]==='uyari';}).length+' uyarı · '+
+    R.filter(function(x){return x[0]==='hata';}).length+' hata';
+  p.insertBefore(oz,p.children[1]||null);
+}
+
+/* ══════════ BOOT ══════════ */
+function bagla(){
+  $('bCek').onclick=function(){ghCek();};
+  $('bDosya').onclick=function(){$('dosyaGiris').click();};
+  $('dosyaGiris').onchange=function(){if(this.files&&this.files[0])dosyaYukleFn(this.files[0]);this.value='';};
+  $('bYukle').onclick=function(){ghYukle();};
+  $('bIndir').onclick=function(){jsonIndir();};
+  $('bJson').onclick=function(){jsonAc();};
+  $('bDogrula').onclick=function(){dogrula();};
+  $('bGitHub').onclick=function(){
+    var a=$('githubAlani');a.style.display=(a.style.display==='none'?'block':'none');};
+  $('ghKaydet').onclick=function(){ghCfgKaydet();};
+  $('jsonKapat').onclick=function(){jsonKapatFn();};
+  $('jsonKopyala').onclick=function(){
+    var t=$('jsonOnIzleme').textContent;
+    if(navigator.clipboard)navigator.clipboard.writeText(t).then(function(){},function(){});
+    $('jsonKopyala').textContent='Kopyalandı ✓';
+    setTimeout(function(){$('jsonKopyala').textContent='Kopyala';},1500);
+  };
+  $('jsonIndir2').onclick=function(){jsonIndir();};
+  /* GitHub ayarlarını geri yükle */
+  try{
+    var c=JSON.parse(localStorage.getItem(LS_CFG)||'null');
+    if(c){$('ghSahip').value=c.sahip||'';$('ghRepo').value=c.repo||'';
+      $('ghDal').value=c.dal||'main';$('ghYol').value=c.yol||'icerik/site_icerik.json';}
+    else{$('ghSahip').value='0xByteDeveloper';$('ghRepo').value='JamesWeb';
+      $('ghDal').value='main';$('ghYol').value='icerik/site_icerik.json';}
+    var t=localStorage.getItem(LS_TOKEN)||'';
+    $('ghToken').value=t;
+  }catch(e){}
+  /* taslak var mı? */
+  var tas=null;
+  try{tas=localStorage.getItem(LS_TASLAK);}catch(e){}
+  if(tas){
+    try{
+      var jt=JSON.parse(tas);
+      if(jt&&jt.sema==='epinsitesi-icerik'){
+        D=normalize(jt);
+        secim={tur:'oyun',oyun:0,urun:0};
+        dokun();sahneCiz();agacCiz();
+        $('durumCip').innerHTML='taslak geri yüklendi — '+$('durumCip').innerHTML;
+      }
+    }catch(e){}
+  }
+  sahneCiz();agacCiz();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bagla);
+else bagla();
+</script>
+<script>
+
+function backendVar(){ return location.protocol==='http:'||location.protocol==='https:'; }
+
+
+
+/* panel açılışında: tarayıcıdaki token varsa sunucuya sessiz senkron */
+(function(){
+  if(!backendVar())return;
+  try{
+    var t=localStorage.getItem(LS_TOKEN)||'';
+    if(!t)return;
+    fetch('/api/durum').then(function(r){return r.json();}).then(function(j){
+      if(!j.token)fetch('/api/token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:t})}).catch(function(){});
+    }).catch(function(){});
+  }catch(e){}
+})();
+
+</script>
+</body>
+</html>
