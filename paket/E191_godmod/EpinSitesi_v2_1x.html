@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#000">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M2God Community</title>
+<meta name="description" content="M2God develops professional game automation software. Secure crypto payments, instant license delivery and 24/7 support on Discord.">
+<!--
+  RKM KALKAN sürümü: bu sayfanın tasarımı/CSS/gövdesi/kodu okunamaz.
+  İçerik: site_rkm.js (şifreli) · kilit_rkm.js (şifreli alan adları)
+  Motor : kalkan.min.js (tasarım bilgisi içermez, en ağır obfuscation)
+  Üretim: site_paketi_uret.py — değişiklik için kabuğa DEĞİL kaynağa
+  dokunun ve üreticiyi yeniden çalıştırın.
+  Yükleme (E189 GOD MOD · E188 tabanı): sürüm notu kapılı tarayıcı
+  önbelleği KORUNDU (her açılışta yalnız surum_notu.json GitHub'dan
+  çekilir; sürüm değişmemişse 3 kalkan dosyası ve resimler Cache
+  API/localStorage önbelleğinden gelir; sürüm değişirse önbellek
+  tazelenir; GitHub yoksa kayıtlı önbellek, o da yoksa yerel fallback).
+  GOD MOD ekleri:
+   · TEK PARALEL TUR — kalkan×3 + site_icerik.json + TÜM resimler aynı
+     anda çekilir (E177/E188: resimler tek tek, ~1 dosya/tur)
+   · FETCH KESİCİ — motorun icerik/resim istekleri önceden indirilen
+     metinden anında servis edilir; motor resimler için ağa çıkmaz
+   · SELF-RELOAD KIRICI — icerik 'epindata_json_e174'e motor açılmadan
+     yazılır; ilk girişte sayfa bir 2. tur yüklemez (E177/E188'de ilk
+     giriş 2 tam turdu: siyah ekran ~2×)
+   · 2.+ girişlerde resimler önbellekten PARALEL okunur
+   · E191 DÜZELTMESİ — ag() orijinal fetch'i kullanır (E188-ısıtmalı
+     önbellekte icerik yokken oluşan ölü kilit giderildi) ve icerik her
+     açılışta TAZE çekilir (bayat içerik imkânsız)
+-->
+<script>
+/* E191 GOD MOD · E188 tabanı + paralel boru hattı. */
+window.EPIN_GH=(function(){
+  var t='https://raw.githubusercontent.com/0xByteDeveloper/JamesWeb/main';
+  try{ var k=localStorage.getItem('epin_gh_taban'); if(k) t=String(k).replace(/\/+$/,''); }catch(e){}
+  return { taban:t, koruma:'koruma/', resimler:t+'/resimler/', icerik:t+'/icerik/site_icerik.json',
+           surum:t+'/surum_notu.json' };
+})();
+window.EPIN_GH.korumaURL=window.EPIN_GH.taban+'/'+window.EPIN_GH.koruma;
+window.EPIN_GH.cek=(function(){
+  var OB='epin_gh_ob1', LS_SURUM='epin_surum', LS_ONEK='epin_ob_', OF0=window.fetch;
+  var bellek={}, obHazir=null, obYeri=null, lsModu=false, mod='direk';
+  function obAc(){
+    if(obHazir) return obHazir;
+    if(window.caches&&typeof caches.open==='function'){
+      obHazir=caches.open(OB).then(function(c){ obYeri=c; return c; })
+                      .catch(function(){ obYeri=null; return null; });
+    }else{ lsModu=true; obHazir=Promise.resolve(null); }
+    return obHazir;
+  }
+  function lsOku(yol){ try{ return localStorage.getItem(LS_ONEK+yol); }catch(e){ return null; } }
+  function lsYaz(yol,txt){ try{ localStorage.setItem(LS_ONEK+yol,txt); return true; }catch(e){ return false; } }
+  function lsSilHepsi(){
+    try{ var k=[],i; for(i=0;i<localStorage.length;i++){ var x=localStorage.key(i);
+          if(x&&x.indexOf(LS_ONEK)===0) k.push(x); }
+         k.forEach(function(x){ localStorage.removeItem(x); }); }catch(e){}
+  }
+  function temizle(){
+    bellek={}; lsSilHepsi(); obYeri=null; obHazir=null;
+    try{ if(window.caches&&caches.delete) caches.delete(OB); }catch(e){}
+  }
+  function obOku(yol){
+    if(bellek[yol]!=null) return Promise.resolve(bellek[yol]);
+    var l=lsOku(yol); if(l!=null){ bellek[yol]=l; return Promise.resolve(l); }
+    if(lsModu) return Promise.resolve(null);
+    return obAc().then(function(c){
+      if(!c) return null;
+      return c.match(new Request('https://epin-ob/'+yol)).then(function(r){ return r?r.text():null; })
+              .then(function(t){ if(t!=null) bellek[yol]=t; return t; });
+    }).catch(function(){ return null; });
+  }
+  function obYaz(yol,txt){
+    bellek[yol]=txt;
+    if(lsModu){ lsYaz(yol,txt); return; }
+    obAc().then(function(c){
+      if(c) return c.put(new Request('https://epin-ob/'+yol),new Response(txt));
+      lsYaz(yol,txt);
+    }).catch(function(){ lsYaz(yol,txt); });
+  }
+  /* ÖNEMLİ (E191 düzeltmesi): ag() KESİLMEMİŞ orijinal fetch'i kullanır.
+     Kesiciye takılı fetch kullanılsaydı 'onbellek' modunda önbellekte olmayan
+     bir dosya kendi bekleyen vaadini bekleyerek ÖLÜ KİLİT'e girerdi
+     (E188→E189 geçişinde siyah ekran sonsuza dek sürüyordu). */
+  function ag(url){ return OF0(url).then(function(r){
+    if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); }); }
+  function cek(url,yol){
+    if(mod==='direk') return ag(url);
+    if(mod==='onbellek'){
+      return obOku(yol).then(function(t){
+        if(t!=null) return t;
+        return ag(url).then(function(t2){ obYaz(yol,t2); return t2; });
+      });
+    }
+    return ag(url).then(function(t){ obYaz(yol,t); return t; });
+  }
+  function surumAl(){
+    return new Promise(function(res,rej){
+      var bitti=false, to=setTimeout(function(){ if(!bitti){ bitti=true; rej(new Error('surum zaman asimi')); } },4000);
+      OF0(window.EPIN_GH.surum+'?t='+Date.now()).then(function(r){
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        return r.json();
+      }).then(function(j){ if(!bitti){ bitti=true; clearTimeout(to); res(j); } })
+        .catch(function(e){ if(!bitti){ bitti=true; clearTimeout(to); rej(e); } });
+    });
+  }
+  cek.baslat=function(){
+    if(!/^https?:$/.test(location.protocol)){ mod='direk'; return Promise.resolve(); }
+    var tb=null, tbEski=null;
+    try{ tb=localStorage.getItem('epin_gh_taban'); }catch(e){}
+    try{ tbEski=localStorage.getItem('epin_gh_taban_ob'); }catch(e){}
+    if(tbEski!==null&&tbEski!==String(tb==null?'':tb)){
+      temizle(); try{ localStorage.removeItem(LS_SURUM); }catch(e){}
+    }
+    try{ localStorage.setItem('epin_gh_taban_ob',tb==null?'':String(tb)); }catch(e){}
+    return surumAl().then(function(s){
+      var v=String((s&&s.surum)||'');
+      if(!v) throw new Error('surum bos');
+      var eski=null; try{ eski=localStorage.getItem(LS_SURUM); }catch(e){}
+      if(eski===v){ mod='onbellek'; }
+      else{ temizle(); mod='doldur'; try{ localStorage.setItem(LS_SURUM,v); }catch(e){} }
+      try{ localStorage.setItem('epin_surum_notu',JSON.stringify(s)); }catch(e){}
+    }).catch(function(){
+      var eski=null; try{ eski=localStorage.getItem(LS_SURUM); }catch(e){}
+      mod=eski?'onbellek':'direk';
+    });
+  };
+  return cek;
+})();
+/* GOD MOD — resim ad listesi (üretici godmod_uret.py gömer; resim
+   eklerken/çıkarırken üreticiyi yeniden çalıştırın) */
+window.EPIN_RESIMLER=["SiteLogo", "b1", "b3", "banner2_ar", "banner2_cn", "banner2_de", "banner2_en", "banner2_ja", "banner2_pl", "banner2_ro", "banner2_ru", "banner2_tr", "banner2_vi", "banner3_ar", "banner3_cn", "banner3_de", "banner3_en", "banner3_ja", "banner3_pl", "banner3_ro", "banner3_ru", "banner3_tr", "banner3_vi", "banner_ar", "banner_cn", "banner_de", "banner_en", "banner_ja", "banner_pl", "banner_ro", "banner_ru", "banner_tr", "banner_vi", "cabal_logo", "csgo_logo", "example_farmbot_client_1", "example_farmbot_client_2", "example_farmbot_logo", "example_farmbot_trailer", "example_koxp_client_1", "example_koxp_client_2", "example_koxp_logo", "example_koxp_trailer", "knight_logo", "m2god_logo", "metin2_logo", "rakion_logo", "ranonline_logo", "sro_logo", "xxxx-img"];
+
+(function(){
+  var SIRA=['kilit_rkm.js','site_rkm.js','kalkan.min.js'];
+  function yerel(i){
+    if(i>=SIRA.length) return;
+    var s=document.createElement('script');
+    s.onload=s.onerror=function(){ yerel(i+1); };
+    s.src=SIRA[i];
+    (document.head||document.documentElement).appendChild(s);
+  }
+  /* ---- GOD MOD PARALEL BORU HATTI — TÜM modlardan ÖNCE tanımlı (file:// dahil) ---- */
+  var TABAN=window.EPIN_GH.taban;
+  var metin={}, ucan={}, OF=window.fetch;
+
+  function yolAl(u){
+    try{
+      var url=(u&&u.url)?u.url:String(u);
+      if(url.indexOf(TABAN+'/')!==0) return null;
+      return url.slice(TABAN.length+1).split('?')[0];
+    }catch(e){ return null; }
+  }
+  /* Motor açılmadan kurulur: icerik/resim istekleri indirilen metinden
+     anında servis edilir. Yalnız ÇÖZÜLMÜŞ metin servis edilir (kilitlenme
+     yok); uçuşan isteğe rastlarsa bekler, bitince aynı Response döner. */
+  window.fetch=function(u,o){
+    var yol=yolAl(u);
+    if(yol!=null){
+      if(metin[yol]!=null) return Promise.resolve(new Response(metin[yol],{status:200,headers:{'Content-Type':'text/plain; charset=utf-8'}}));
+      if(ucan[yol]) return ucan[yol].then(function(t){
+        return new Response(t,{status:200,headers:{'Content-Type':'text/plain; charset=utf-8'}});
+      });
+    }
+    return OF.apply(this,arguments);
+  };
+  function getir(url,yol){
+    if(metin[yol]!=null) return Promise.resolve(metin[yol]);
+    if(ucan[yol]) return ucan[yol];
+    ucan[yol]=window.EPIN_GH.cek(url,yol).then(function(t){
+      metin[yol]=t; delete ucan[yol]; return t;
+    }).catch(function(e){ delete ucan[yol]; throw e; });
+    return ucan[yol];
+  }
+  /* SELF-RELOAD KIRICI + TAZE İÇERİK GARANTİSİ (E191 düzeltmesi):
+     icerik sürüm kapılı önbelleğe HİÇ girmez (surum_notu'da onbellek_disi).
+     Her açılışta ağdan TAZE çekilir (?t= kapı-deviriciyle) → panelde yapılan
+     içerik güncellemeleri sürüm yükseltmeden anında görünür (E188 semantiği).
+     Metin kesiciye yazılır: motor kendi isteğini aynı taze metinden alır,
+     'veri değişti → sayfayı yenile' zinciri hiç çalışmaz. Ağ yoksa motor
+     kendi localStorage zincirine düşer. */
+  function icerikKayit(){
+    return OF(window.EPIN_GH.icerik+'?t='+Date.now()).then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.text();
+    }).then(function(t){
+      metin['icerik/site_icerik.json']=t;
+      try{
+        var eski=localStorage.getItem('epindata_json_e174');
+        if(eski!==t) localStorage.setItem('epindata_json_e174',t);
+      }catch(e){}
+    }).catch(function(){});
+  }
+  function baslatParalel(dosyaModu){
+    /* SIRA ÖNCELİĞİ: kalkan×3 + icerik önce (motor en hızlı açılsın),
+       resimler aynı turda arkalarından paralel akar. HTTP/1.1'de 6
+       bağlantı kuyruğunda kalkan öne geçer; HTTP/2'de hepsi zaten eş. */
+    if(dosyaModu){
+      icerikKayit();
+      var i,r; for(i=0;i<window.EPIN_RESIMLER.length;i++){
+        r=window.EPIN_RESIMLER[i];
+        getir(TABAN+'/resimler/'+r+'_rkm.js','resimler/'+r+'_rkm.js').catch(function(){});
+      }
+      yerel(0);
+      return;
+    }
+    /* TEK PARALEL TUR: kalkan×3 → icerik → resimler sırasıyla ateşlenir,
+       hepsi aynı anda uçar; motor yalnız kalkan×3 (+icerik kaydı) bitince açılır. */
+    var kalkanI=Promise.all(SIRA.map(function(f){
+      return getir(window.EPIN_GH.korumaURL+f,'koruma/'+f).catch(function(){ return null; });
+    }));
+    var icerikI=icerikKayit();
+    var i,r; for(i=0;i<window.EPIN_RESIMLER.length;i++){
+      r=window.EPIN_RESIMLER[i];
+      getir(window.EPIN_GH.resimler+r+'_rkm.js','resimler/'+r+'_rkm.js').catch(function(){});
+    }
+    kalkanI.then(function(tl){
+      var j,eksik=false;
+      for(j=0;j<SIRA.length;j++) if(tl[j]==null){ eksik=true; break; }
+      if(eksik){ yerel(0); return; }
+      /* icerik kaydı bitince (reload kırıcı garanti) motoru aç */
+      Promise.resolve(icerikI).then(function(){
+        for(j=0;j<SIRA.length;j++) (0,eval)(tl[j]);
+      });
+    });
+  }
+  if(!/^https?:$/.test(location.protocol)){
+    /* file:// : kalkan dosyaları yerelden (E188 ile aynı); icerik+resimler
+       arka planda GitHub'dan PARALEL çekilir, motorun istekleri kesilir. */
+    baslatParalel(true);
+    return;
+  }
+  window.EPIN_GH.cek.baslat().then(function(){ baslatParalel(false); });
+})();</script>
+</head>
+<body>
+<noscript>Bu site calismak icin JavaScript gerektirir.</noscript>
+</body>
+</html>
