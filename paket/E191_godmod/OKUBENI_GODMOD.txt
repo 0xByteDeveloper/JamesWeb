@@ -1,0 +1,112 @@
+═══════════════════════════════════════════════════════════════════════
+ EPINSITESI — E191 GOD MOD YÜKLEYİCİ (E188 tabanı)
+ "Tek paralel tur · ölü kilit düzeltildi · taze içerik garantisi"
+═══════════════════════════════════════════════════════════════════════
+
+┌─ E189'DAN E191'E NEDEN GEÇİLDİ? (2 GERÇEK HATA) ─────────────────────┐
+│ E189 yükleyicisinde saha testinde 2 hata bulundu:                    │
+│                                                                      │
+│ 1) ÖLÜ KİLİT (KRİTİK): E188'den E189'a geçen eski ziyaretçide        │
+│    'onbellek' moduna giriliyor; icerik önbellekte YOKSA ag()         │
+│    fonksiyonu KESİCİYE TAKILI window.fetch'i kullandığı için kendi   │
+│    bekleyen isteğini bekliyordu → motor hiç açılmıyor → SONSUZ       │
+│    SİYAH EKRAN. (Test: E188-ısıtılmış önbellek + E189 girişi =        │
+│    60 sn'de 0 canvas. E191'de aynı senaryo 3.8 sn'de açılıyor.)      │
+│    → DÜZELTME: ag() artık kesilmemiş orijinal fetch'i (OF0) kullanır.│
+│                                                                      │
+│ 2) BAYAT İÇERİK: E189 'onbellek' modunda icerik'i Cache API'den      │
+│    okuyordu (0 ağ isteği) → panelde içerik güncelleyip sürüm         │
+│    yükseltmezsen eski ziyaretçiler ESKİ içeriği görüyordu.           │
+│    → DÜZELTME: icerik her açılışta TAZE çekilir (?t= ile, sürüm      │
+│    kapılı önbelleğe hiç girmez). Panel güncellemesi anında görünür   │
+│    (E188 semantiği geri geldi). Bedeli: sıcak girişte 1 ekstra küçük │
+│    istek (25 KB) — kalkan indirmesiyle paralel, süreye etkisi yok.   │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌─ ÖLÇÜM SONUÇLARI (önbellek TEMİZLENEREK) ────────────────────────────┐
+│ Benzetime: istek başına 100ms GitHub RTT · Gerçek: canlı GitHub      │
+│                        E188 (canlı)      E191 GOD MOD                │
+│ Soğuk giriş (site hazır)  3.62 sn        2.72 sn  (gerçek: 3.00 sn)  │
+│ Soğuk TAM yükleme         5.19 sn        4.37 sn  (gerçek: 4.47 sn)  │
+│ Sayfa kendini yenileme    2 tur          1 tur (yok)                  │
+│ Soğuk GitHub isteği       14 (surum×2,   63 tek turda paralel         │
+│                           icerik×2 ...)  (surum 1 + koruma 3 +        │
+│                                          icerik 1 + resim 50+)       │
+│ Sıcak giriş (hazır)       1.20 sn        1.17 sn                      │
+│ Sıcak GitHub isteği       3              2 (surum + TAZE icerik)      │
+│ E188→geçiş uyumu          —              sorunsuz (ölü kilit YOK)     │
+│ GitHub ÇÖKSE: kayıtlı önbellekten açılır (E188 zinciri korunur)      │
+│ Sürüm değişince: önbellek otomatik tazelenir (test edildi)           │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌─ SİYAH EKRAN NEDEN VAR? (kök nedenler) ──────────────────────────────┐
+│ 1) TASARIM: <html style="background:#000"> kasıtlı. Tüm site şifreli │
+│    motor tarafından boyanır (site_rkm.js ≈ 410 KB). İlk piksel için  │
+│    bile şu zincir BİTMELİ: surum_notu.json (1 ağ turu) → kalkan×3    │
+│    (~500 KB) indir → çöz/eval → kilit alan-adı kontrolü → içerik     │
+│    çözümü → çizim. Zincir bitmeden tarayıcının çizeceği hiçbir şey   │
+│    yok. Kalan ~2.5 sn'nin çoğu artık AĞ değil, motorun kendi CPU     │
+│    işi (410 KB şifreli tasarımın çözülüp çizilmesi) — kalkan         │
+│    koruma tasarımının doğası, altına inilemez.                       │
+│ 2) ESKİ YÜKLEYİCİDE İLK GİRİŞ 2 TURDU: motor iceriği localStorage'da │
+│    bulamayınca sayfayı KENDİ YENİDEN YÜKLÜYORDU → surum+icerik 2'şer │
+│    kez, siyah ekran ~2×. E191 SELF-RELOAD KIRICI ile tek tur.        │
+│ 3) RESİMLER TEK TEK: motor resimleri sırayla istiyordu (~1 dosya /   │
+│    ağ turu). E191 TÜM resimleri kalkanla AYNI TURDA paralel çeker,   │
+│    motorun isteklerini FETCH KESİCİ milisaniyeler içinde servis eder.│
+└──────────────────────────────────────────────────────────────────────┘
+
+┌─ KURULUM — TEK DOSYA DEĞİŞİKLİĞİ ────────────────────────────────────┐
+│ Sunucundaki EpinSitesi_v2_1x.html'i bu pakettekiyle DEĞİŞTİR.        │
+│ GitHub deposuna (koruma/, resimler/, icerik/) DOKUNMA — dosyalar     │
+│ birebir aynı, sürüm yükseltmeye GEREK YOK: yükseltirsen tüm eski     │
+│ ziyaretçiler boş yere ~17 MB yeniden indirir. Eski ziyaretçiler      │
+│ mevcut önbellekleriyle sorunsuz E191'a geçer (test edildi).          │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌─ KORUNAN E188 ÖZELLİKLERİ (hiçbiri kaybolmadı) ──────────────────────┐
+│ · Sürüm notu kapılı önbellek: her açılışta yalnız surum_notu.json    │
+│   GitHub'dan çekilir (küçük). Sürüm değişmemişse kalkan dosyaları ve │
+│   resimler Cache API/localStorage önbelleğinden gelir.               │
+│ · Önbellek zinciri: Cache API → localStorage → oturumluk bellek.     │
+│ · GitHub erişilemezse kayıtlı önbellekle çevrimdışı çalışma.         │
+│ · O da yoksa yerel fallback (kökteki kilit/site/kalkan/SiteLogo).    │
+│ · Taban override: localStorage 'epin_gh_taban'.                      │
+│ · file:// modu: E188 ile aynı davranış (kilit alan adı kilisi).      │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌─ KLASÖR DÜZENİ (E188 ile aynı) ──────────────────────────────────────┐
+│ EpinSitesi_v2_1x.html   ← GOD MOD yükleyici (tek değişen dosya)      │
+│ surum_notu.json         ← sürüm: E191.20261015.1 (önbellek kapısı)   │
+│ koruma/                 ← kilit_rkm.js, site_rkm.js, kalkan.min.js   │
+│ resimler/               ← 50 şifreli resim dosyası                   │
+│ icerik/site_icerik.json ← tek içerik kaynağı                         │
+│ kilit_rkm.js, site_rkm.js, kalkan.min.js, SiteLogo_rkm.js ← kök     │
+│                             yerel fallback (E188 düzeni)             │
+│ kontrol_paneli.html/.py, OKUBENI_PANEL.txt ← E188'den aynen          │
+│ uretici/godmod_uret.py  ← resim listesi yenileyici (aşağıda)         │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌─ RESİM EKLERKEN / ÇIKARIRKEN ────────────────────────────────────────┐
+│ GOD MOD, açılışta hangi resimlerin çekileceğini HTML'e gömülü         │
+│ EPIN_RESIMLER listesinden bilir. resimler/ klasörüne dosya ekleyip    │
+│ çıkarırsanız listeyi tazeleyin:                                       │
+│   python3 uretici/godmod_uret.py . . "E192.<tarih>.1"                 │
+│ (kaynak klasör, hedef klasör, yeni sürüm). Listede olmayan yeni bir   │
+│ resim yine GÖRÜNÜR (motor kendi çeker) — yalnız o resim paralel       │
+│ ön-yükleme dışında kalır. Listede olup GitHub'da olmayan ad ise       │
+│ sessizce atlanır, site etkilenmez.                                    │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌─ SÜRÜM NASIL DEĞİŞTİRİLİR (önbellek tazeleme) ───────────────────────┐
+│ surum_notu.json içindeki 'surum' alanını değiştirin (örn.             │
+│ E192.20261016.1). Yeni değeri gören tüm ziyaretçi tarayıcıları       │
+│ önbelleğini temizleyip koruma/ + resimler/ dosyalarını tazeden        │
+│ çeker. Koruma veya resim dosyalarını güncellediğinizde bu alanı       │
+│ MUTLAKA değiştirin. icerik/site_icerik.json önbellek DIŞIDIR; her    │
+│ açılışta taze çekilir, sürüm yükseltmeye gerek yoktur.               │
+└──────────────────────────────────────────────────────────────────────┘
+
+Test ortamı: Chromium (Playwright) · GitHub benzetimi 100ms RTT/istek + canlı
+GitHub pre-flight · önbellek temizlenmiş taze tarayıcı bağlamı · E188 motoru
+birebir aynı · 6 senaryo (soğuk/sıcak × benzetim/gerçek + E188→E191 geçişi).
