@@ -2,8 +2,8 @@
   "sema": "epinsitesi-icerik",
   "semaSurum": "1.0",
   "surum": "3.09",
-  "zaman": 1791727285,
-  "olusturma": "2026-10-11T14:01:25.221Z",
+  "zaman": 1792086679,
+  "olusturma": "2026-10-15T17:51:19.000Z",
   "varsayilanDil": "en",
   "diller": [
     "en",
@@ -26,16 +26,16 @@
   "site": {
     "ad": "M2God",
     "baslik": {
-      "tr": "Türkiye'nin En Güvenilir Oyun Alışveriş Sitesi | M2God",
-      "en": "Türkiye's Most Reliable Game Shopping Site | M2God",
-      "de": "Türkiyes zuverlässigste Spiele-Shopping-Site | M2Gott",
-      "pl": "Najbardziej niezawodna witryna zakupów gier w Turcji | M2Bóg",
-      "vi": "Trang web mua sắm trò chơi đáng tin cậy nhất của Türkiye | M2Chúa",
-      "ro": "Cel mai de încredere site de cumpărături de jocuri din Türkiye | M2Doamne",
-      "ru": "Самый надежный сайт по продаже игр в Турции | M2God",
-      "cn": "土耳其最可靠的游戏购物网站 | M2神",
-      "ja": "M2God — 最も信頼できるゲームショップ",
-      "ar": "موقع تسوق الألعاب الأكثر موثوقية في تركيا | M2God"
+      "tr": "M2God Community",
+      "en": "M2God Community",
+      "de": "M2God Community",
+      "pl": "M2God Community",
+      "vi": "M2God Community",
+      "ro": "M2God Community",
+      "ru": "M2God Community",
+      "cn": "M2God Community",
+      "ja": "M2God Community",
+      "ar": "M2God Community"
     },
     "logo": {
       "dosya": "SiteLogo.png",
