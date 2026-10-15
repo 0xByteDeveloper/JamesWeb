@@ -14,11 +14,17 @@
           ile açılışta paralel ön yüklenir
   Üretim: site_paketi_uret.py — değişiklik için kabuğa DEĞİL kaynağa
   dokunun ve üreticiyi yeniden çalıştırın.
-  Yükleme (E177): sürüm notu kapılı tarayıcı önbelleği — her açılışta
-  yalnız surum_notu.json GitHub'dan çekilir; sürüm değişmemişse 3 kalkan
-  dosyası ve resimler Cache API/localStorage önbelleğinden gelir (GitHub'a
-  0 dosya isteği); sürüm değişirse önbellek tazelenir; GitHub yoksa kayıtlı
-  önbellek, o da yoksa yerel fallback.
+  Yükleme (E190): sürüm notu kapılı tarayıcı önbelleği — her açılışta yalnız
+  surum_notu.json + icerik/site_icerik.json GitHub'dan çekilir (2 küçük istek);
+  site_icerik.json KABUKTAN baştan çekilir → oyun verisi gövdeden ÖNCE
+  localStorage'a yazılır → ilk açılışta 'yeni veri' reload'u OLMAZ ve
+  site_icerik için açılış başına YALNIZ 1 istek çıkar. Sürüm değişmemişse
+  3 kalkan dosyası ve resimler Cache API/localStorage önbelleğinden gelir
+  (GitHub'a 0 dosya isteği); sürüm değişirse önbellek tazelenir; GitHub
+  yoksa kayıtlı önbellek, o da yoksa yerel fallback.
+  İsteğe bağlı resim CDN'i: localStorage 'epin_resim_taban' (örn.
+  https://cdn.jsdelivr.net/gh/0xByteDeveloper/JamesWeb@main/resimler)
+  → resimler bu kökenden gelir (korumalar tabandan gelmeye devam eder).
   KORUMA DOSYALARINI GÜNCELLEDİĞİNİZDE surum_notu.json'daki "surum"
   alanını MUTLAKA değiştirin → ziyaretçi önbellekleri tazelenir.
 -->
@@ -38,10 +44,45 @@
 window.EPIN_GH=(function(){
   var t='https://raw.githubusercontent.com/0xByteDeveloper/JamesWeb/main';
   try{ var k=localStorage.getItem('epin_gh_taban'); if(k) t=String(k).replace(/\/+$/,''); }catch(e){}
-  return { taban:t, koruma:'koruma/', resimler:t+'/resimler/', icerik:t+'/icerik/site_icerik.json',
+  var r=t+'/resimler/';                                  /* taban override'ı resimlere de yansır (eski davranış) */
+  try{ var rt=localStorage.getItem('epin_resim_taban');
+       if(rt) r=String(rt).replace(/\/+$/,'')+'/'; }catch(e){}   /* isteğe bağlı resim CDN kökü */
+  return { taban:t, koruma:'koruma/', resimler:r, icerik:t+'/icerik/site_icerik.json',
            surum:t+'/surum_notu.json' };
 })();
 window.EPIN_GH.korumaURL=window.EPIN_GH.taban+'/'+window.EPIN_GH.koruma;
+/* ── İÇERİK ÖNDEN ÇEKİMİ (E190) ────────────────────────────────────────
+   site_icerik.json açılışın EN BAŞINDA (kalkan zincirinden bağımsız,
+   paralel) çekilir; geçerliyse:
+     · window.__EPIN_ICERIK_TXT'e konur → gövde içindeki EpinDataKit
+       upgrade() AĞ İSTEĞİ ATMADAN bu veriyle çalışır → açılış başına
+       site_icerik isteği BİREBİR 1 olur (eski akışta ilk açılışta 2 idi),
+     · zaman karşılaştırmalı olarak localStorage'a yazılır → ilk ziyarette
+       oyun verisi boot'a hazır olur → 'yeni veri bulundu → reload'
+       sayfa yenilenmesi ORTADAN KALKAR.
+   GitHub'a ulaşılamazsa null: upgrade() eski akışıyla kendisi dener. */
+window.EPIN_GH.icerikTaze=(function(){
+  if(!/^https?:$/.test(location.protocol)) return Promise.resolve(null);
+  var LS_JSON='epindata_json_e174', LS_KEY='epindata_txt_e70';
+  function zaman(j){ return parseInt((j&&j.zaman)||0,10)||0; }
+  return fetch(window.EPIN_GH.icerik,{cache:'no-store'})
+    .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
+    .then(function(tx){
+      var j=null; try{ j=JSON.parse(tx); }catch(e){}
+      if(!j||j.sema!=='epinsitesi-icerik'||!j.oyunlar||!j.oyunlar.length) return null;
+      window.__EPIN_ICERIK_TXT=tx;
+      try{
+        var eskiJ=null, eskiT=null;
+        try{ eskiJ=JSON.parse(localStorage.getItem(LS_JSON)); }catch(e){}
+        try{ var mt=(localStorage.getItem(LS_KEY)||'').match(/(?:^|\n)\s*zaman\s*:\s*(\d+)/);
+             if(mt) eskiT=parseInt(mt[1],10)||0; }catch(e){}
+        var enYuksek=Math.max(zaman(eskiJ),eskiT||0);
+        if(zaman(j)>=enYuksek) localStorage.setItem(LS_JSON,tx);
+      }catch(e){}
+      return tx;
+    })
+    .catch(function(){ return null; });
+})();
 window.EPIN_GH.cek=(function(){
   var OB='epin_gh_ob1', LS_SURUM='epin_surum', LS_ONEK='epin_ob_';
   var bellek={}, obHazir=null, obYeri=null, lsModu=false, mod='direk';
