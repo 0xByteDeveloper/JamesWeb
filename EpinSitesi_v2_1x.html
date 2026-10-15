@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" style="background:#000">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Türkiye's Most Reliable Game Shopping Site | M2God</title>
+<meta name="description" content="M2God develops professional game automation software. Secure crypto payments, instant license delivery and 24/7 support on Discord.">
+<!--
+  RKM KALKAN sürümü: bu sayfanın tasarımı/CSS/gövdesi/kodu okunamaz.
+  İçerik: site_rkm.js (şifreli) · kilit_rkm.js (şifreli alan adları)
+  Motor : kalkan.min.js (tasarım bilgisi içermez, en ağır obfuscation)
+          v3.1-E177: sıfır dış JS — TW CSS + ikonlar paketten gömülü,
+          açılış ilk karede tam çizilir; resimler GH→önbellek→yerel hattı
+          ile açılışta paralel ön yüklenir
+  Üretim: site_paketi_uret.py — değişiklik için kabuğa DEĞİL kaynağa
+  dokunun ve üreticiyi yeniden çalıştırın.
+  Yükleme (E177): sürüm notu kapılı tarayıcı önbelleği — her açılışta
+  yalnız surum_notu.json GitHub'dan çekilir; sürüm değişmemişse 3 kalkan
+  dosyası ve resimler Cache API/localStorage önbelleğinden gelir (GitHub'a
+  0 dosya isteği); sürüm değişirse önbellek tazelenir; GitHub yoksa kayıtlı
+  önbellek, o da yoksa yerel fallback.
+  KORUMA DOSYALARINI GÜNCELLEDİĞİNİZDE surum_notu.json'daki "surum"
+  alanını MUTLAKA değiştirin → ziyaretçi önbellekleri tazelenir.
+-->
+<style>#rkm-yuk{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;background:#000}</style>
+<script>
+/* E177 SÜRÜM NOTU + TARAYICI ÖNBELLEĞİ — her sayfa açılışında yalnız
+   surum_notu.json GitHub'dan çekilir (küçük, 1 istek). Sürüm değişmemişse
+   3 kalkan dosyası (koruma/) ve tüm resimler tarayıcı önbelleğinden gelir:
+   GitHub'a 0 dosya isteği. Sürüm değişmişse önbellek temizlenir, dosyalar
+   tazeden çekilip önbelleğe yazılır. Önbellek: Cache API (localhost/https)
+   → yoksa localStorage → o da olmazsa yalnız oturumluk bellek.
+   GitHub'a erişilemezse kayıtlı önbellek kullanılır (çevrimdışı dayanıklılık);
+   o da yoksa BİREBİR eski davranış: yerel dosyalar (kökte). file://'da
+   doğrudan yerel. fetch+eval şart: raw.githubusercontent nosniff'li
+   text/plain verir, <script src> bloklanır. Taban override: localStorage
+   'epin_gh_taban' (değişirse önbellek otomatik temizlenir). */
+window.EPIN_GH=(function(){
+  var t='https://raw.githubusercontent.com/0xByteDeveloper/JamesWeb/main';
+  try{ var k=localStorage.getItem('epin_gh_taban'); if(k) t=String(k).replace(/\/+$/,''); }catch(e){}
+  return { taban:t, koruma:'koruma/', resimler:t+'/resimler/', icerik:t+'/icerik/site_icerik.json',
+           surum:t+'/surum_notu.json' };
+})();
+window.EPIN_GH.korumaURL=window.EPIN_GH.taban+'/'+window.EPIN_GH.koruma;
+window.EPIN_GH.cek=(function(){
+  var OB='epin_gh_ob1', LS_SURUM='epin_surum', LS_ONEK='epin_ob_';
+  var bellek={}, obHazir=null, obYeri=null, lsModu=false, mod='direk';
+  function obAc(){
+    if(obHazir) return obHazir;
+    if(window.caches&&typeof caches.open==='function'){
+      obHazir=caches.open(OB).then(function(c){ obYeri=c; return c; })
+                      .catch(function(){ obYeri=null; return null; });
+    }else{ lsModu=true; obHazir=Promise.resolve(null); }
+    return obHazir;
+  }
+  function lsOku(yol){ try{ return localStorage.getItem(LS_ONEK+yol); }catch(e){ return null; } }
+  function lsYaz(yol,txt){ try{ localStorage.setItem(LS_ONEK+yol,txt); return true; }catch(e){ return false; } }
+  function lsSilHepsi(){
+    try{ var k=[],i; for(i=0;i<localStorage.length;i++){ var x=localStorage.key(i);
+          if(x&&x.indexOf(LS_ONEK)===0) k.push(x); }
+         k.forEach(function(x){ localStorage.removeItem(x); }); }catch(e){}
+  }
+  function temizle(){
+    bellek={}; lsSilHepsi(); obYeri=null; obHazir=null;
+    try{ if(window.caches&&caches.delete) caches.delete(OB); }catch(e){}
+  }
+  function obOku(yol){
+    if(bellek[yol]!=null) return Promise.resolve(bellek[yol]);
+    var l=lsOku(yol); if(l!=null){ bellek[yol]=l; return Promise.resolve(l); }
+    if(lsModu) return Promise.resolve(null);
+    return obAc().then(function(c){
+      if(!c) return null;
+      return c.match(new Request('https://epin-ob/'+yol)).then(function(r){ return r?r.text():null; })
+              .then(function(t){ if(t!=null) bellek[yol]=t; return t; });
+    }).catch(function(){ return null; });
+  }
+  function obYaz(yol,txt){
+    bellek[yol]=txt;
+    if(lsModu){ lsYaz(yol,txt); return; }
+    obAc().then(function(c){
+      if(c) return c.put(new Request('https://epin-ob/'+yol),new Response(txt));
+      lsYaz(yol,txt);
+    }).catch(function(){ lsYaz(yol,txt); });
+  }
+  function ag(url){ return fetch(url).then(function(r){
+    if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); }); }
+  function cek(url,yol){
+    if(mod==='direk') return ag(url);
+    if(mod==='onbellek'){
+      return obOku(yol).then(function(t){
+        if(t!=null) return t;                     /* önbellek ıska → tazele+kaydet (öz-iyileşme) */
+        return ag(url).then(function(t2){ obYaz(yol,t2); return t2; });
+      });
+    }
+    return ag(url).then(function(t){ obYaz(yol,t); return t; });   /* doldur */
+  }
+  function surumAl(){
+    return new Promise(function(res,rej){
+      var bitti=false, to=setTimeout(function(){ if(!bitti){ bitti=true; rej(new Error('surum zaman asimi')); } },4000);
+      fetch(window.EPIN_GH.surum+'?t='+Date.now()).then(function(r){
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        return r.json();
+      }).then(function(j){ if(!bitti){ bitti=true; clearTimeout(to); res(j); } })
+        .catch(function(e){ if(!bitti){ bitti=true; clearTimeout(to); rej(e); } });
+    });
+  }
+  cek.baslat=function(){
+    if(!/^https?:$/.test(location.protocol)){ mod='direk'; return Promise.resolve(); }
+    var tb=null, tbEski=null;
+    try{ tb=localStorage.getItem('epin_gh_taban'); }catch(e){}
+    try{ tbEski=localStorage.getItem('epin_gh_taban_ob'); }catch(e){}
+    if(tbEski!==null&&tbEski!==String(tb==null?'':tb)){
+      temizle(); try{ localStorage.removeItem(LS_SURUM); }catch(e){}
+    }
+    try{ localStorage.setItem('epin_gh_taban_ob',tb==null?'':String(tb)); }catch(e){}
+    return surumAl().then(function(s){
+      var v=String((s&&s.surum)||'');
+      if(!v) throw new Error('surum bos');
+      var eski=null; try{ eski=localStorage.getItem(LS_SURUM); }catch(e){}
+      if(eski===v){ mod='onbellek'; }
+      else{ temizle(); mod='doldur'; try{ localStorage.setItem(LS_SURUM,v); }catch(e){} }
+      try{ localStorage.setItem('epin_surum_notu',JSON.stringify(s)); }catch(e){}
+    }).catch(function(){
+      var eski=null; try{ eski=localStorage.getItem(LS_SURUM); }catch(e){}
+      mod=eski?'onbellek':'direk';   /* GitHub'a ulaşılamadı → kayıt varsa önbellekle çevrimdışı çalış */
+    });
+  };
+  return cek;
+})();
+(function(){
+  var SIRA=['kilit_rkm.js','site_rkm.js','kalkan.min.js'];
+  function yerel(i){
+    if(i>=SIRA.length) return;
+    var s=document.createElement('script');
+    s.onload=s.onerror=function(){ yerel(i+1); };   /* tek dosya eksik olsa da zincir sürer — motor fail-closed */
+    s.src=SIRA[i];
+    (document.head||document.documentElement).appendChild(s);
+  }
+  if(!/^https?:$/.test(location.protocol)){ yerel(0); return; }
+  window.EPIN_GH.cek.baslat().then(function(){
+    (function gh(i){
+      if(i>=SIRA.length) return;
+      window.EPIN_GH.cek(window.EPIN_GH.korumaURL+SIRA[i],'koruma/'+SIRA[i])
+        .then(function(t){ (0,eval)(t); gh(i+1); })
+        .catch(function(){ yerel(0); });   /* GitHub+önbellek başarısız → komple yerel zincir */
+    })(0);
+  });
+})();
+</script>
+</head>
+<body>
+<div id="rkm-yuk" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="3"/><path d="M18 3 a15 15 0 0 1 15 15" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="3" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 18 18" to="360 18 18" dur="0.8s" repeatCount="indefinite"/></path></svg></div>
+<noscript>Bu site calismak icin JavaScript gerektirir.<style>#rkm-yuk{display:none}</style></noscript>
+</body>
+</html>

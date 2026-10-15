@@ -1,19 +1,23 @@
 {
   "schema": "epin-surum/1.0",
-  "surum": "E188.20261014.1",
-  "tarih": "2026-10-14",
+  "surum": "E189.20261015.1",
+  "tarih": "2026-10-15",
   "site_surumu": "v3.11",
-  "not": "E177 tabanina donus: sikistirma/paket sistemi KALDIRILDI. Site surum notu kapili tarayici onbellek sistemiyle calisir; resimler bireysel *_rkm.js dosyalarindan yuklenir. Baslik M2God Community.",
+  "not": "E189: koruma v3.1 hizli acilis — SIFIR DIS JS. Tailwind CSS + iconify runtime + ikonlar sifreli paketten gomulu; duzen ilk karede TAM cizilir (FCP ~0.1-0.2 sn, eski 6+ sn yerine). Resimler acilista paralel on yuklenir (GH→onbellek→yerel hatti). Kilit fail-closed aynen; kablo duzeni ve savunma katmanlari degismedi.",
   "degisiklikler": [
+    "E189: koruma v3.1 hizli acilis — cdn.tailwindcss.com + code.iconify.design bagimliligi SIFIR'a indi (CDN gecikmesi/kesintisi acilisi bozamaz)",
+    "E189: site_rkm.js yeniden sifrelendi (tw_css + ikon seti gomulu, 7 damgali acilis resmi on yukleme listesi)",
+    "E189: kalkan.min.js v3.1-E177 motoru — paralel kaskad + GH resim hatti on yukleme + GH preconnect; en agir obfuscation aynen",
+    "E189: kabuk SMIL spinner kazandi (acilis geribildirimi); EPIN_GH yukleme mantigi birebir korundu",
     "E188: E177 tabanina donus — RKMP/IMGP2 paket sistemi ve Toplu Sikistir tamamen kaldirildi",
-    "E188: koruma/ dosyalari E177 surumlerine dondu (site_rkm.js paket motoru icermez)",
-    "E188: resimler/ klasoru geri geldi (50 bireysel rkm dosyasi) — motor GH-onbellek-yerel hattiyla yukler",
-    "E188: panelden Toplu Sikistir (arayuz + sunucu uclari) silindi — yalniz icerik otomasyonu",
-    "E188: GitHub paketler/ klasoru temizlendi (tum paket dosyalari silindi)",
-    "E188: baslik M2God Community korundu",
     "E186: motor LISTE duzeltmesi gecmiste kaldi — E177 motorunda kirik PNG damgasi yok"
   ],
-  "surum_nasil_degistirilir": "Bu dosyadaki 'surum' alaninin degerini degistirin (orn. E189.20261014.1). Yeni surum degerini goren tum ziyaretci tarayiclari onbelleklerini temizleyip koruma/ + resimler/ dosyalarini tazeden ceker. Koruma veya resim dosyalarini guncellediginizde bu alani MUTLAKA degistirin.",
-  "yonetilen_klasorler": ["koruma/", "resimler/"],
-  "onbellek_disi": ["icerik/site_icerik.json"]
+  "surum_nasil_degistirilir": "Bu dosyadaki 'surum' alaninin degerini degistirin (orn. E190.20261015.1). Yeni surum degerini goren tum ziyaretci tarayiclari onbelleklerini temizleyip koruma/ + resimler/ dosyalarini tazeden ceker. Koruma veya resim dosyalarini guncellediginizde bu alani MUTLAKA degistirin.",
+  "yonetilen_klasorler": [
+    "koruma/",
+    "resimler/"
+  ],
+  "onbellek_disi": [
+    "icerik/site_icerik.json"
+  ]
 }
