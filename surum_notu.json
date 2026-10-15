@@ -1,15 +1,15 @@
 {
   "schema": "epin-surum/1.0",
-  "surum": "E191.20261015.1",
+  "surum": "E192.20261015.1",
   "tarih": "2026-10-15",
   "site_surumu": "v3.13",
-  "not": "E191: resimler ARTIK KUYRUKTA BEKLEMEZ — RKM motor v5 ile acilista kuyruga giren TUM resimlerin ag istekleri PARALEL yola cikar (eski v4 sirali akista RTT'ler toplaniyordu; hizli internet bile gec hissettiriyordu). on_yukleme 7 → 20 resim: 10 oyun logosu + EN bannerlari da acilista paralel cekilir (kart render'i beklenmez; varsayilan dil EN). Kabuk cek() ucusta istek tekillestirmesi: on yukleme ↔ motor yarisinda cift istek (SiteLogo x2) imkansiz. Toplam bekleme ≈ en yavas TEK istek.",
+  "not": "E192: resim turu 2 — kalite dogrulamali IKINCI sikistirma dalgasi. 46 resim yeniden kodlandi (orijinal kaynaktan TEK kayipli nesil): bannerlar AVIF q85 (ayni gorunum, ~%%25-30 kucuk), oyun logolari WebP q88/q92 + sharp_yuv (alfa kusursuz, ~%%50 kucuk), ekran gorselleri AVIF/WebP. Secim kapisi: PSNR>=38.5-41 dB + SSIM>=0.988 (mevcut kalitenin altina inmez) + A/B seritleriyle goz dogrulamasi. Resim dosya trafigi 2.18 MB -> 1.33 MB (toplamda ~6x: ilk 16 MB'den). RKM motor v5.1: f:'a' AVIF destegi (createImageBitmap yerli cozucu).",
   "degisiklikler": [
-    "E191: RKM motor v5 — veriGetir damga kuyruguna girer girmez cagrilir; ayni render turundeki tum resim istekleri PARALEL baslar (veriProm ayni resim icin tek istek garanti eder). Cozum+çizim sirali kalir (bellek politikasi aynen)",
-    "E191: on_yukleme 7 → 20 resim — m2god/farmbot/koxp/metin2/knight/sro/cabal/ranonline/rakion/csgo logolari + banner_en x3 acilista paralel istenir (+623 KB tek paralel dalga; kart render'i beklemez)",
-    "E191: kabuk EPIN_GH.cek ucusta istek tekillestirme — ayni URL icin ayni anda gelen cagri tek ag istegini paylasir (SiteLogo cift cekim hatasi kokten kalkar)",
-    "E190: 50 resim v4 rkm.js — WebP tasima, resim trafigi 16.0 MB → 2.2 MB",
-    "E190: ilk acilista 'yeni veri bulundu → sayfa yenileme' KALDIRILDI; site_icerik istegi acilis basina birebir 1",
+    "E192: 46 resim tur 2 sikistirma — bannerlar AVIF q85, logolar WebP q88/q92 sharp_yuv, ekran goruntuleri AVIF q85/WebP q92; resim trafigi 2.18 MB -> 1.33 MB",
+    "E192: RKM motor v5.1 — f:'a' AVIF kare destegi (yerli createImageBitmap cozucusu; eski tarayici yedegi aynen)",
+    "E192: secim kapisi PSNR+SSIM+goz dogrulamasi — hicbir resim mevcut kalitesinin altina inmedi (kaynak: orijinal PNG, tek kayipli nesil)",
+    "E191: RKM motor v5 — on yukleme 20 resim paralel dalga + cek ucusta istek tekillestirme + dclK duzeltmesi",
+    "E190: 50 resim v4 rkm.js — WebP tasima, resim trafigi 16.0 MB -> 2.2 MB",
     "E189: koruma v3.1 hizli acilis — SIFIR DIS JS; duzen ilk karede TAM cizilir"
   ],
   "surum_nasil_degistirilir": "Bu dosyadaki 'surum' alaninin degerini degistirin (orn. E192.20261015.1). Yeni surum degerini goren tum ziyaretci tarayiclari onbelleklerini temizleyip koruma/ + resimler/ dosyalarini tazeden ceker. Koruma veya resim dosyalarini guncellediginizde bu alani MUTLAKA degistirin.",
