@@ -14,9 +14,10 @@
           ile açılışta paralel ön yüklenir
   Üretim: site_paketi_uret.py — değişiklik için kabuğa DEĞİL kaynağa
   dokunun ve üreticiyi yeniden çalıştırın.
-  Yükleme (E190): sürüm notu kapılı tarayıcı önbelleği — her açılışta yalnız
+  Yükleme (E191): sürüm notu kapılı tarayıcı önbelleği — her açılışta yalnız
   surum_notu.json + icerik/site_icerik.json GitHub'dan çekilir (2 küçük istek);
-  site_icerik.json KABUKTAN baştan çekilir → oyun verisi gövdeden ÖNCE
+  cek() UÇUŞTA istek tekilleştirmesi yapar → ön yükleme ↔ motor yarışında
+  çift istek imkânsız. site_icerik.json KABUKTAN baştan çekilir → oyun verisi gövdeden ÖNCE
   localStorage'a yazılır → ilk açılışta 'yeni veri' reload'u OLMAZ ve
   site_icerik için açılış başına YALNIZ 1 istek çıkar. Sürüm değişmemişse
   3 kalkan dosyası ve resimler Cache API/localStorage önbelleğinden gelir
@@ -102,7 +103,7 @@ window.EPIN_GH.cek=(function(){
          k.forEach(function(x){ localStorage.removeItem(x); }); }catch(e){}
   }
   function temizle(){
-    bellek={}; lsSilHepsi(); obYeri=null; obHazir=null;
+    bellek={}; ucuslar={}; lsSilHepsi(); obYeri=null; obHazir=null;
     try{ if(window.caches&&caches.delete) caches.delete(OB); }catch(e){}
   }
   function obOku(yol){
@@ -125,15 +126,27 @@ window.EPIN_GH.cek=(function(){
   }
   function ag(url){ return fetch(url).then(function(r){
     if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); }); }
+  /* E191: UÇUŞTA İSTEK TEKİLLEŞTİRME — aynı URL için aynı anda gelen
+     çağrılar TEK ağ isteğini paylaşır. Örneğin ön yükleme (kalkan adım 4)
+     SiteLogo'yu çekerken RKM motoru veriGetir ile aynı dosyayı isterse:
+     eskisinde ikisi de ayrı fetch atıyordu (önbellek yazımı yarışı);
+     artık ikincisi aynı promise'i alır → çift istek imkânsız.
+     Hatalı istek haritadan düşer → sonraki çağrı yeniden deneyebilir.  */
+  var ucuslar={};
   function cek(url,yol){
-    if(mod==='direk') return ag(url);
-    if(mod==='onbellek'){
-      return obOku(yol).then(function(t){
+    if(ucuslar[url]) return ucuslar[url];
+    var p;
+    if(mod==='direk'){ p=ag(url); }
+    else if(mod==='onbellek'){
+      p=obOku(yol).then(function(t){
         if(t!=null) return t;                     /* önbellek ıska → tazele+kaydet (öz-iyileşme) */
         return ag(url).then(function(t2){ obYaz(yol,t2); return t2; });
       });
     }
-    return ag(url).then(function(t){ obYaz(yol,t); return t; });   /* doldur */
+    else{ p=ag(url).then(function(t){ obYaz(yol,t); return t; }); }  /* doldur */
+    ucuslar[url]=p;
+    p['catch'](function(){ if(ucuslar[url]===p) delete ucuslar[url]; });
+    return p;
   }
   function surumAl(){
     return new Promise(function(res,rej){
