@@ -35,7 +35,7 @@
  GEREKSİNİM: Python 3.8+ — ek paket YOK (yalnız standart kütüphane)
  TOKEN: ilk çalıştırmada paneldeki "Tarayıcıdaki Token'ı Sunucuya Kaydet"
         düğmesini kullanın (github_token.txt oluşturur) veya:
-        E195_GH_TOKEN=github_pat_... python kontrol_paneli.py
+        E197_GH_TOKEN=github_pat_... python kontrol_paneli.py
 ═══════════════════════════════════════════════════════════════════════
 """
 import base64
@@ -71,7 +71,11 @@ ALAN_DIZIN = os.path.join(KOK_DIZIN, "panel_alan")   # E195: özel çalışma kl
 
 # ═══════════════════ GITHUB İSTEMCİSİ ═══════════════════
 def token_al():
-    t = os.environ.get("E195_GH_TOKEN", "").strip()
+    t = os.environ.get("E197_GH_TOKEN", "").strip()
+    if not t:
+        t = os.environ.get("E196_GH_TOKEN", "").strip()
+    if not t:
+        t = os.environ.get("E195_GH_TOKEN", "").strip()
     if not t:
         t = os.environ.get("E194_GH_TOKEN", "").strip()
     if not t:
@@ -388,7 +392,7 @@ def gunluk(s):
 
 # ═══════════════════ SUNUCU ═══════════════════
 class Panel(BaseHTTPRequestHandler):
-    server_version = "EpinPanelE195/6.0"
+    server_version = "EpinPanelE197/8.0"
 
     def log_message(self, fmt, *args):
         sys.stderr.write("[panel] %s\n" % (fmt % args))
@@ -430,7 +434,7 @@ class Panel(BaseHTTPRequestHandler):
             return
         if yol == "/api/durum":
             t = token_al()
-            self.json_gonder({"ok": True, "sunucu": "E195-python", "port": self.server.server_address[1],
+            self.json_gonder({"ok": True, "sunucu": "E197-python", "port": self.server.server_address[1],
                               "token": bool(t), "tokenSon4": (t[-4:] if t else ""),
                               "repo": {"sahip": SAHIP, "repo": REPO, "dal": DAL,
                                        "icerikYolu": ICERIK_YOLU}})
