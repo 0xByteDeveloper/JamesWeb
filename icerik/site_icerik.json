@@ -2,8 +2,8 @@
   "sema": "epinsitesi-icerik",
   "semaSurum": "1.0",
   "surum": "3.09",
-  "zaman": 1792086679,
-  "olusturma": "2026-10-15T17:51:19.000Z",
+  "zaman": 1792168640,
+  "olusturma": "2026-10-16T16:37:20.829Z",
   "varsayilanDil": "en",
   "diller": [
     "en",
@@ -724,6 +724,91 @@
         }
       ],
       "urunler": []
+    },
+    {
+      "ad": "NewAge",
+      "vitrinAd": "",
+      "logo": "csgo_logo.png",
+      "ikon": "🎮",
+      "tur": "MMORPG",
+      "surum": "v1.0",
+      "guncelleme": "16.10.26",
+      "mimari": "x32/x64",
+      "baslatma": "Start",
+      "renk": "#d9a441",
+      "gelistirici": "M2God Team",
+      "puan": 5,
+      "kullanici": 0,
+      "songun": 2,
+      "rozetler": [
+        "hot",
+        "new",
+        "prem",
+        "fav"
+      ],
+      "versiyonlar": [
+        "v1.0"
+      ],
+      "aciklama": "",
+      "ozellikler": [
+        {
+          "ad": "Fark Bot",
+          "pro": true
+        }
+      ],
+      "urunler": [
+        {
+          "ad": "NewAge FarmBot",
+          "logo": "csgo_logo.png",
+          "fiyat": {
+            "tutar": 31,
+            "paraBirimi": "USD"
+          },
+          "periyot": "MONTH",
+          "surum": "v1.0",
+          "guncelleme": "16.10.26",
+          "aciklama": "",
+          "bayraklar": {
+            "darkside": true,
+            "farmbot": true,
+            "shopbot": true,
+            "slotYok": false
+          },
+          "donatorMin": 11.5,
+          "paketKur": "USD",
+          "paketler": [
+            {
+              "ad": "15 GÜNLÜK",
+              "gun": 15,
+              "fiyat": 85,
+              "hediye": 31
+            }
+          ],
+          "darksidePaketler": [
+            {
+              "ad": "Darkside Aylık",
+              "gun": 30,
+              "fiyat": 185,
+              "hediye": 20
+            }
+          ],
+          "parasalEgri": [],
+          "client": {
+            "baslik": "",
+            "aciklama": "NewAge Client",
+            "fotolar": [],
+            "ozellikler": []
+          },
+          "trailer": {
+            "oyun": "NEWAGE",
+            "urun": "NewAge Yeni",
+            "slogan": "Working 31",
+            "term": "",
+            "aciklama": "",
+            "foto": "xxxx-img.png"
+          }
+        }
+      ]
     }
   ],
   "videolar": {
@@ -893,10 +978,15 @@
     "clientBaslikYok": [
       "M2God",
       "Example Farmbot",
-      "Example Koxp"
+      "Example Koxp",
+      "NewAge FarmBot"
     ],
     "trailerKismiEksik": {
       "M2God": [
+        "trailer-term",
+        "trailer-desc"
+      ],
+      "NewAge FarmBot": [
         "trailer-term",
         "trailer-desc"
       ]
