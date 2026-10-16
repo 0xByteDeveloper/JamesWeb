@@ -3,12 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>M2God Kontrol Paneli v5 — İçerik Otomasyonu (E194 · Python)</title>
+<title>M2God Kontrol Paneli v6 — İçerik Otomasyonu (E195 · Python)</title>
 <!--
-  E194 · M2GOD KONTROL PANELİ v5 — İÇERİK OTOMASYONU (Python sunuculu)
+  E195 · M2GOD KONTROL PANELİ v6 — İÇERİK OTOMASYONU (Python sunuculu)
   ═════════════════════════════════════════════
   (E193 taban — E177_resim-avif-v6 uyumlu; arama/boyutlandırma/temizle/çeviri AYNEN)
-  E194 YENİLİKLERİ:
+  E195 YENİLİKLERİ:
+  · RESİM ADI ANLAMI: alan değeri MANTIKSAL ad (ör. m2god_logo.png) — gerçek dosya
+    GitHub'ta resimler/<ad>_rkm.js olarak ŞİFRELİ durur; site motoru uzantıyı silip
+    _rkm.js çeker. Alanların altında canlı ipucu + 4 araç düğmesi:
+    🔍 Önizle · ⬆ RMK Yükle · 🖼 PNG→RMK (masaüstünden seç → şifrele) ·
+    🗜 Sıkıştır (çöz → canvas WebP kilobayt küçültme → karşılaştır → yükle)
+  · KUR MOTORU (sitenin EpinFX 6-API zinciri ile aynı): Parasal Eğri sütunlarında
+    para birimi etiketi (USD/TL/EU) + 💱 Kura Çevir (canlı kur: open.er-api.com →
+    currency-api.pages.dev → jsDelivr → Coinbase → floatrates; yedek gömülü kur)
+    — paketler + darkside + liste fiyatı da birlikte çevrilebilir
+  · YENİ ÜRÜN şablonu: klasik M2God düzeni otomatik dolar — fiyat $8 · 15/30 GÜNLÜK
+    paketler · Parasal Eğri 2 sütun (3 → 0.8 · 30 → 8); isteyen + Sütun Ekle ile
+    3.'yü 4.'yü ekler
+  · panel_alan/ özel çalışma klasörü: sunucu çözülen resim karelerini buraya kaydeder
+  E194 ÖZELLİKLERİ (aynen korunuyor):
   · OYUN formunda sürüm alanı YOK — "Ürün Sürümü" yalnız ÜRÜN formunda
     (oyun verisindeki surum/versiyonlar alanları veri olarak korunur; site
     detay panelindeki Version listesi oyunun kendi sürümlerini gösterir)
@@ -152,6 +166,25 @@ main{flex:1;overflow-y:auto;padding:16px 20px;min-width:0}
 .siraSatir .srAd{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .siraSatir .srMuhur{font-size:11px;color:var(--soluk)}
 .ipucuBar{background:#221b0e;border:1px solid #5a4a17;color:#e7c56a;border-radius:8px;padding:8px 12px;font-size:12.5px;margin-bottom:12px}
+
+/* ── E195: resim araç satırı + alan altı ipucu ── */
+.resimAraclar{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;align-items:center}
+.resimAraclar button{padding:3px 8px;font-size:11.5px;border-radius:5px}
+.resimIpucu{font-size:11.5px;color:var(--soluk);margin-top:5px;line-height:1.5}
+.resimIpucu code{font-size:11px}
+.resimCikti{margin-top:8px;border:1px dashed var(--hat);border-radius:8px;padding:8px;background:rgba(255,255,255,.02)}
+.resimCikti .rkmKare{background:repeating-conic-gradient(#1a2233 0% 25%,#121826 0% 50%) 50%/18px 18px;border:1px solid var(--hat);border-radius:8px;padding:6px;min-width:80px;min-height:56px;display:flex;align-items:center;justify-content:center}
+.resimCikti img{max-width:280px;max-height:170px;display:block}
+.oSatir .resimAraclar{margin-top:0;display:inline-flex}
+
+/* ── E195: kur araçları (parasal eğri + paketler) ── */
+.kurSatir{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:8px 0 4px 0;padding:8px 10px;background:var(--panel2);border:1px solid var(--hat);border-radius:8px}
+.kurSatir .kurEt{font-size:12px;color:var(--yazi);white-space:nowrap}
+.kurSatir select{width:auto;min-width:86px;flex:0 0 auto;padding:5px 7px}
+.kurSatir button{padding:5px 10px;font-size:12px}
+.kurBilgi{font-size:11.5px;color:var(--soluk);flex:1 1 100%;line-height:1.5}
+.kurBilgi b{color:var(--yazi)}
+.kurSimge{font-size:12px;color:var(--altin);font-weight:700;min-width:22px;text-align:center;background:var(--panel);border:1px solid var(--hat);border-radius:5px;padding:6px 4px}
 </style>
 </head>
 <body>
@@ -441,13 +474,19 @@ function oyunTasi(i,yon){
 }
 function urunEkle(oi){
   var o=D.oyunlar[oi];if(!o)return;
-  /* E194: akıllı varsayılanlar — güncelleme bugün, logo önerisi oyunun adından, yönlendirici not */
+  /* E194: akıllı varsayılanlar — güncelleme bugün, logo önerisi oyunun adından, yönlendirici not
+     E195: klasik M2God şablonu OTOMATİK DOLAR — kişi isterse düzeltir:
+       · fiyat $8 / MONTH (M2God 30 günlük klasik fiyatı)
+       · paketler: 15 GÜNLÜK $4.56 (+3 hediye gün) · 30 GÜNLÜK $8 (+6 hediye gün)
+       · parasal eğri: 2 SÜTUN — 3 gün → 0.8 · 30 gün → 8 (M2God eğrisinin ilk iki noktası;
+         M2God'da 3. sütun 31 → 8.27'dir — isteyen "+ Sütun Ekle" ile ekler)
+       · donatorMin 11.5 · paketKur USD */
   var oneri=slug(o.ad)+'_logo.png';
-  o.urunler.push({ad:'Yeni Ürün',logo:oneri,fiyat:{tutar:0,paraBirimi:'USD'},periyot:'MONTH',surum:'v1.0',guncelleme:bugun(),aciklama:'',bayraklar:{darkside:false,farmbot:false,shopbot:false,slotYok:false},donatorMin:11.5,paketKur:'USD',paketler:[],darksidePaketler:[],parasalEgri:[],client:{baslik:'',aciklama:'',fotolar:[],ozellikler:[]},trailer:{oyun:sGuven(o.ad).toUpperCase(),urun:'YENİ ÜRÜN',slogan:'',term:'',aciklama:'',foto:''}});
+  o.urunler.push({ad:'Yeni Ürün',logo:oneri,fiyat:{tutar:8,paraBirimi:'USD'},periyot:'MONTH',surum:'v1.0',guncelleme:bugun(),aciklama:'',bayraklar:{darkside:false,farmbot:false,shopbot:false,slotYok:false},donatorMin:11.5,paketKur:'USD',paketler:[{ad:'15 GÜNLÜK',gun:15,fiyat:4.56,hediye:3},{ad:'30 GÜNLÜK',gun:30,fiyat:8,hediye:6}],darksidePaketler:[],parasalEgri:[{gun:3,fiyat:0.8},{gun:30,fiyat:8}],client:{baslik:'',aciklama:'',fotolar:[],ozellikler:[]},trailer:{oyun:sGuven(o.ad).toUpperCase(),urun:'YENİ ÜRÜN',slogan:'',term:'',aciklama:'',foto:''}});
   secim={tur:'urun',oyun:oi,urun:o.urunler.length-1};
   agacAcik[oi]=true;   /* E183: ürün eklerken liste açık kalsın */
   dokun();sahneCiz();agacCiz();
-  sonucYaz($('sahne'),'Yeni ürün eklendi — fiyatı ve paketlerini girmeyi unutma (💰 Fiyat & Paketler bölümü).','ok');
+  sonucYaz($('sahne'),'Yeni ürün eklendi — klasik M2God şablonu dolduruldu: fiyat $8 · 15/30 GÜNLÜK paketler · Parasal Eğri 2 sütun (3→0.8 · 30→8). 💰 Fiyat & Paketler bölümünden düzenle; 3./4. sütun için + Sütun Ekle.','ok');
 }
 /* E194: ürünü oyuncak içinde yukarı/aşağı taşı — site listesi bu sırayla gösterir.
    Oyun formundaki "Ürün Sırası" kutusundan taşınırken OYUN FORMUNDA kalınır;
@@ -519,8 +558,14 @@ function logoSec(obj,anahtar,etiket,kapsa){
   var d=document.createElement('datalist');var did='dl_'+Math.random().toString(36).slice(2,8);d.id=did;
   resimOnerileri().forEach(function(r){var o=document.createElement('option');o.value=r;d.appendChild(o);});
   var i=document.createElement('input');i.type='text';i.setAttribute('list',did);i.value=sGuven(obj[anahtar]);
-  i.oninput=function(){obj[anahtar]=i.value;dokun();};
-  kapsa.appendChild(d);kapsa.appendChild(i);return i;
+  i.oninput=function(){obj[anahtar]=i.value;dokun();if(ip)ip.yaz();};
+  kapsa.appendChild(d);kapsa.appendChild(i);
+  /* E195: canlı eşleme ipucu — JSON değeri → GitHub'taki gerçek şifreli dosya */
+  var ip=resimIpucuSatiri(function(){return i.value;},kapsa);
+  /* E195: 4 araç — Önizle · RMK Yükle · PNG→RMK · Sıkıştır */
+  var cikti=document.createElement('div');cikti.className='resimCikti';kapsa.appendChild(cikti);
+  resimAraclari(kapsa,function(){return i.value;},cikti,function(y){i.value=y;obj[anahtar]=y;dokun();ip.yaz();});
+  return i;
 }
 function chkSatir(obj,anahtar,etiket,kapsa){
   var l=document.createElement('label');
@@ -555,15 +600,16 @@ function listeOzellikler(o,etiket,ipucu){
   k.appendChild(b);
   return k;
 }
-function listePaket(o,etiket){
+function listePaket(o,etiket,kurGet){
   var k=document.createElement('div');k.className='kutu';
-  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">ad · gün · fiyat · hediye (gün) — boş bırakılırsa sitede bu paket görünmez</div>';
+  var simge=(kurGet&&KUR_SIMGE[kurGet()])||'$';
+  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">ad · gün · fiyat ('+esc(simge)+', paket kurunda) · hediye (gün) — boş bırakılırsa sitede bu paket görünmez</div>';
   var L=document.createElement('div');L.className='satirListe';k.appendChild(L);
   function ciz(){
     L.innerHTML='';
     (o||[]).forEach(function(p,i){
       var r=document.createElement('div');r.className='oSatir';
-      [['ad','paket adı','text'],['gun','gün','number'],['fiyat','$','number'],['hediye','hediye','number']].forEach(function(x){
+      [['ad','paket adı','text'],['gun','gün','number'],['fiyat','fiyat '+simge,'number'],['hediye','hediye','number']].forEach(function(x){
         var inp=document.createElement('input');inp.type=x[2];inp.placeholder=x[1];
         inp.value=x[2]==='number'?nSay(p[x[0]]):sGuven(p[x[0]]);
         inp.oninput=function(){p[x[0]]=x[2]==='number'?nSay(inp.value):inp.value;dokun();};
@@ -579,25 +625,94 @@ function listePaket(o,etiket){
   k.appendChild(b);
   return k;
 }
-function listeEgri(o,etiket){
+function listeEgri(o,etiket,kurGet,kurSet,ekFiyat){
+  /* ekFiyat (isteğe bağlı): {paketler:[],darkside:[],fiyat:u.fiyat} — "paketleri de çevir" için */
   var k=document.createElement('div');k.className='kutu';
-  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">parasal eğri: gün → fiyat eşlemesi (site aralıkları buna göre hesaplar)</div>';
+  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">parasal eğri: gün → fiyat eşlemesi (site aralıkları buna göre hesaplar; en az 2 sütun gerekir) · M2God klasik eğri: 3→0.8 · 30→8 · 31→8.27</div>';
+  /* ── E195: sütun para birimi + kur çevirici ──
+     Sütun para birimi = ürünün paketKur'u (site eğriyi bu kurdan okur).
+     Para birimini değiştirmek değerleri DEĞİŞTİRMEZ — ya değerleri yeniden yaz
+     ya "💱 Çevir" ile canlı kur üzerinden otomatik çevirt. */
+  var kurSatir=document.createElement('div');kurSatir.className='kurSatir';
+  var et1=document.createElement('span');et1.className='kurEt';et1.textContent='Sütun para birimi:';kurSatir.appendChild(et1);
+  var kurSel=document.createElement('select');
+  KUR_LISTE.forEach(function(kod){var op=document.createElement('option');op.value=kod;op.textContent=kurEtiket(kod);kurSel.appendChild(op);});
+  kurSel.value=kurGet()||'USD';
+  kurSel.onchange=function(){kurSet(kurSel.value);dokun();ciz();
+    kurBilgi.innerHTML='Para birimi <b>'+esc(kurSel.value)+'</b> olarak işaretlendi — değerler aynen kaldı. Değerleri yeni kura çevirmek istiyorsan "💱 Kura Çevir"i kullan.';
+  };
+  kurSatir.appendChild(kurSel);
+  var kurBilgi=document.createElement('div');kurBilgi.className='kurBilgi';
+  kurBilgi.textContent='Eğri sitede bu para biriminin kurundan okunur (paketKur).';
+  kurSatir.appendChild(kurBilgi);
+  k.appendChild(kurSatir);
   var L=document.createElement('div');L.className='satirListe';k.appendChild(L);
+  function simge(){return KUR_SIMGE[kurGet()]||'$';}
   function ciz(){
     L.innerHTML='';
     (o||[]).forEach(function(p,i){
       var r=document.createElement('div');r.className='oSatir';
-      var g=document.createElement('input');g.type='number';g.placeholder='gün';g.value=nSay(p.gun);
+      var g=document.createElement('input');g.type='number';g.placeholder='gün';g.value=nSay(p.gun);g.title='gün';
       g.oninput=function(){p.gun=nSay(g.value);dokun();};
-      var f=document.createElement('input');f.type='number';f.placeholder='fiyat $';f.value=nSay(p.fiyat);
+      var f=document.createElement('input');f.type='number';f.placeholder='fiyat';f.value=nSay(p.fiyat);f.title='fiyat ('+kurGet()+')';
       f.oninput=function(){p.fiyat=nSay(f.value);dokun();};
-      r.appendChild(g);r.appendChild(f);r.appendChild(aracBtn('✕',function(){o.splice(i,1);ciz();dokun();},'tehlike'));
+      var s=document.createElement('span');s.className='kurSimge';s.textContent=simge();s.title='sütun para birimi (paketKur)';
+      r.appendChild(g);r.appendChild(f);r.appendChild(s);r.appendChild(aracBtn('✕',function(){o.splice(i,1);ciz();dokun();},'tehlike'));
       L.appendChild(r);
     });
   }
   ciz();
-  var b=document.createElement('button');b.className='kck';b.textContent='+ Nokta Ekle';
-  b.onclick=function(){o.push({gun:0,fiyat:0});ciz();dokun();};
+  /* ── E195: 💱 canlı kur çevirici — eğri + (isteğe) paketler + liste fiyatı ── */
+  var cevirSatir=document.createElement('div');cevirSatir.className='kurSatir';
+  var et2=document.createElement('span');et2.className='kurEt';et2.textContent='💱 Kura Çevir:';cevirSatir.appendChild(et2);
+  var hedefSel=document.createElement('select');
+  KUR_LISTE.forEach(function(kod){var op=document.createElement('option');op.value=kod;op.textContent=kurEtiket(kod);hedefSel.appendChild(op);});
+  cevirSatir.appendChild(hedefSel);
+  var paketDahil=document.createElement('label');paketDahil.style.cssText='display:flex;align-items:center;gap:5px;font-size:12px;color:var(--yazi);white-space:nowrap';
+  var pdChk=document.createElement('input');pdChk.type='checkbox';pdChk.checked=true;paketDahil.appendChild(pdChk);
+  paketDahil.appendChild(document.createTextNode('paketleri de çevir'));
+  cevirSatir.appendChild(paketDahil);
+  var bCev=document.createElement('button');bCev.className='kck';bCev.textContent='Çevir';cevirSatir.appendChild(bCev);
+  var bilgi=document.createElement('div');bilgi.className='kurBilgi';
+  bilgi.innerHTML='Örn: sütunları TL seçip 3 günlüğe 300 · 30 günlüğe 2500 yazarsın, sonra <b>TL → USD</b> çevirtirsin — sitenin ücretsiz kur API\'si (open.er-api.com → … → floatrates zinciri) kullanılır, değerler + paketKur güncellenir.';
+  cevirSatir.appendChild(bilgi);
+  bCev.onclick=function(){
+    var kaynak=kurGet()||'USD',hedef=hedefSel.value;
+    if(kaynak===hedef){bilgi.innerHTML='<span style="color:#e7c56a">Kaynak ile hedef aynı ('+esc(kaynak)+') — başka hedef seç.</span>';return;}
+    bCev.disabled=true;bCev.textContent='kur çekiliyor…';
+    kurGetir(function(K){
+      bCev.disabled=false;bCev.textContent='Çevir';
+      var oran=kurCevir(1,KUR_KOD[kaynak],KUR_KOD[hedef],K.rates);
+      if(!oran){bilgi.innerHTML='<span style="color:#ff9d95">Kur okunamadı ('+esc(kaynak)+' → '+esc(hedef)+').</span>';return;}
+      var adet=(o||[]).length+(pdChk.checked?(((ekFiyat&&ekFiyat.paketler)||[]).length+((ekFiyat&&ekFiyat.darkside)||[]).length+((ekFiyat&&ekFiyat.fiyat)?1:0)):0);
+      var onay='Kur: 1 '+kaynak+' = '+oran+' '+hedef+'   ('+K.kaynak+(K.canli?', canlı':', GÖMÜLÜ YEDEK')+')\n\n'+
+        'Parasal eğri '+adet+' değer '+kaynak+' → '+hedef+' çevrilecek'+(pdChk.checked?' + paketler + liste fiyatı':'')+'.\nDevam edilsin mi?';
+      if(!confirm(onay))return;
+      (o||[]).forEach(function(e){e.fiyat=kurYuvarla(kurCevir(nSay(e.fiyat),KUR_KOD[kaynak],KUR_KOD[hedef],K.rates));});
+      if(pdChk.checked&&ekFiyat){
+        (ekFiyat.paketler||[]).forEach(function(pk){pk.fiyat=kurYuvarla(kurCevir(nSay(pk.fiyat),KUR_KOD[kaynak],KUR_KOD[hedef],K.rates));});
+        (ekFiyat.darkside||[]).forEach(function(pk){pk.fiyat=kurYuvarla(kurCevir(nSay(pk.fiyat),KUR_KOD[kaynak],KUR_KOD[hedef],K.rates));});
+        if(ekFiyat.fiyat){
+          var fb=KUR_KOD[ekFiyat.fiyat.paraBirimi]||'USD';
+          if(fb===KUR_KOD[kaynak])
+            ekFiyat.fiyat.tutar=kurYuvarla(kurCevir(nSay(ekFiyat.fiyat.tutar),KUR_KOD[kaynak],KUR_KOD[hedef],K.rates));
+          ekFiyat.fiyat.paraBirimi=hedef;
+        }
+      }
+      kurSet(hedef);
+      bilgi.innerHTML='Çevrildi: <b>'+esc(kaynak)+' → '+esc(hedef)+'</b> · kur: <b>'+oran+'</b> · kaynak: <b>'+esc(K.kaynak)+(K.canli?' (canlı)':' (gömülü yedek)')+'</b>'+(pdChk.checked?' · paketler + liste fiyatı da çevrildi':'');
+      dokun();sahneCiz();
+    });
+  };
+  k.appendChild(cevirSatir);
+  var b=document.createElement('button');b.className='kck';b.textContent='+ Sütun Ekle';
+  b.title='3. 4. sütunları ekle — M2God klasik eğrisindeki 31 → 8.27 gibi';
+  b.onclick=function(){
+    var son=(o&&o.length)?o[o.length-1]:null;
+    var yeniGun=son?(nSay(son.gun)+1):3;
+    o.push({gun:yeniGun,fiyat:son?nSay(son.fiyat):0});
+    ciz();dokun();
+  };
   k.appendChild(b);
   return k;
 }
@@ -625,15 +740,20 @@ function listeMetin(o,etiket){
 }
 function listeFoto(o,etiket){
   var k=document.createElement('div');k.className='kutu';
-  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">client fotoğrafları — sırayla görünür</div>';
+  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">client fotoğrafları — sırayla görünür · her satırda: 🔍 önizle · ⬆ RMK yükle · 🖼 PNG→RMK · 🗜 sıkıştır</div>';
   var L=document.createElement('div');L.className='satirListe';k.appendChild(L);
+  /* E195: satır araçlarının ortak sonuç kutusu */
+  var cikti=document.createElement('div');cikti.className='resimCikti';
   function ciz(){
     L.innerHTML='';
     (o||[]).forEach(function(v,i){
       var r=document.createElement('div');r.className='oSatir';
       var inp=document.createElement('input');inp.type='text';inp.setAttribute('list','dl_foto');inp.value=sGuven(v);
       inp.oninput=function(){o[i]=inp.value;dokun();};
-      r.appendChild(inp);r.appendChild(aracBtn('✕',function(){o.splice(i,1);ciz();dokun();},'tehlike'));
+      r.appendChild(inp);
+      /* E195: satır içi 4 resim aracı — sonuçlar alttaki ortak kutuya yazılır */
+      resimAraclari(r,(function(inp2){return function(){return inp2.value;};})(inp),cikti,(function(inp2){return function(y){inp2.value=y;o[i]=y;dokun();};})(inp));
+      r.appendChild(aracBtn('✕',function(){o.splice(i,1);ciz();dokun();},'tehlike'));
       L.appendChild(r);
     });
   }
@@ -643,10 +763,330 @@ function listeFoto(o,etiket){
     document.body.appendChild(d);
   }
   ciz();
+  k.appendChild(cikti);
   var b=document.createElement('button');b.className='kck';b.textContent='+ Foto Ekle';
   b.onclick=function(){o.push('');ciz();dokun();};
   k.appendChild(b);
   return k;
+}
+
+/* ══════════ E195: KUR MOTORU — sitenin EpinFX zinciri ile BİREBİR kaynak sırası ══════════
+   Sitedeki gibi USD bazlı kur; sunucudaki /api/kur aynı 6-API zincirini sırar
+   (open.er-api.com → currency-api.pages.dev → jsDelivr → Coinbase → floatrates),
+   hepsi düşerse gömülü yedek kur kullanılır (site FALLBACK ile aynı değerler). */
+var KUR_ONBELLEK=null,KUR_ZAMAN=0;
+var KUR_SIMGE={USD:'$',TL:'₺',EU:'€'};
+var KUR_KOD={USD:'USD',TL:'TRY',EU:'EUR'};   /* panel paketKur kodu → ISO kod */
+var KUR_LISTE=['USD','TL','EU'];
+function kurEtiket(k){var s=KUR_SIMGE[k]||k;return k+' ('+s+')';}
+function kurGetir(cb){
+  var simdi=Date.now();
+  if(KUR_ONBELLEK&&simdi-KUR_ZAMAN<600000){cb(KUR_ONBELLEK);return;}
+  if(!backendVar()){   /* dosyadan açıldı (file://) — gömülü yedek */
+    KUR_ONBELLEK={canli:false,kaynak:'gömülü yedek',rates:{USD:1,TRY:48.468802,EUR:0.860279}};
+    KUR_ZAMAN=simdi;cb(KUR_ONBELLEK);return;
+  }
+  fetch('/api/kur',{cache:'no-store'}).then(function(r){return r.json();}).then(function(j){
+    if(!j||!j.ok||!j.rates)throw new Error((j&&j.hata)||'kur alınamadı');
+    KUR_ONBELLEK=j;KUR_ZAMAN=simdi;cb(j);
+  }).catch(function(){
+    KUR_ONBELLEK={canli:false,kaynak:'gömülü yedek',rates:{USD:1,TRY:48.468802,EUR:0.860279}};
+    KUR_ZAMAN=simdi;cb(KUR_ONBELLEK);
+  });
+}
+function kurCevir(tutar,kaynakKod,hedefKod,rates){
+  var k=kaynakKod==='USD'?1:(nSay(rates[kaynakKod])||0);
+  var h=hedefKod==='USD'?1:(nSay(rates[hedefKod])||0);
+  if(!k||!h)return 0;
+  return tutar/k*h;
+}
+function kurYuvarla(v){
+  if(!isFinite(v))return 0;
+  if(Math.abs(v)>=100)return Math.round(v);
+  if(Math.abs(v)>=10)return Math.round(v*10)/10;
+  return Math.round(v*100)/100;
+}
+/* E195: kur satırı — "💱 Çevir: [hedef] [Çevir]" + bilgi satırı.
+   kaynakGet/set: ürünün paketKur'u (USD/TL/EU). fiyatNesneleri: [{nesne,alan}] —
+   paketKur para birimindeki sayı alanları. ekstra(fn) — dönüşüm sonrası ek iş
+   (ör. fiyat.tutar+paraBirimi). kapsa: satırın ekleneceği yer. */
+function kurAraci(kapsa,kaynakGet,kaynakSet,fiyatNesneleri,ekstra){
+  var satir=document.createElement('div');satir.className='kurSatir';
+  var et=document.createElement('span');et.className='kurEt';
+  et.textContent='💱 Kura Çevir:';satir.appendChild(et);
+  var hedefSel=document.createElement('select');
+  KUR_LISTE.forEach(function(k){var o=document.createElement('option');o.value=k;o.textContent=kurEtiket(k);hedefSel.appendChild(o);});
+  satir.appendChild(hedefSel);
+  var btn=document.createElement('button');btn.className='kck';btn.textContent='Çevir';
+  satir.appendChild(btn);
+  var bilgi=document.createElement('div');bilgi.className='kurBilgi';
+  bilgi.innerHTML='Sütun para birimiyle yazdığın değerleri başka kura çevirir — site <b>open.er-api.com → currency-api.pages.dev → jsDelivr → Coinbase → floatrates</b> zincirini kullanır (12 saat önbellek).';
+  satir.appendChild(bilgi);
+  btn.onclick=function(){
+    var kaynak=kaynakGet()||'USD',hedef=hedefSel.value;
+    if(kaynak===hedef){bilgi.innerHTML='<span style="color:#e7c56a">Kaynak ile hedef aynı ('+esc(kaynak)+') — başka bir hedef seç.</span>';return;}
+    btn.disabled=true;btn.textContent='kur çekiliyor…';
+    kurGetir(function(K){
+      btn.disabled=false;btn.textContent='Çevir';
+      var oran=kurCevir(1,KUR_KOD[kaynak],KUR_KOD[hedef],K.rates);
+      if(!oran){bilgi.innerHTML='<span style="color:#ff9d95">Kur okunamadı ('+esc(kaynak)+' → '+esc(hedef)+').</span>';return;}
+      var n=(fiyatNesneleri||[]).length;
+      var onay='Kur: 1 '+kaynak+' = '+oran+' '+hedef+'   ('+K.kaynak+(K.canli?', canlı':', GÖMÜLÜ YEDEK')+')\n\n'+
+        n+' değer '+kaynak+' → '+hedef+' çevrilecek'+(ekstra?' (liste fiyatı dahil)':'')+'.\nDevam edilsin mi?';
+      if(!confirm(onay))return;
+      (fiyatNesneleri||[]).forEach(function(x){x.nesne[x.alan]=kurYuvarla(kurCevir(nSay(x.nesne[x.alan]),KUR_KOD[kaynak],KUR_KOD[hedef],K.rates));});
+      kaynakSet(hedef);
+      if(ekstra)ekstra(hedef,K);
+      bilgi.innerHTML='Çevrildi: <b>'+esc(kaynak)+' → '+esc(hedef)+'</b> · kur: <b>'+oran+'</b> · kaynak: <b>'+esc(K.kaynak)+(K.canli?' (canlı)':' (gömülü yedek)')+'</b>';
+      dokun();sahneCiz();
+    });
+  };
+  kapsa.appendChild(satir);
+  return satir;
+}
+
+/* ══════════ E195: RESİM ARAÇ KÜMESİ — her resim adı alanının yanına 4 düğme ══════════
+   🔍 Önizle   : GitHub'daki resimler/<taban>_rkm.js'i sunucuda çözüp gösterir
+   ⬆ RMK Yükle : hazır *_rkm.js dosyasını seç → hedef adla GitHub'a push
+   🖼 PNG→RMK  : masaüstünden PNG/WebP/JPG seç → canvas'ta küçült/WebP'le → şifrele → push
+   🗜 Sıkıştır : GitHub'daki resmi çöz → canvas WebP kalite ayarlı küçültme → karşılaştır → push
+   adAlFn(): alanın anlık değeri (m2god_logo.png | m2god_logo | SiteLogo …)
+   cikti: sonuçların yazılacağı div · adYazFn(yeni): (isteğe bağlı) alan değerini yazar */
+function resimAraclari(kapsa,adAlFn,cikti,adYazFn){
+  var satir=document.createElement('div');satir.className='resimAraclar';
+  function taban(){var v=sGuven(adAlFn()).trim();return v?rkmTaban(v):'';}
+  function goster(html){cikti.innerHTML=html;}
+  function kapat(){cikti.innerHTML='';}
+  function hata(m){goster('<div class="sonuc hata">'+esc(m)+'</div>');}
+  function bekliyor(m){goster('<div class="bosNot">'+esc(m||'çalışıyor…')+'</div>');}
+
+  /* ortak: RKM objesini baytlara çöz (tarayıcı) */
+  function rkmBayt(obj){
+    var ham=atob(obj.d.replace(/\s+/g,''));
+    var bayt=new Uint8Array(ham.length);
+    for(var i=0;i<ham.length;i++)bayt[i]=ham.charCodeAt(i)^obj.k[i%obj.k.length];
+    return bayt;
+  }
+  /* ortak: RKM JS metnini GitHub'a yükle */
+  function yukleJs(tabanAd,metin,okCb){
+    if(!backendVar()){hata('sunucu yok — kontrol_paneli.py ile başlat');return;}
+    if(RESIMLER_GH.indexOf(tabanAd)>=0&&!confirm('resimler/'+tabanAd+'_rkm.js GitHub\'da ZATEN VAR.\nÜzerine yazılsın mı?'))return;
+    bekliyor('GitHub\'a yükleniyor… resimler/'+tabanAd+'_rkm.js');
+    fetch('/api/gh/resim-yukle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ad:tabanAd,icerik:metin})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+    .then(function(x){
+      if(!x.ok||!x.j.ok)throw new Error((x.j&&x.j.hata)||('HTTP hata'));
+      if(RESIMLER_GH.indexOf(tabanAd)<0){RESIMLER_GH.push(tabanAd);}
+      goster('<div class="sonuc ok">Yüklendi: <b>resimler/'+esc(tabanAd)+'_rkm.js</b> (commit '+(x.j.commit||'?')+') — raw CDN ~5 dk içinde tazelenir.</div>');
+      try{agacCiz();}catch(e){}
+      if(okCb)okCb();
+    })
+    .catch(function(e){hata('yükleme hatası: '+e.message+' (token: Ayarlar bölümünde kayıtlı olmalı — Contents: write)');});
+  }
+  /* ortak: sunucudan çöz (kare base64 + boyutlar) */
+  function rkmCoz(tabanAd,cb){
+    if(!backendVar()){hata('sunucu yok — kontrol_paneli.py ile başlat');return;}
+    bekliyor('GitHub\'dan çözülüyor… '+tabanAd+'_rkm.js');
+    fetch('/api/rkm/coz',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ad:tabanAd})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+    .then(function(x){
+      if(!x.ok||!x.j.ok)throw new Error((x.j&&x.j.hata)||('HTTP hata'));
+      cb(x.j);
+    })
+    .catch(function(e){hata('RMK çözülemedi: '+e.message);});
+  }
+  /* ortak: çözülmüş kare (base64) → önizleme + bilgi */
+  function kareGoster(j,notEk){
+    var ham=atob(j.veri);
+    var bayt=new Uint8Array(ham.length);
+    for(var i=0;i<ham.length;i++)bayt[i]=ham.charCodeAt(i);
+    var blob=new Blob([bayt],{type:j.mime});
+    goster('<div class="rkmKare"><img src="'+URL.createObjectURL(blob)+'" alt=""></div>'+
+      '<div class="rkmBilgi"><b>'+esc(j.ad)+'</b><br>boyut: <b>'+j.w+'×'+j.h+'</b> · biçim: <b>'+j.mime+
+      '</b> · kare: <b>'+kb(j.boyut)+'</b> · js dosyası: <b>'+kb(j.dosyaBoyut)+'</b><br>'+
+      '<span style="color:var(--soluk)">'+esc(notEk||'')+'</span></div>');
+  }
+  /* ortak: Image → canvas → kodlanmış kare (WebP/PNG) → RKM JS metni */
+  function imgdenRkm(im,tabanAd,f,q,genisSinir,cb){
+    var w=im.naturalWidth,h=im.naturalHeight;
+    if(!w||!h){cb(new Error('resim boyutu okunamadı'));return;}
+    var cw=genisSinir>0&&w>genisSinir?genisSinir:w;
+    var ch=genisSinir>0&&w>genisSinir?Math.round(h*cw/w):h;
+    var cv=document.createElement('canvas');cv.width=cw;cv.height=ch;
+    cv.getContext('2d').drawImage(im,0,0,cw,ch);
+    cv.toBlob(function(blob){
+      if(!blob){cb(new Error('canvas kodlaması başarısız (WebP desteklenmiyorsa PNG seç)'));return;}
+      var oku=new FileReader();
+      oku.onload=function(){
+        try{
+          var bayt=new Uint8Array(oku.result);
+          var kaliteEt=(f==='p'?'png':'webp-q'+Math.round(q*100))+(cw!==w?' · '+cw+'x'+ch:'');
+          cb(null,{metin:rkmJsUret(tabanAd,cw,ch,f,bayt,kaliteEt),bayt:bayt,cw:cw,ch:ch,mime:(f==='p'?'image/png':'image/webp')});
+        }catch(e){cb(e);}
+      };
+      oku.readAsArrayBuffer(blob);
+    },f==='p'?'image/png':'image/webp',q);
+  }
+
+  /* ── 1) 🔍 Önizle ── */
+  var bOn=document.createElement('button');bOn.textContent='🔍 Önizle';bOn.title='GitHub\'daki şifreli resmi çözüp burada gösterir';
+  bOn.onclick=function(){
+    var t=taban();
+    if(!t){hata('resim adı boş — önce alana bir ad yaz (ör. m2god_logo.png)');return;}
+    rkmCoz(t,function(j){kareGoster(j,'GitHub raw\'dan çözüldü — site motoruyla aynı yol · kopya: panel_alan/'+j.ad+'_'+j.w+'x'+j.h);});
+  };
+  satir.appendChild(bOn);
+
+  /* ── 2) ⬆ RMK Yükle ── */
+  var fRMK=document.createElement('input');fRMK.type='file';fRMK.accept='.js,text/javascript';fRMK.style.display='none';
+  satir.appendChild(fRMK);
+  var bYuk=document.createElement('button');bYuk.textContent='⬆ RMK Yükle';bYuk.title='Hazır şifreli *_rkm.js dosyasını bu adla GitHub\'a yükle';
+  bYuk.onclick=function(){
+    var t=taban();
+    if(!t){hata('resim adı boş — önce alana bir ad yaz');return;}
+    fRMK.click();
+  };
+  fRMK.onchange=function(){
+    if(!this.files||!this.files[0]){this.value='';return;}
+    var f=this.files[0];this.value='';
+    var t=taban();
+    var oku=new FileReader();
+    oku.onload=function(){
+      try{
+        var pak=rkmObjCikar(String(oku.result));
+        var metin=String(oku.result);
+        if(pak.ad!==t){   /* iç anahtar hedef adla değiştirilir — site böyle bulur */
+          var bayt=rkmBayt(pak.obj);
+          var kaliteEt='rkm-yeniden-adlandirildi';
+          metin=rkmJsUret(t,pak.obj.w,pak.obj.h,pak.obj.f,bayt,kaliteEt);
+        }
+        yukleJs(t,metin);
+      }catch(e){hata(e.message);}
+    };
+    oku.readAsText(f);
+  };
+  satir.appendChild(bYuk);
+
+  /* ── 3) 🖼 PNG→RMK ── */
+  var fPNG=document.createElement('input');fPNG.type='file';fPNG.accept='image/png,image/webp,image/jpeg,image/avif,image/*';fPNG.style.display='none';
+  satir.appendChild(fPNG);
+  var bDon=document.createElement('button');bDon.textContent='🖼 PNG→RMK';bDon.title='Masaüstünden resim seç → küçült/WebP → RKM şifrele → GitHub\'a yükle';
+  bDon.onclick=function(){
+    var t=taban();
+    if(!t){hata('resim adı boş — önce alana bir ad yaz (ör. newage_logo.png)');return;}
+    fPNG.click();
+  };
+  fPNG.onchange=function(){
+    if(!this.files||!this.files[0]){this.value='';return;}
+    var f=this.files[0];this.value='';
+    var t=taban();
+    var url=URL.createObjectURL(f);
+    var im=new Image();
+    im.onload=function(){
+      goster('<div class="rkmKare"><img src="'+url+'" alt=""></div>'+
+        '<div class="rkmBilgi"><b>'+esc(f.name)+'</b> · '+kb(f.size)+' · '+im.naturalWidth+'×'+im.naturalHeight+
+        '<br><span style="color:var(--soluk)">hedef: resimler/'+esc(t)+'_rkm.js</span></div>');
+      var ayar=document.createElement('div');ayar.className='yatay';ayar.style.marginTop='8px';
+      var w1=document.createElement('div');aln(w1,'Biçim');
+      var selF=document.createElement('select');
+      [['w','WebP (önerilen — küçük)'],['p','PNG (kayıpsız)']].forEach(function(x){var o=document.createElement('option');o.value=x[0];o.textContent=x[1];selF.appendChild(o);});
+      w1.appendChild(selF);ayar.appendChild(w1);
+      var w2=document.createElement('div');aln(w2,'WebP kalite (50-100)');
+      var inQ=document.createElement('input');inQ.type='number';inQ.min='50';inQ.max='100';inQ.value='92';w2.appendChild(inQ);ayar.appendChild(w2);
+      var w3=document.createElement('div');aln(w3,'Genişlik sınırı (px — 0: aynen)');
+      var inW=document.createElement('input');inW.type='number';inW.min='0';inW.value='0';w3.appendChild(inW);ayar.appendChild(w3);
+      cikti.appendChild(ayar);
+      var bCev=document.createElement('button');bCev.className='ana';bCev.textContent='🔄 Dönüştür ve Önizle';bCev.style.marginTop='8px';
+      cikti.appendChild(bCev);
+      var sonuc=null;
+      bCev.onclick=function(){
+        bCev.disabled=true;
+        imgdenRkm(im,t,selF.value,Math.min(1,Math.max(.5,nSay(inQ.value)/100)),nInt(inW.value),function(e,r){
+          bCev.disabled=false;
+          if(e){hata(e.message);return;}
+          sonuc=r;
+          goster('<div class="rkmKare"><img src="'+URL.createObjectURL(new Blob([r.bayt],{type:r.mime}))+'" alt=""></div>'+
+            '<div class="rkmBilgi"><b>'+esc(t)+'_rkm.js</b> hazır<br>çerçeve: <b>'+r.cw+'×'+r.ch+'</b> · biçim: <b>'+r.mime+
+            '</b><br>orijinal: <b>'+kb(f.size)+'</b> → rkm kare: <b>'+kb(r.bayt.length)+'</b> · js dosyası: <b>'+kb(r.metin.length)+'</b></div>');
+          var bUp=document.createElement('button');bUp.className='ana';bUp.textContent='⬆ GitHub\'a Yükle';bUp.style.marginTop='8px';
+          bUp.onclick=function(){
+            bUp.disabled=true;
+            yukleJs(t,r.metin,function(){
+              if(adYazFn&&!sGuven(adAlFn()).trim())adYazFn(t+'.png');
+            });
+          };
+          cikti.appendChild(bUp);
+        });
+      };
+    };
+    im.onerror=function(){hata('resim açılamadı — biçim desteklenmiyor olabilir');};
+    im.src=url;
+  };
+  satir.appendChild(bDon);
+
+  /* ── 4) 🗜 Sıkıştır ── */
+  var bSik=document.createElement('button');bSik.textContent='🗜 Sıkıştır';bSik.title='GitHub\'daki resmi çöz → WebP kalite ayarıyla kilobayt küçült → karşılaştır → yükle';
+  bSik.onclick=function(){
+    var t=taban();
+    if(!t){hata('resim adı boş — önce alana bir ad yaz');return;}
+    rkmCoz(t,function(j){
+      var ham=atob(j.veri);
+      var bayt=new Uint8Array(ham.length);
+      for(var i=0;i<ham.length;i++)bayt[i]=ham.charCodeAt(i);
+      var onceKb=j.boyut,dosyaOnceKb=j.dosyaBoyut;
+      var url=URL.createObjectURL(new Blob([bayt],{type:j.mime}));
+      var im=new Image();
+      im.onload=function(){
+        goster('<div class="rkmKare"><img src="'+url+'" alt=""></div>'+
+          '<div class="rkmBilgi"><b>'+esc(j.ad)+'</b> · '+j.w+'×'+j.h+' · biçim: '+j.mime+' · kare: <b>'+kb(onceKb)+'</b> · js dosyası: <b>'+kb(dosyaOnceKb)+'</b>'+
+          '<br><span style="color:var(--soluk)">canvas WebP ile yeniden kodlanacak — kaliteyi düşürdükçe kilobayt düşer</span></div>');
+        var ayar=document.createElement('div');ayar.className='yatay';ayar.style.marginTop='8px';
+        var w2=document.createElement('div');aln(w2,'WebP kalite (50-95)');
+        var inQ=document.createElement('input');inQ.type='number';inQ.min='50';inQ.max='95';inQ.value='80';w2.appendChild(inQ);ayar.appendChild(w2);
+        var w3=document.createElement('div');aln(w3,'Genişlik sınırı (px — 0: aynen)');
+        var inW=document.createElement('input');inW.type='number';inW.min='0';inW.value='0';w3.appendChild(inW);ayar.appendChild(w3);
+        cikti.appendChild(ayar);
+        var bS=document.createElement('button');bS.className='ana';bS.textContent='🗜 Sıkıştır ve Önizle';bS.style.marginTop='8px';
+        cikti.appendChild(bS);
+        var sonuc=null;
+        bS.onclick=function(){
+          bS.disabled=true;
+          imgdenRkm(im,t,'w',Math.min(.95,Math.max(.5,nSay(inQ.value)/100)),nInt(inW.value),function(e,r){
+            bS.disabled=false;
+            if(e){hata(e.message);return;}
+            sonuc=r;
+            var yuzde=Math.round((1-r.bayt.length/onceKb)*100);
+            goster('<div class="rkmKare"><img src="'+URL.createObjectURL(new Blob([r.bayt],{type:r.mime}))+'" alt=""></div>'+
+              '<div class="rkmBilgi"><b>'+esc(t)+'_rkm.js</b> (sıkıştırılmış)<br>çerçeve: <b>'+r.cw+'×'+r.ch+'</b> · webp'+
+              '<br>kare: <b>'+kb(onceKb)+'</b> → <b>'+kb(r.bayt.length)+'</b> <span style="color:'+(yuzde>0?'#7ee2a0':'#e7c56a')+'">('+(yuzde>0?'−'+yuzde+'%':'+ '+(-yuzde)+'%')+' kilobayt)</span>'+
+              '<br>js dosyası: <b>'+kb(dosyaOnceKb)+'</b> → <b>'+kb(r.metin.length)+'</b></div>');
+            var bUp=document.createElement('button');bUp.className='ana';bUp.textContent='⬆ GitHub\'a Yükle';bUp.style.marginTop='8px';
+            bUp.onclick=function(){bUp.disabled=true;yukleJs(t,sonuc.metin);};
+            cikti.appendChild(bUp);
+            if(r.bayt.length>=onceKb&&!confirm('Sonuç küçülmedi ('+kb(r.bayt.length)+' ≥ '+kb(onceKb)+').\nYine de yüklemek istiyor musun? Kaliteyi düşürüp tekrar deneyebilirsin.'))bUp.remove();
+          });
+        };
+      };
+      im.onerror=function(){hata('çözülen kare tarayıcıda açılamadı (biçim: '+j.mime+')');};
+      im.src=url;
+    });
+  };
+  satir.appendChild(bSik);
+
+  kapsa.appendChild(satir);
+}
+/* E195: alan altı canlı ipucu — JSON değeri ↔ gerçek GitHub dosyası eşlemesi */
+function resimIpucuSatiri(adAlFn,kapsa){
+  var ip=document.createElement('div');ip.className='resimIpucu';
+  function yaz(){
+    var v=sGuven(adAlFn()).trim();
+    ip.innerHTML=v
+      ?('JSON değeri: <code>'+esc(v)+'</code> → gerçek dosya: <code>resimler/'+esc(rkmTaban(v))+'_rkm.js</code> <b style="color:#e7c56a">(şifreli RKM)</b> — site uzantıyı silip _rkm.js çeker; .png asla indirilmez')
+      :'resim adı boş — boşsa resim yok';
+  }
+  yaz();
+  kapsa.appendChild(ip);
+  return {yaz:yaz};
 }
 </script>
 <script>
@@ -860,11 +1300,21 @@ function renderUrun(o,u){
     'gün/fiyat hesaplayıcısı (parasal eğri) ve Discord bağış kilidi (Donator Min).';
   gF.appendChild(notF);
   var gF1=document.createElement('div');gF1.className='izgara';gF.appendChild(gF1);
-  secAlan(u,'paketKur','Paket Kur Simgesi',gF1,['USD','TL','EU']);
+  /* E195: paketKur canlı select — değişince form tazelenir (sütun simgeleri + paket etiketleri güncellenir) */
+  (function(){
+    aln(gF1,'Paket Kur (sütun para birimi)');
+    var s=document.createElement('select');
+    KUR_LISTE.forEach(function(v){var op=document.createElement('option');op.value=v;op.textContent=kurEtiket(v);if(sGuven(u.paketKur||'USD')===v)op.selected=true;s.appendChild(op);});
+    s.onchange=function(){u.paketKur=s.value;dokun();sahneCiz();};
+    var not=document.createElement('div');not.className='ipucu';not.style.marginTop='4px';
+    not.textContent='Parasal eğri sütunları ve paket fiyatları bu kurdan okunur; değiştirince değerler aynen kalır — çevirmek için Parasal Eğri\'deki "💱 Kura Çevir"i kullan.';
+    gF1.appendChild(s);gF1.appendChild(not);
+  })();
   num(u,'donatorMin','Donator Min ($ — bağış kilidi)',gF1,'0.5');
-  gF.appendChild(listePaket(u.paketler,'Paketler'));
-  gF.appendChild(listePaket(u.darksidePaketler,'Darkside Paketler'));
-  gF.appendChild(listeEgri(u.parasalEgri,'Parasal Eğri'));
+  var kurGet=function(){return u.paketKur||'USD';};
+  gF.appendChild(listePaket(u.paketler,'Paketler',kurGet));
+  gF.appendChild(listePaket(u.darksidePaketler,'Darkside Paketler',kurGet));
+  gF.appendChild(listeEgri(u.parasalEgri,'Parasal Eğri',kurGet,function(v){u.paketKur=v;},{paketler:u.paketler,darkside:u.darksidePaketler,fiyat:u.fiyat}));
 
   /* ── 4) 🏷️ BAYRAKLAR — ürün kartı etiketleri ve satın alma filtreleri ── */
   var gB=akordeonKutu(p,'urun_bayrak','🏷️ Bayraklar','etiket + filtre',
@@ -901,7 +1351,7 @@ function renderUrun(o,u){
   txt(u.trailer,'urun','Trailer Ürün (büyük harf)',gT1);
   txt(u.trailer,'slogan','Slogan',gT1);
   txt(u.trailer,'term','Term',gT1);
-  txt(u.trailer,'foto','Foto (resim adı)',gT1);
+  logoSec(u.trailer,'foto','Foto (resim adı)',gT1);   /* E195: resim ipucu + 4 araç */
   txtAlan(u.trailer,'aciklama','Trailer Açıklaması',gT);
 }
 </script>
