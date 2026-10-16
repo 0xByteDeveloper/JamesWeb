@@ -3,23 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>M2God Kontrol Paneli v4 — İçerik Otomasyonu (E193 · Python)</title>
+<title>M2God Kontrol Paneli v5 — İçerik Otomasyonu (E194 · Python)</title>
 <!--
-  E193 · M2GOD KONTROL PANELİ v4 — İÇERİK OTOMASYONU (Python sunuculu)
+  E194 · M2GOD KONTROL PANELİ v5 — İÇERİK OTOMASYONU (Python sunuculu)
   ═════════════════════════════════════════════
-  (E186 paneli E177_resim-avif-v6'ya uyarlandı — E187 zinciri):
-  · Toplu Sıkıştır / RKMP bölümü KALDIRILDI (canlı site paket tüketmiyor;
-    istenirse E186 paketindeki panel geri getirilebilir)
-  · ağaç arama + boyutlandırma (E183) · Verileri Temizle (E184) ·
-    Metinler tek kaynak + otomatik çeviri (E185) AYNEN KORUNDU
-  · Oyun kartındaki sürüm alanı ÜRÜNÜN (hile paketinin) sürümüdür —
-    oyunun (Metin2 vb.) sürümü değil; etiket 'Ürün Sürümü' olarak netleşti
-  Panel artık JSON EDİTÖRÜ değil, JSON ÜRETİCİSİDİR:
-  · Sol ağaçta oyunlar + ürünler görünür; oyun/ürün ekle, sil, güncelle
-  · Fiyat, paketler, parasal eğri, client, trailer, videolar, metinler…
-    her şey formlardan yönetilir; JSON arka planda otomatik üretilir
-  · JSON'u görmek isteyen "JSON'u Gör" çekmecesini açar (isteğe bağlı)
-  · GitHub'dan çek / GitHub'a yükle / dosyadan yükle / JSON indir korunur
+  (E193 taban — E177_resim-avif-v6 uyumlu; arama/boyutlandırma/temizle/çeviri AYNEN)
+  E194 YENİLİKLERİ:
+  · OYUN formunda sürüm alanı YOK — "Ürün Sürümü" yalnız ÜRÜN formunda
+    (oyun verisindeki surum/versiyonlar alanları veri olarak korunur; site
+    detay panelindeki Version listesi oyunun kendi sürümlerini gösterir)
+  · ÜRÜN formu akordeon kategorili: 📋 List Bilgisi (sitedeki liste kartında
+    görünenler) · 🧩 Detay Panel Bilgisi · 💰 Fiyat & Paketler · 🏷️ Bayraklar ·
+    🖥️ Client · 🎬 Trailer — başlığa tıkla: açılır/kapanır (büyür/küçülür)
+  · 🖼️ RESİMLER bölümü: RMK → resim önizleme (GitHub'dan veya dosyadan) +
+    resim → RKM dönüştürme (tarayıcıda canvas: PNG/WebP) + GitHub'a yükleme
+    (resimler/<ad>_rkm.js) — sunucu uçları: /api/rkm/coz, /api/gh/resim-yukle
+  · ↕ OYUN SIRALA görünümü: oyunları yukarı/aşağı taşı (1. sıra değişir:
+    vitrin + liste + satın alma paneli sırası) · ağaçtaki ↑/↓ da aynen var
+  · Ürün satırında ⧉ Kopyala düğmesi · yeni oyun/ürün akışı güçlendirildi
+    (otomatik logo önerisi, güncelleme tarihi dolu gelir, yönlendirici notlar)
   Panel yalnız site_icerik.json ile çalışır; sitenin kendisine dokunmaz.
   Bilinmeyen anahtarlar (genişletilebilirlik) D objesinde aynen korunur.
 -->
@@ -122,6 +124,34 @@ main{flex:1;overflow-y:auto;padding:16px 20px;min-width:0}
 .dilIzgara label{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--soluk);min-width:0}
 .dilIzgara label span{min-width:22px;color:var(--altin);font-weight:600}
 .dilIzgara label input{flex:1;min-width:0}
+
+/* ── E194: akordeon kategoriler (ürün formu + resimler) ── */
+.akKutu{background:var(--panel);border:1px solid var(--hat);border-radius:10px;margin-bottom:10px;overflow:hidden;transition:border-color .15s}
+.akKutu.acik{border-color:#3a4a68}
+.akBaslik{display:flex;align-items:center;gap:8px;padding:11px 14px;cursor:pointer;user-select:none;background:linear-gradient(180deg,rgba(217,164,65,.07),transparent)}
+.akBaslik:hover{background:#1a2233}
+.akBaslik .akOk{color:var(--altin);font-size:12px;width:14px;text-align:center;transition:transform .18s}
+.akKutu.acik .akOk{transform:rotate(90deg)}
+.akBaslik .akT{font-size:13px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--altin)}
+.akBaslik .akSayi{font-size:11px;color:var(--soluk)}
+.akBaslik .akIpucuK{flex:1;font-size:11.5px;color:var(--soluk);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-left:10px}
+.akGovde{display:none;padding:4px 16px 14px 16px;border-top:1px solid var(--hat)}
+.akKutu.acik .akGovde{display:block}
+.akGovde .kutu{background:var(--panel2);margin-top:10px}
+
+/* ── E194: resimler bölümü ── */
+.rkmOnizleme{display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.rkmOnizleme .rkmKare{background:repeating-conic-gradient(#1a2233 0% 25%,#121826 0% 50%) 50%/18px 18px;border:1px solid var(--hat);border-radius:8px;padding:8px;min-width:120px;min-height:80px;display:flex;align-items:center;justify-content:center}
+.rkmOnizleme img{max-width:340px;max-height:220px;image-rendering:auto;display:block}
+.rkmBilgi{font-size:12px;color:var(--soluk);line-height:1.7}
+.rkmBilgi b{color:var(--yazi)}
+.rkmAdim{border-left:3px solid var(--altin);background:var(--panel2);border-radius:0 8px 8px 0;padding:8px 12px;margin:10px 0;font-size:12.5px;color:var(--yazi)}
+.rkmAdim b{color:var(--altin)}
+.siraSatir{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--hat);border-radius:8px;margin-bottom:5px;background:var(--panel)}
+.siraSatir .srNo{font-weight:700;color:var(--altin);min-width:26px;text-align:center}
+.siraSatir .srAd{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.siraSatir .srMuhur{font-size:11px;color:var(--soluk)}
+.ipucuBar{background:#221b0e;border:1px solid #5a4a17;color:#e7c56a;border-radius:8px;padding:8px 12px;font-size:12.5px;margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -191,6 +221,8 @@ var agacAcik={};                         /* E183: ağaçta ürün listesi açık
 var agacArama='';                        /* E183: ağaç arama filtresi */
 var metinAcik={};                        /* E185: metinler satırlarında diller ızgarası açık mı (anahtar→bool) */
 var RESIMLER=['SiteLogo.png','metin2_logo.png','knight_logo.png','sro_logo.png','cabal_logo.png','ranonline_logo.png','rakion_logo.png','csgo_logo.png','m2god_logo.png','example_farmbot_logo.png','example_koxp_logo.png','example_farmbot_trailer.png','example_farmbot_client_1.png','example_farmbot_client_2.png','example_koxp_trailer.png','example_koxp_client_1.png','example_koxp_client_2.png','b1.png','b3.png','xxxx-img.png'];
+var RESIMLER_GH=[];                     /* E194: GitHub resimler/ klasöründen gelen canlı liste (ad.png biçiminde öneriler) */
+var akDurum={};                         /* E194: akordeon bölüm açık/kapalı durumu (anahtar→bool); seçim değişince korunur */
 var LS_TASLAK='kp2_taslak',LS_TOKEN='jw_gh_token',LS_CFG='jw_gh_cfg';
 var taslakZam=null,agacZam=null,temizleModu=false;   /* E184: temizle sırasında otomatik taslak yazımı askıda */
 
@@ -201,6 +233,39 @@ function nInt(v){return Math.round(nSay(v));}
 function sGuven(v){return (v==null?'':String(v));}
 function esc(s){return sGuven(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function saat(){var d=new Date();return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)+':'+('0'+d.getSeconds()).slice(-2);}
+/* E194: bugünün tarihi gg.aa.yy (ürün/oyun "guncelleme" alanı için) */
+function bugun(){
+  var d=new Date();
+  return ('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.'+String(d.getFullYear()).slice(2);
+}
+/* E194: ad → dosya adayı (Türkçe karakter eşlemeli slug) — logo önerisi için */
+function slug(ad){
+  var s=sGuven(ad).toLowerCase();
+  var es={'ç':'c','ğ':'g','ı':'i','ö':'o','ş':'s','ü':'u','â':'a','î':'i','û':'u'};
+  s=s.replace(/[çğıöşüâîû]/g,function(c){return es[c]||c;});
+  s=s.replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'');
+  return s||'resim';
+}
+/* E194: paneldeki resim öneri listesi (yerel sabit + GitHub canlısı, tekrarsız) */
+function resimOnerileri(){
+  var L=RESIMLER.slice();
+  RESIMLER_GH.forEach(function(r){if(L.indexOf(r)<0)L.push(r);});
+  return L;
+}
+/* E194: akordeon bölümü kur — başlığa tıklayınca açılır/kapanır (büyür/küçülür) */
+function akordeonKutu(kapsa,anahtar,baslik,sayi,ipucuK,acikVarsayilan){
+  var k=document.createElement('div');k.className='akKutu';
+  var acik=akDurum[anahtar];if(acik==null)acik=!!acikVarsayilan;
+  if(acik)k.classList.add('acik');
+  var b=document.createElement('div');b.className='akBaslik';
+  b.innerHTML='<span class="akOk">▶</span><span class="akT">'+esc(baslik)+'</span>'+
+    (sayi?'<span class="akSayi">'+esc(sayi)+'</span>':'')+
+    (ipucuK?'<span class="akIpucuK">'+esc(ipucuK)+'</span>':'');
+  b.onclick=function(){akDurum[anahtar]=!k.classList.contains('acik');k.classList.toggle('acik');};
+  var g=document.createElement('div');g.className='akGovde';
+  k.appendChild(b);k.appendChild(g);kapsa.appendChild(k);
+  return g;
+}
 
 /* ── doküman normalizasyonu: bilinen alanları garantiye al, yabancı anahtara dokunma ── */
 function normalize(d){
@@ -299,6 +364,9 @@ function agacCiz(){
         var su=agacSatir('📦',u.ad||'(adsız ürün)',et,secim.tur==='urun'&&secim.oyun===i&&secim.urun===j);
         su.onclick=function(){secim={tur:'urun',oyun:i,urun:j};sahneCiz();agacCiz();};
         var ar2=su.querySelector('.arac');
+        ar2.appendChild(aracBtn('↑',function(){urunTasi(i,j,-1);}));
+        ar2.appendChild(aracBtn('↓',function(){urunTasi(i,j,1);}));
+        ar2.appendChild(aracBtn('⧉',function(){urunKopyala(i,j);}));
         ar2.appendChild(aracBtn('✕',function(){urunSil(i,j);},'tehlike'));
         kapsa.appendChild(su);
       });
@@ -306,8 +374,10 @@ function agacCiz(){
     }
   });
   if(q&&D.oyunlar.length){var yn=document.createElement('div');yn.className='bosNot';yn.textContent='arama: '+eslesen+' oyun eşleşti — "'+agacArama.trim()+'" (temizle: ✕)';a.appendChild(yn);}
-  /* diğer bölümler */
-  [['🎬','VİDEOLAR','videolar',((D.videolar.videolar||[]).length+' video')],
+  /* diğer bölümler — E194: OYUN SIRALA + RESİMLER eklendi */
+  [['↕','OYUN SIRALA','sirala',D.oyunlar.length+'. 1: '+(D.oyunlar[0]&&D.oyunlar[0].ad||'—')],
+   ['🎬','VİDEOLAR','videolar',((D.videolar.videolar||[]).length+' video')],
+   ['🖼️','RESİMLER (RKM)','resimler',RESIMLER_GH.length?RESIMLER_GH.length+' resim':'RKM'],
    ['🌐','METİNLER','metinler',Object.keys(D.metinler).length+' grup'],
    ['🧩','EKSİKLER','eksikler','otomatik']]
   .forEach(function(x){
@@ -335,10 +405,22 @@ function aracBtn(etiket,fn,cls){
   return b;
 }
 function oyunEkle(){
-  D.oyunlar.push({ad:'Yeni Oyun',vitrinAd:'',logo:'',ikon:'🎮',tur:'MMORPG',surum:'v1.0',guncelleme:'',mimari:'x32/x64',baslatma:'Start',renk:'#d9a441',gelistirici:'',puan:0,kullanici:0,songun:0,rozetler:[],versiyonlar:['v1.0'],aciklama:'',ozellikler:[],urunler:[]});
+  D.oyunlar.push({ad:'Yeni Oyun',vitrinAd:'',logo:'',ikon:'🎮',tur:'MMORPG',surum:'v1.0',guncelleme:bugun(),mimari:'x32/x64',baslatma:'Start',renk:'#d9a441',gelistirici:D.site&&D.site.ad?D.site.ad+' Team':'',puan:0,kullanici:0,songun:0,rozetler:[],versiyonlar:['v1.0'],aciklama:'',ozellikler:[],urunler:[]});
   secim={tur:'oyun',oyun:D.oyunlar.length-1};
   agacAcik[secim.oyun]=true;
   dokun();sahneCiz();agacCiz();
+}
+/* E194: ürünü birebir kopyala (aynı oyun içine, hemen arkasına) */
+function urunKopyala(oi,ui){
+  var o=D.oyunlar[oi];if(!o||!o.urunler||!o.urunler[ui])return;
+  var kopya=null;
+  try{kopya=JSON.parse(JSON.stringify(o.urunler[ui]));}catch(e){return;}
+  kopya.ad=(kopya.ad||'Ürün')+' Kopya';
+  o.urunler.splice(ui+1,0,kopya);
+  secim={tur:'urun',oyun:oi,urun:ui+1};
+  agacAcik[oi]=true;
+  dokun();sahneCiz();agacCiz();
+  sonucYaz($('sahne'),'Ürün kopyalandı: "'+kopya.ad+'" — istediğin gibi düzenleyebilirsin.','ok');
 }
 function oyunSil(i){
   var ad=D.oyunlar[i]&&D.oyunlar[i].ad||'oyunu';
@@ -359,9 +441,24 @@ function oyunTasi(i,yon){
 }
 function urunEkle(oi){
   var o=D.oyunlar[oi];if(!o)return;
-  o.urunler.push({ad:'Yeni Ürün',logo:'',fiyat:{tutar:0,paraBirimi:'USD'},periyot:'MONTH',surum:'v1.0',guncelleme:'',aciklama:'',bayraklar:{darkside:false,farmbot:false,shopbot:false,slotYok:false},donatorMin:11.5,paketKur:'USD',paketler:[],darksidePaketler:[],parasalEgri:[],client:{baslik:'',aciklama:'',fotolar:[],ozellikler:[]},trailer:{oyun:'',urun:'',slogan:'',term:'',aciklama:'',foto:''}});
+  /* E194: akıllı varsayılanlar — güncelleme bugün, logo önerisi oyunun adından, yönlendirici not */
+  var oneri=slug(o.ad)+'_logo.png';
+  o.urunler.push({ad:'Yeni Ürün',logo:oneri,fiyat:{tutar:0,paraBirimi:'USD'},periyot:'MONTH',surum:'v1.0',guncelleme:bugun(),aciklama:'',bayraklar:{darkside:false,farmbot:false,shopbot:false,slotYok:false},donatorMin:11.5,paketKur:'USD',paketler:[],darksidePaketler:[],parasalEgri:[],client:{baslik:'',aciklama:'',fotolar:[],ozellikler:[]},trailer:{oyun:sGuven(o.ad).toUpperCase(),urun:'YENİ ÜRÜN',slogan:'',term:'',aciklama:'',foto:''}});
   secim={tur:'urun',oyun:oi,urun:o.urunler.length-1};
   agacAcik[oi]=true;   /* E183: ürün eklerken liste açık kalsın */
+  dokun();sahneCiz();agacCiz();
+  sonucYaz($('sahne'),'Yeni ürün eklendi — fiyatı ve paketlerini girmeyi unutma (💰 Fiyat & Paketler bölümü).','ok');
+}
+/* E194: ürünü oyuncak içinde yukarı/aşağı taşı — site listesi bu sırayla gösterir.
+   Oyun formundaki "Ürün Sırası" kutusundan taşınırken OYUN FORMUNDA kalınır;
+   ağaç oklarından taşınırsa taşınan ürüne atlanır. */
+function urunTasi(oi,ui,yon){
+  var o=D.oyunlar[oi];if(!o||!o.urunler)return;
+  var h=ui+yon;if(h<0||h>=o.urunler.length)return;
+  var g=o.urunler[ui];o.urunler[ui]=o.urunler[h];o.urunler[h]=g;
+  if(secim.tur==='oyun'&&secim.oyun===oi)secim={tur:'oyun',oyun:oi};
+  else secim={tur:'urun',oyun:oi,urun:h};
+  agacAcik[oi]=true;
   dokun();sahneCiz();agacCiz();
 }
 function urunSil(oi,ui){
@@ -420,7 +517,7 @@ function secAlan(obj,anahtar,etiket,kapsa,listele){
 function logoSec(obj,anahtar,etiket,kapsa){
   aln(kapsa,etiket+' (resim adı — boşsa yok)');
   var d=document.createElement('datalist');var did='dl_'+Math.random().toString(36).slice(2,8);d.id=did;
-  RESIMLER.forEach(function(r){var o=document.createElement('option');o.value=r;d.appendChild(o);});
+  resimOnerileri().forEach(function(r){var o=document.createElement('option');o.value=r;d.appendChild(o);});
   var i=document.createElement('input');i.type='text';i.setAttribute('list',did);i.value=sGuven(obj[anahtar]);
   i.oninput=function(){obj[anahtar]=i.value;dokun();};
   kapsa.appendChild(d);kapsa.appendChild(i);return i;
@@ -542,7 +639,7 @@ function listeFoto(o,etiket){
   }
   if(!document.getElementById('dl_foto')){
     var d=document.createElement('datalist');d.id='dl_foto';
-    RESIMLER.forEach(function(r){var o2=document.createElement('option');o2.value=r;d.appendChild(o2);});
+    resimOnerileri().forEach(function(r){var o2=document.createElement('option');o2.value=r;d.appendChild(o2);});
     document.body.appendChild(d);
   }
   ciz();
@@ -564,6 +661,8 @@ function sahneCiz(){
     case 'site':renderSite();break;
     case 'oyun':renderOyun(D.oyunlar[secim.oyun]);break;
     case 'urun':var o=D.oyunlar[secim.oyun];if(o)renderUrun(o,o.urunler[secim.urun]);break;
+    case 'sirala':renderSirala();break;         /* E194: oyun sıralama */
+    case 'resimler':renderResimler();break;     /* E194: RMK ↔ resim */
     case 'videolar':renderVideolar();break;
     case 'metinler':renderMetinler();break;
     case 'eksikler':renderEksikler();break;
@@ -614,15 +713,47 @@ function dilListesi(){
 }
 
 /* ══════════ OYUN FORMU ══════════ */
+/* E194: OYUN formunda sürüm alanı YOK — sürüm ÜRÜNE aittir ("üründe ürün sürümü olur").
+   o.surum / o.versiyonlar VERİ olarak JSON'da aynen korunur: site detay panelindeki
+   Version seçim listesi o.versiyonlar'ı, liste kartındaki sürüm yedeği o.surum'u kullanır. */
 function renderOyun(o){
   var s=$('sahne');
   if(!o){s.innerHTML='<div class="fPanel"><h2>Oyun bulunamadı</h2></div>';return;}
   var p=document.createElement('div');p.className='fPanel';s.appendChild(p);
   p.innerHTML='<h2>'+esc(o.ikon||'🎮')+' '+esc(o.ad||'(adsız oyun)')+'</h2>'+
-    '<div class="altYazi">Oyun kartı: vitrin adı, logo, ikon, rozetler, açıklama, özellikler. Ürünler sol ağaçtan yönetilir. "Ürün Sürümü" alanı OYUNUN değil, satılan ÜRÜNÜN (hile paketinin) sürümüdür.</div>';
+    '<div class="altYazi">Oyun kartı: vitrin adı, logo, ikon, rozetler, açıklama, özellikler. '+
+    'Sürüm bilgisi BURADA YOKTUR — Ürün Sürümü yalnız ürüne girilir (sol ağaçtan ürüne tıkla). '+
+    'Oyunun desteklediği sürümler "Oyun Versiyonları" kutusundadır (detay panelindeki Version listesi).</div>';
+  var yat=document.createElement('div');yat.className='yatay';p.appendChild(yat);
   var sil=document.createElement('button');sil.className='tehlike';sil.textContent='🗑 Bu Oyunu Sil';
   sil.onclick=function(){oyunSil(secim.oyun);};
-  p.appendChild(sil);
+  yat.appendChild(sil);
+  /* E194: ürün ekleme akışı — oyunun altına ürün açmak tek düğme */
+  var ur=document.createElement('button');ur.className='ana';ur.textContent='➕ Bu Oyuna Ürün Ekle';
+  ur.onclick=function(){urunEkle(secim.oyun);};
+  yat.appendChild(ur);
+  var sr=document.createElement('button');sr.textContent='↕ Sıralamayı Aç';
+  sr.title='Bu oyunu 1. sıraya almak vb. için sıralama görünümü';
+  sr.onclick=function(){secim={tur:'sirala'};sahneCiz();agacCiz();};
+  yat.appendChild(sr);
+  /* E194: ÜRÜN SIRASI — sitenin listesinde bu sırayla görünür (1. sıradaki ürün en üstte) */
+  if((o.urunler||[]).length){
+    var k0=document.createElement('div');k0.className='kutu';k0.innerHTML='<h3>Ürün Sırası</h3><div class="ipucu">Ürünler sitede BU sırayla listelenir — 1. sıradaki ürün "All Games" listesinin en üstünde görünür. ↑/↓ ile taşı.</div>';
+    (o.urunler||[]).forEach(function(u,j){
+      var r=document.createElement('div');r.className='siraSatir';
+      var no=document.createElement('span');no.className='srNo';no.textContent=(j+1);
+      var ad=document.createElement('span');ad.className='srAd';ad.textContent=u.ad||'(adsız ürün)';ad.style.cursor='pointer';
+      ad.onclick=function(){secim={tur:'urun',oyun:secim.oyun,urun:j};sahneCiz();agacCiz();};
+      var mu=document.createElement('span');mu.className='srMuhur';mu.textContent=(u.fiyat&&nSay(u.fiyat.tutar))?('$'+nSay(u.fiyat.tutar)+' '+(u.fiyat.paraBirimi||'')):'fiyatsız';
+      var yb=document.createElement('button');yb.className='kck';yb.textContent='↑';yb.disabled=(j===0);yb.style.opacity=(j===0?'.35':'1');
+      yb.onclick=function(){urunTasi(secim.oyun,j,-1);};
+      var db=document.createElement('button');db.className='kck';db.textContent='↓';db.disabled=(j===o.urunler.length-1);db.style.opacity=(j===o.urunler.length-1?'.35':'1');
+      db.onclick=function(){urunTasi(secim.oyun,j,1);};
+      r.appendChild(no);r.appendChild(ad);r.appendChild(mu);r.appendChild(yb);r.appendChild(db);
+      k0.appendChild(r);
+    });
+    p.appendChild(k0);
+  }
   var k1=document.createElement('div');k1.className='kutu';k1.innerHTML='<h3>Kimlik</h3>';p.appendChild(k1);
   var g1=document.createElement('div');g1.className='izgara';k1.appendChild(g1);
   txt(o,'ad','Oyun Adı (anahtar)',g1);
@@ -630,7 +761,6 @@ function renderOyun(o){
   txt(o,'ikon','İkon (emoji)',g1);
   logoSec(o,'logo','Logo (resim adı)',g1);
   txt(o,'tur','Tür',g1);
-  txt(o,'surum','Ürün Sürümü',g1);
   txt(o,'guncelleme','Güncelleme (tarih)',g1);
   txt(o,'mimari','Mimari',g1);
   txt(o,'baslatma','Başlatma Komutu',g1);
@@ -655,7 +785,7 @@ function renderOyun(o){
     l.appendChild(c);l.appendChild(document.createTextNode(' '+x[1]));
     cg.appendChild(l);
   });
-  var k3=document.createElement('div');k3.className='kutu';k3.innerHTML='<h3>Ürün Versiyonları</h3><div class="ipucu">Ürün (hile paketi) sürümleri — virgülle ayırın: örn. v2.4, v2.3, v2.1</div>';p.appendChild(k3);
+  var k3=document.createElement('div');k3.className='kutu';k3.innerHTML='<h3>Oyun Versiyonları</h3><div class="ipucu">OYUNUN (client) desteklediği sürümler — detay panelindeki "Version" seçim listesi bunu gösterir. Virgülle ayırın: örn. v2.4, v2.3</div>';p.appendChild(k3);
   var vI=document.createElement('input');vI.type='text';vI.value=(o.versiyonlar||[]).join(', ');
   vI.oninput=function(){o.versiyonlar=vI.value.split(',').map(function(x){return x.trim();}).filter(function(x){return x;});dokun();};
   k3.appendChild(vI);
@@ -664,57 +794,410 @@ function renderOyun(o){
   p.appendChild(listeOzellikler(o.ozellikler,'Oyun Özellikleri','kart üzerindeki özellik listesi; "pro" işaretlenenler pro rozetli görünür'));
 }
 
-/* ══════════ ÜRÜN FORMU ══════════ */
+/* ══════════ ÜRÜN FORMU (E194: akordeon kategorili) ══════════
+   Sitede ürünün verisi İKİ yerde görünür:
+   · LİSTE kartı (All Games paneli): logo + ad + "fiyat/kur · periyot" rozeti +
+     sürüm (ürün sürümü; yoksa oyununki) + "Slot Yok" rozeti — kartın kalanı
+     (kategori | mimari | başlatma | geliştirici | renk) OYUNDAN gelir.
+   · DETAY PANELİ (listede ürüne tıklayınca): Updated tarihi (ürününkiden) +
+     açıklama (ürün açıklaması oyunun açıklamasını ezer) + Version/Build/Launch/
+     özellikler (oyun verisi) + ürünün satın alma paneli verileri.
+   Her başlığa tıklayınca bölüm açılır/kapanır (büyür/küçülür). */
 function renderUrun(o,u){
   var s=$('sahne');
   if(!u){s.innerHTML='<div class="fPanel"><h2>Ürün bulunamadı</h2></div>';return;}
   var p=document.createElement('div');p.className='fPanel';s.appendChild(p);
-  p.innerHTML='<h2>📦 '+esc(u.ad||'(adsız ürün)')+' <span style="color:var(--soluk);font-size:13px">— '+esc(o.ad)+'</span></h2>'+
-    '<div class="altYazi">Ürünün her şeyi: fiyat, paketler, darkside paketler, parasal eğri, client bölümü, trailer.</div>';
+  var fiyatEt=(u.fiyat&&nSay(u.fiyat.tutar))?('$'+nSay(u.fiyat.tutar)+' '+(u.fiyat.paraBirimi||'USD')):'fiyatsız';
+  p.innerHTML='<h2>📦 '+esc(u.ad||'(adsız ürün)')+' <span style="color:var(--soluk);font-size:13px">— '+esc(o.ad)+' · '+esc(fiyatEt)+'</span></h2>'+
+    '<div class="altYazi">Ürünün her şeyi kategorili: başlığa tıkla → açılır/kapanır. Sürüm buraya girilir (Oyun formunda sürüm alanı yoktur).</div>';
+  var yat=document.createElement('div');yat.className='yatay';p.appendChild(yat);
   var sil=document.createElement('button');sil.className='tehlike';sil.textContent='🗑 Bu Ürünü Sil';
   sil.onclick=function(){urunSil(secim.oyun,secim.urun);};
-  p.appendChild(sil);
-  var k1=document.createElement('div');k1.className='kutu';k1.innerHTML='<h3>Kimlik</h3>';p.appendChild(k1);
-  var g1=document.createElement('div');g1.className='izgara';k1.appendChild(g1);
-  txt(u,'ad','Ürün Adı',g1);
-  logoSec(u,'logo','Ürün Logosu (resim adı)',g1);
-  txt(u,'periyot','Periyot',g1);
-  txt(u,'surum','Sürüm',g1);
-  txt(u,'guncelleme','Güncelleme (tarih)',g1);
-  num(u,'donatorMin','Donator Min ($ — bağış kilidi)',g1,'0.5');
-  var k2=document.createElement('div');k2.className='kutu';k2.innerHTML='<h3>Fiyat</h3>';p.appendChild(k2);
-  var g2=document.createElement('div');g2.className='izgara';k2.appendChild(g2);
-  num(u.fiyat,'tutar','Fiyat (tutar)',g2,'0.01');
-  secAlan(u.fiyat,'paraBirimi','Para Birimi',g2,['USD','TL','EU']);
-  secAlan(u,'paketKur','Paket Kur Simgesi',g2,['USD','TL','EU']);
-  var k3=document.createElement('div');k3.className='kutu';k3.innerHTML='<h3>Bayraklar</h3><div class="ipucu">ürün kartı etiketleri ve filtreler</div>';p.appendChild(k3);
+  yat.appendChild(sil);
+  var kop=document.createElement('button');kop.textContent='⧉ Ürünü Kopyala';
+  kop.title='Bu ürünün birebir kopyasını aynı oyuna ekler';
+  kop.onclick=function(){urunKopyala(secim.oyun,secim.urun);};
+  yat.appendChild(kop);
+
   if(!u.bayraklar||typeof u.bayraklar!=='object')u.bayraklar={};
-  var cg3=document.createElement('div');cg3.className='chkGrup';k3.appendChild(cg3);
-  chkSatir(u.bayraklar,'darkside','🩸 Darkside',cg3);
+
+  /* ── 1) 📋 LIST BİLGİSİ — sitedeki ürün listesi kartında görünenler ── */
+  var gL=akordeonKutu(p,'urun_list','📋 List Bilgisi','listede görünür',
+    'logo · ad · fiyat/kur · periyot · sürüm · Slot Yok rozeti',true);
+  var notL=document.createElement('div');notL.className='rkmAdim';
+  notL.innerHTML='<b>Sitede nerede?</b> "All Games" listesindeki ürün kartı: logo + ad + <code>fiyat/kur · periyot</code> '+
+    'rozeti + sürüm + ("Slot Yok" rozeti). Kartın kalanı OYUNDAN gelir: kategori (Tür), mimari, başlatma, geliştirici, renk → <b>oyun formunda</b> düzenlenir.';
+  gL.appendChild(notL);
+  var giL=document.createElement('div');giL.className='izgara';gL.appendChild(giL);
+  txt(u,'ad','Ürün Adı',giL);
+  logoSec(u,'logo','Ürün Logosu',giL);
+  num(u.fiyat,'tutar','Fiyat (tutar)',giL,'0.01');
+  secAlan(u.fiyat,'paraBirimi','Para Birimi',giL,['USD','TL','EU']);
+  txt(u,'periyot','Periyot (fiyat rozetinde)',giL);
+  txt(u,'surum','Ürün Sürümü',giL);
+  var notS=document.createElement('div');notS.className='ipucu';
+  notS.textContent='Sürüm boş bırakılırsa listede oyunun sürümü gösterilir.';
+  giL.appendChild(notS);
+  chkSatir(u.bayraklar,'slotYok','🚫 Slot Yok (listede "Slot Yok" rozeti)',gL);
+
+  /* ── 2) 🧩 DETAY PANEL BİLGİSİ — listede ürüne tıklayınca açılan panel ── */
+  var gD=akordeonKutu(p,'urun_detay','🧩 Detay Panel Bilgisi','listede ürüne tıklayınca',
+    'Updated tarihi · ürün açıklaması',true);
+  var notD=document.createElement('div');notD.className='rkmAdim';
+  notD.innerHTML='<b>Sitede nerede?</b> Detay panelinin başındaki <code>Updated …</code> tarihi (önce ÜRÜNÜNKİ, boşsa oyununki) '+
+    've açıklama metni (önce ÜRÜNÜNKİ yazılır). Paneldeki <b>Version / Build / Launch / özellikler / puan / geliştirici</b> '+
+    'oyun verisidir → <b>oyun formundan</b> düzenlenir.';
+  gD.appendChild(notD);
+  var gD1=document.createElement('div');gD1.className='izgara izgaraGenis';gD.appendChild(gD1);
+  txt(u,'guncelleme','Güncelleme (tarih — "Updated …")',gD1);
+  txtAlan(u,'aciklama','Ürün Açıklaması (oyun açıklamasını ezer)',gD);
+
+  /* ── 3) 💰 FİYAT & PAKETLER — satın alma paneli ── */
+  var gF=akordeonKutu(p,'urun_fiyat','💰 Fiyat & Paketler','satın alma paneli',
+    'paketler · darkside · parasal eğri · bağış kilidi',false);
+  var notF=document.createElement('div');notF.className='rkmAdim';
+  notF.innerHTML='<b>Sitede nerede?</b> Sağdaki GÜVENLİ ÖDEME paneli: paket seçimi, Darkside paketleri, '+
+    'gün/fiyat hesaplayıcısı (parasal eğri) ve Discord bağış kilidi (Donator Min).';
+  gF.appendChild(notF);
+  var gF1=document.createElement('div');gF1.className='izgara';gF.appendChild(gF1);
+  secAlan(u,'paketKur','Paket Kur Simgesi',gF1,['USD','TL','EU']);
+  num(u,'donatorMin','Donator Min ($ — bağış kilidi)',gF1,'0.5');
+  gF.appendChild(listePaket(u.paketler,'Paketler'));
+  gF.appendChild(listePaket(u.darksidePaketler,'Darkside Paketler'));
+  gF.appendChild(listeEgri(u.parasalEgri,'Parasal Eğri'));
+
+  /* ── 4) 🏷️ BAYRAKLAR — ürün kartı etiketleri ve satın alma filtreleri ── */
+  var gB=akordeonKutu(p,'urun_bayrak','🏷️ Bayraklar','etiket + filtre',
+    'darkside · farmbot · shopbot · slot yok',false);
+  var cg3=document.createElement('div');cg3.className='chkGrup';gB.appendChild(cg3);
+  chkSatir(u.bayraklar,'darkside','🩸 Darkside (Darkside paketleri görünür)',cg3);
   chkSatir(u.bayraklar,'farmbot','🌾 Farmbot',cg3);
   chkSatir(u.bayraklar,'shopbot','🛒 Shopbot',cg3);
-  chkSatir(u.bayraklar,'slotYok','🚫 Slot Yok',cg3);
-  var k4=document.createElement('div');k4.className='kutu';k4.innerHTML='<h3>Açıklama</h3>';p.appendChild(k4);
-  txtAlan(u,'aciklama','Ürün Açıklaması',k4);
-  p.appendChild(listePaket(u.paketler,'Paketler'));
-  p.appendChild(listePaket(u.darksidePaketler,'Darkside Paketler'));
-  p.appendChild(listeEgri(u.parasalEgri,'Parasal Eğri'));
-  /* CLIENT */
-  var kc=document.createElement('div');kc.className='kutu';kc.innerHTML='<h3>Client Bölümü</h3><div class="ipucu">satın alma panelindeki tanıtım bölümü</div>';p.appendChild(kc);
-  var gc=document.createElement('div');gc.className='izgara izgaraGenis';kc.appendChild(gc);
-  txt(u.client,'baslik','Client Başlığı',gc);
-  txtAlan(u.client,'aciklama','Client Açıklaması',kc);
-  kc.appendChild(listeFoto(u.client.fotolar,'Client Fotoğrafları'));
-  kc.appendChild(listeMetin(u.client.ozellikler,'Client Özellikleri'));
-  /* TRAILER */
-  var kt=document.createElement('div');kt.className='kutu';kt.innerHTML='<h3>Trailer</h3>';p.appendChild(kt);
-  var gt=document.createElement('div');gt.className='izgara';kt.appendChild(gt);
-  txt(u.trailer,'oyun','Trailer Oyun (büyük harf)',gt);
-  txt(u.trailer,'urun','Trailer Ürün (büyük harf)',gt);
-  txt(u.trailer,'slogan','Slogan',gt);
-  txt(u.trailer,'term','Term',gt);
-  txt(u.trailer,'foto','Foto (resim adı)',gt);
-  txtAlan(u.trailer,'aciklama','Trailer Açıklaması',kt);
+  var notB=document.createElement('div');notB.className='ipucu';notB.style.marginTop='6px';
+  notB.textContent='“Slot Yok” rozeti List Bilgisi bölümündedir (listede doğrudan göründüğü için).';
+  gB.appendChild(notB);
+
+  /* ── 5) 🖥️ CLIENT BÖLÜMÜ — sayfadaki tanıtım/showcase bölümü ── */
+  var gC=akordeonKutu(p,'urun_client','🖥️ Client Bölümü','tanıtım bölümü',
+    'başlık · açıklama · fotoğraflar · özellikler',false);
+  var notC=document.createElement('div');notC.className='rkmAdim';
+  notC.innerHTML='<b>Sitede nerede?</b> Sayfanın <b>Client</b> bölümü (satın alma çağrısı): başlık, açıklama, '+
+    'fotoğraf şeridi ve özellik listesi (ad + açıklama).';
+  gC.appendChild(notC);
+  var gC1=document.createElement('div');gC1.className='izgara izgaraGenis';gC.appendChild(gC1);
+  txt(u.client,'baslik','Client Başlığı',gC1);
+  txtAlan(u.client,'aciklama','Client Açıklaması',gC);
+  gC.appendChild(listeFoto(u.client.fotolar,'Client Fotoğrafları'));
+  gC.appendChild(listeMetin(u.client.ozellikler,'Client Özellikleri'));
+
+  /* ── 6) 🎬 TRAILER — trailer bölümü ── */
+  var gT=akordeonKutu(p,'urun_trailer','🎬 Trailer','video üstü yazılar',
+    'oyun · ürün · slogan · term · foto',false);
+  var notT=document.createElement('div');notT.className='rkmAdim';
+  notT.innerHTML='<b>Sitede nerede?</b> Sayfanın <b>Trailer</b> bölümü: video üstündeki OYUN/ÜRÜN adları, slogan ve arkadaki görsel.';
+  gT.appendChild(notT);
+  var gT1=document.createElement('div');gT1.className='izgara';gT.appendChild(gT1);
+  txt(u.trailer,'oyun','Trailer Oyun (büyük harf)',gT1);
+  txt(u.trailer,'urun','Trailer Ürün (büyük harf)',gT1);
+  txt(u.trailer,'slogan','Slogan',gT1);
+  txt(u.trailer,'term','Term',gT1);
+  txt(u.trailer,'foto','Foto (resim adı)',gT1);
+  txtAlan(u.trailer,'aciklama','Trailer Açıklaması',gT);
+}
+</script>
+<script>
+"use strict";
+/* ══════════ E194: OYUN SIRALA ══════════
+   Sıra sitede BİREBİR kullanılır: vitrin kartları, All Games listesi,
+   satın alma panelindeki OYUN seçimi — hepsi D.oyunlar dizisinin sırasıdır. */
+function siraTasi(i,yon){
+  var h=i+yon;if(h<0||h>=D.oyunlar.length)return;
+  var g=D.oyunlar[i];D.oyunlar[i]=D.oyunlar[h];D.oyunlar[h]=g;
+  var ai=!!agacAcik[i],ah=!!agacAcik[h];agacAcik[i]=ah;agacAcik[h]=ai;
+  dokun();sahneCiz();agacCiz();   /* secim 'sirala' kalır — kullanıcı listede kalır */
+}
+function renderSirala(){
+  var s=$('sahne');
+  var p=document.createElement('div');p.className='fPanel';s.appendChild(p);
+  p.innerHTML='<h2>↕ Oyun Sıralama</h2>'+
+    '<div class="altYazi">Sıralama sitede birebir görünür: 1. sıradaki oyun vitrinde, "All Games" listesinde ve satın alma panelinin oyun seçiminde en üstte yer alır. ↑/↓ ile taşı; her taşıma taslağa anında işlenir, "⬆ GitHub\'a Yükle" ile kalıcılaşır.</div>';
+  if(!D.oyunlar.length){
+    var y=document.createElement('div');y.className='bosNot';y.textContent='(oyun yok — Oyunlar bölümünden "+ Oyun Ekle")';p.appendChild(y);return;
+  }
+  D.oyunlar.forEach(function(o,i){
+    var r=document.createElement('div');r.className='siraSatir';
+    var no=document.createElement('span');no.className='srNo';no.textContent=(i+1);
+    var ik=document.createElement('span');ik.textContent=o.ikon||'🎮';
+    var ad=document.createElement('span');ad.className='srAd';ad.textContent=o.ad||'(adsız oyun)';
+    ad.title='tık: oyunu aç';
+    ad.style.cursor='pointer';
+    ad.onclick=function(){secim={tur:'oyun',oyun:i};sahneCiz();agacCiz();};
+    var mu=document.createElement('span');mu.className='srMuhur';mu.textContent=(o.urunler||[]).length+' ürün';
+    var yb=document.createElement('button');yb.className='kck';yb.textContent='↑';yb.title='bir üste taşı';
+    yb.disabled=(i===0);yb.style.opacity=(i===0?'.35':'1');
+    yb.onclick=function(){siraTasi(i,-1);};
+    var db=document.createElement('button');db.className='kck';db.textContent='↓';db.title='bir alta taşı';
+    db.disabled=(i===D.oyunlar.length-1);db.style.opacity=(i===D.oyunlar.length-1?'.35':'1');
+    db.onclick=function(){siraTasi(i,1);};
+    r.appendChild(no);r.appendChild(ik);r.appendChild(ad);r.appendChild(mu);
+    r.appendChild(yb);r.appendChild(db);
+    p.appendChild(r);
+  });
+  var not=document.createElement('div');not.className='ipucuBar';not.style.marginTop='12px';
+  not.textContent='Oyunların içindeki ÜRÜN sırasını da değiştirebilirsin: oyuna tıkla → "Ürün Sırası" kutusu (ör. 1. sırada M2God yerine başka ürünü üste al).';
+  p.appendChild(not);
+}
+
+/* ══════════ E194: RESİMLER (RKM) — RMK ↔ resim ══════════
+   RKM v4 biçimi (sitenin motoruyla birebir):
+     RKM_VERI['<ad>']={w,h,f,k,d}
+     f: 'w'=image/webp · 'a'=image/avif · 'p'=image/png
+     k: 64 baytlık rastgele XOR anahtarı (dizi)
+     d: base64( kare_baytları XOR k[i%64] )
+   Dönüştürme TARAYICIDA yapılır (canvas): PNG kayıpsız ya da WebP kalite ayarlı.
+   Yükleme sunucu üzerinden: /api/gh/resim-yukle → resimler/<ad>_rkm.js push. */
+function rkmMime(f){return f==='a'?'image/avif':(f==='p'?'image/png':'image/webp');}
+/* JS metninden RKM objesini çıkar */
+function rkmObjCikar(metin){
+  var m=/RKM_VERI\[['"]([^'"]+)['"]\]\s*=\s*(\{[\s\S]*?\});\s*$/.exec(metin||'') ||
+        /RKM_VERI\[['"]([^'"]+)['"]\]\s*=\s*(\{[\s\S]*?\});/.exec(metin||'');
+  if(!m)throw new Error('RKM_VERI bulunamadı — bu dosya *_rkm.js değil');
+  var obj=JSON.parse(m[2]);
+  if(!obj||!obj.d||!obj.k)throw new Error('RKM objesi w/h/f/k/d alanlarını içermiyor');
+  return {ad:m[1],obj:obj};
+}
+/* RKM objesi → veri URL'si (tarayıcıda çöz) */
+function rkmObjVeriUrl(obj){
+  var ham=atob(obj.d.replace(/\s+/g,''));
+  var bayt=new Uint8Array(ham.length);
+  for(var i=0;i<ham.length;i++)bayt[i]=ham.charCodeAt(i)^obj.k[i%obj.k.length];
+  var blob=new Blob([bayt],{type:rkmMime(obj.f)});
+  return URL.createObjectURL(blob);
+}
+/* kare baytları (Uint8Array) → RKM JS metni (v4 protokolü, site motoruyla birebir) */
+function rkmJsUret(ad,w,h,f,bayt,kaliteEt){
+  var k=new Uint8Array(64);
+  if(window.crypto&&crypto.getRandomValues)crypto.getRandomValues(k);
+  else for(var i=0;i<64;i++)k[i]=Math.floor(Math.random()*256);
+  var xor=new Uint8Array(bayt.length);
+  for(var j=0;j<bayt.length;j++)xor[j]=bayt[j]^k[j%64];
+  /* base64 (parça parça — büyük karede stack taşıyor) */
+  var bin='';var parca=32768;
+  for(var a=0;a<xor.length;a+=parca)bin+=String.fromCharCode.apply(null,xor.subarray(a,a+parca));
+  var d=btoa(bin);
+  var obj={w:w,h:h,f:f,k:Array.prototype.slice.call(k),d:d};
+  var metin='/* RKM VERI v4 · '+ad+' · '+w+'x'+h+' · '+kaliteEt+' · XOR64 + base64 · otomatik uretim, elle degistirme! */\n'+
+    'window.RKM_VERI=window.RKM_VERI||{};\n'+
+    "RKM_VERI['"+ad+"']="+JSON.stringify(obj)+";\n";
+  return metin;
+}
+function kb(n){return (n/1024).toFixed(1)+' KB';}
+/* resim adı (metin2_logo | metin2_logo.png | metin2_logo_rkm.js) → rkm taban adı */
+function rkmTaban(ad){
+  var s=sGuven(ad).trim();
+  s=s.replace(/_rkm\.js$/i,'').replace(/\.(png|webp|avif|jpe?g|gif)$/i,'');
+  return s;
+}
+function renderResimler(){
+  var s=$('sahne');
+  var p=document.createElement('div');p.className='fPanel';s.appendChild(p);
+  p.innerHTML='<h2>🖼️ Resimler (RKM)</h2>'+
+    '<div class="altYazi">Sitenin resimleri <code>resimler/&lt;ad&gt;_rkm.js</code> olarak şifrelidir (XOR64+base64). Burada RMK dosyasını resme çözüp önizleyebilir, resmi RMK\'ya çevirip GitHub\'a yükleyebilirsin.</div>';
+
+  /* ── A) RMK → RESİM (önizleme) ── */
+  var gA=akordeonKutu(p,'rkm_onizle','🔍 RMK → Resim Önizleme','çöz + göster',
+    'GitHub\'dan veya dosyadan',true);
+  var satA=document.createElement('div');satA.className='yatay';gA.appendChild(satA);
+  var dA=document.createElement('datalist');dA.id='dl_rkm_gh';
+  RESIMLER_GH.forEach(function(n){var o=document.createElement('option');o.value=n;dA.appendChild(o);});
+  gA.appendChild(dA);
+  var inA=document.createElement('input');inA.type='text';inA.setAttribute('list','dl_rkm_gh');
+  inA.placeholder='resim adı (ör. metin2_logo, metin2_logo.png)';inA.style.maxWidth='340px';
+  satA.appendChild(inA);
+  var bA=document.createElement('button');bA.className='ana';bA.textContent='🔍 GitHub\'dan Önizle';
+  satA.appendChild(bA);
+  var fA=document.createElement('input');fA.type='file';fA.accept='.js,text/javascript';fA.style.display='none';
+  gA.appendChild(fA);
+  var bAL=document.createElement('button');bAL.textContent='📂 Dosyadan RMK Aç (.js)';
+  satA.appendChild(bAL);
+  var cikA=document.createElement('div');cikA.className='rkmOnizleme';cikA.style.marginTop='12px';
+  cikA.innerHTML='<div class="bosNot">(henüz önizleme yok — ad yazıp "GitHub\'dan Önizle" ya da "Dosyadan RMK Aç")</div>';
+  gA.appendChild(cikA);
+
+  function onizleGoster(obj,kaynakNot){
+    var url=rkmObjVeriUrl(obj.obj||obj);
+    var o=obj.obj||obj;
+    cikA.innerHTML='';
+    var kare=document.createElement('div');kare.className='rkmKare';
+    var im=new Image();im.src=url;kare.appendChild(im);
+    cikA.appendChild(kare);
+    var bi=document.createElement('div');bi.className='rkmBilgi';
+    bi.innerHTML='<b>'+(obj.ad||'?')+'</b><br>boyut: <b>'+o.w+'×'+o.h+'</b> · biçim: <b>'+rkmMime(o.f)+
+      '</b> · kare: <b>'+kb(atob(o.d.replace(/\s+/g,'')).length)+'</b><br><span style="color:var(--soluk)">'+kaynakNot+'</span>';
+    cikA.appendChild(bi);
+  }
+  bA.onclick=function(){
+    var ad=rkmTaban(inA.value);
+    if(!ad){cikA.innerHTML='<div class="sonuc hata">resim adı boş — örn. metin2_logo</div>';return;}
+    if(!backendVar()){cikA.innerHTML='<div class="sonuc hata">Sunucu yok (dosyadan aç) — kontrol_paneli.py üzerinden kullan</div>';return;}
+    cikA.innerHTML='<div class="bosNot">çözülüyor… '+ad+'_rkm.js</div>';
+    fetch('/api/rkm/coz',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ad:ad})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+    .then(function(x){
+      if(!x.ok||!x.j.ok)throw new Error(x.j&&x.j.hata||('HTTP hata'));
+      /* sunucudan ham kare (base64) gelir → Blob ile göster */
+      var ham=atob(x.j.veri);
+      var bayt=new Uint8Array(ham.length);
+      for(var i=0;i<ham.length;i++)bayt[i]=ham.charCodeAt(i);
+      var blob=new Blob([bayt],{type:x.j.mime});
+      cikA.innerHTML='';
+      var kare=document.createElement('div');kare.className='rkmKare';
+      var im=new Image();im.src=URL.createObjectURL(blob);kare.appendChild(im);
+      cikA.appendChild(kare);
+      var bi=document.createElement('div');bi.className='rkmBilgi';
+      bi.innerHTML='<b>'+ad+'</b><br>boyut: <b>'+x.j.w+'×'+x.j.h+'</b> · biçim: <b>'+x.j.mime+
+        '</b> · kare: <b>'+kb(x.j.boyut)+'</b> · dosya: <b>'+kb(x.j.dosyaBoyut)+'</b><br>'+
+        '<span style="color:var(--soluk)">GitHub raw\'dan çözüldü — site motoruyla aynı yol</span>';
+      cikA.appendChild(bi);
+    })
+    .catch(function(e){cikA.innerHTML='<div class="sonuc hata">RMK çözülemedi: '+esc(e.message)+'</div>';});
+  };
+  bAL.onclick=function(){fA.click();};
+  fA.onchange=function(){
+    if(!this.files||!this.files[0]){this.value='';return;}
+    var f=this.files[0];this.value='';
+    var oku=new FileReader();
+    oku.onload=function(){
+      try{
+        var pak=rkmObjCikar(String(oku.result));
+        onizleGoster(pak,'yerel dosya: '+esc(f.name));
+      }catch(e){cikA.innerHTML='<div class="sonuc hata">'+esc(e.message)+'</div>';}
+    };
+    oku.readAsText(f);
+  };
+
+  /* ── B) RESİM → RMK (dönüştür + GitHub'a yükle) ── */
+  var gB=akordeonKutu(p,'rkm_uret','🔐 Resim → RMK + GitHub\'a Yükle','canvas: PNG/WebP',
+    'kalite ayarlı · boyut karşılaştırmalı',true);
+  var adim1=document.createElement('div');adim1.className='rkmAdim';
+  adim1.innerHTML='<b>1)</b> Resim seç (PNG/WebP/JPG) → <b>2)</b> hedef adı belirle → <b>3)</b> "Dönüştür ve Önizle" → <b>4)</b> "GitHub\'a Yükle" (resimler/&lt;ad&gt;_rkm.js).'+
+    ' Site motora gömülü dosyalar <code>&lt;ad&gt;_rkm.js</code> adıyla bulunur — logo alanlarına yazacağın isim <code>&lt;ad&gt;.png</code> biçimindedir (site uzantıyı silip <code>&lt;ad&gt;_rkm.js</code> çeker).';
+  gB.appendChild(adim1);
+  var satB1=document.createElement('div');satB1.className='yatay';gB.appendChild(satB1);
+  var fB=document.createElement('input');fB.type='file';fB.accept='image/png,image/webp,image/jpeg,image/avif,image/*';fB.style.display='none';
+  gB.appendChild(fB);
+  var bSec=document.createElement('button');bSec.textContent='📂 Resim Seç';
+  satB1.appendChild(bSec);
+  var secAd=document.createElement('span');secAd.className='rkmBilgi';secAd.textContent='(dosya seçilmedi)';
+  satB1.appendChild(secAd);
+  var izg=document.createElement('div');izg.className='izgara';izg.style.marginTop='10px';gB.appendChild(izg);
+  var inHedef;var selF;var inQ;var inW;
+  /* hedef ad */
+  (function(){
+    aln(izg,'Hedef ad (resimler/<ad>_rkm.js — uzantısız)');
+    inHedef=document.createElement('input');inHedef.type='text';inHedef.placeholder='ör. yeni_oyun_logo';izg.appendChild(inHedef);
+    aln(izg,'Biçim');
+    selF=document.createElement('select');
+    [['w','WebP (önerilen — küçük)'],['p','PNG (kayıpsız)']].forEach(function(x){
+      var o=document.createElement('option');o.value=x[0];o.textContent=x[1];selF.appendChild(o);
+    });
+    izg.appendChild(selF);
+    aln(izg,'WebP kalite (50-100)');
+    inQ=document.createElement('input');inQ.type='number';inQ.min='50';inQ.max='100';inQ.value='92';izg.appendChild(inQ);
+    aln(izg,'Genişlik sınırı (px — 0: aynen)');
+    inW=document.createElement('input');inW.type='number';inW.min='0';inW.value='0';izg.appendChild(inW);
+  })();
+  var satB2=document.createElement('div');satB2.className='yatay';satB2.style.marginTop='10px';gB.appendChild(satB2);
+  var bDon=document.createElement('button');bDon.className='ana';bDon.textContent='🔄 Dönüştür ve Önizle';
+  satB2.appendChild(bDon);
+  var bYukle=document.createElement('button');bYukle.textContent='⬆ GitHub\'a Yükle';bYukle.disabled=true;bYukle.style.opacity='.5';
+  satB2.appendChild(bYukle);
+  var cikB=document.createElement('div');cikB.className='rkmOnizleme';cikB.style.marginTop='12px';
+  cikB.innerHTML='<div class="bosNot">(dönüştürme yapılmadı)</div>';
+  gB.appendChild(cikB);
+  var sonucB=null;   /* {ad, metin} */
+
+  var resimDosya=null,resimUrl=null;
+  bSec.onclick=function(){fB.click();};
+  fB.onchange=function(){
+    if(!this.files||!this.files[0]){this.value='';return;}
+    resimDosya=this.files[0];this.value='';
+    if(resimUrl)URL.revokeObjectURL(resimUrl);
+    resimUrl=URL.createObjectURL(resimDosya);
+    secAd.textContent=resimDosya.name+' · '+kb(resimDosya.size);
+    if(!inHedef.value){
+      var t=rkmTaban(resimDosya.name);
+      inHedef.value=t.replace(/_rkm$/,'');
+    }
+  };
+  bDon.onclick=function(){
+    cikB.innerHTML='';
+    if(!resimDosya){cikB.innerHTML='<div class="sonuc hata">önce resim seç</div>';return;}
+    var ad=(inHedef.value||'').trim();
+    if(!/^[A-Za-z0-9_\-]+$/.test(ad)){cikB.innerHTML='<div class="sonuc hata">hedef ad geçersiz — harf/rakam/_/- (ör. yeni_oyun_logo)</div>';return;}
+    cikB.innerHTML='<div class="bosNot">dönüştürülüyor…</div>';
+    var im=new Image();
+    im.onload=function(){
+      try{
+        var w=im.naturalWidth,h=im.naturalHeight;
+        if(!w||!h)throw new Error('resim boyutu okunamadı');
+        var sinir=nInt(inW.value);
+        var cw=sinir>0&&w>sinir?sinir:w;
+        var ch=sinir>0&&w>sinir?Math.round(h*cw/w):h;
+        var cv=document.createElement('canvas');cv.width=cw;cv.height=ch;
+        var ctx=cv.getContext('2d');
+        ctx.drawImage(im,0,0,cw,ch);
+        var q=Math.min(1,Math.max(.5,nSay(inQ.value)/100));
+        var mime=selF.value==='p'?'image/png':'image/webp';
+        cv.toBlob(function(blob){
+          if(!blob){cikB.innerHTML='<div class="sonuc hata">canvas kodlaması başarısız (WebP desteklenmiyorsa PNG seç)</div>';return;}
+          var oku=new FileReader();
+          oku.onload=function(){
+            try{
+              var bayt=new Uint8Array(oku.result);
+              var kaliteEt=(selF.value==='p'?'png':'webp-q'+Math.round(q*100))+(cw!==w?' · '+cw+'x'+ch:'');
+              var metin=rkmJsUret(ad,cw,ch,selF.value,bayt,kaliteEt);
+              sonucB={ad:ad,metin:metin};
+              bYukle.disabled=false;bYukle.style.opacity='1';
+              var url=URL.createObjectURL(new Blob([bayt],{type:mime}));
+              cikB.innerHTML='';
+              var kare=document.createElement('div');kare.className='rkmKare';
+              var pi=new Image();pi.src=url;kare.appendChild(pi);
+              cikB.appendChild(kare);
+              var bi=document.createElement('div');bi.className='rkmBilgi';
+              bi.innerHTML='<b>'+ad+'_rkm.js</b> hazır<br>çerçeve: <b>'+cw+'×'+ch+'</b> · biçim: <b>'+mime+
+                '</b><br>orijinal: <b>'+kb(resimDosya.size)+'</b> → rkm kare: <b>'+kb(bayt.length)+
+                '</b> · js dosyası: <b>'+kb(metin.length)+'</b><br>'+
+                '<span style="color:var(--soluk)">örn. çıktı: resimler/'+ad+'_rkm.js — logo alanına "'+ad+'.png" yazılır</span>';
+              cikB.appendChild(bi);
+            }catch(e){cikB.innerHTML='<div class="sonuc hata">'+esc(e.message)+'</div>';}
+          };
+          oku.readAsArrayBuffer(blob);
+        },mime,q);
+      }catch(e){cikB.innerHTML='<div class="sonuc hata">'+esc(e.message)+'</div>';}
+    };
+    im.onerror=function(){cikB.innerHTML='<div class="sonuc hata">resim açılamadı — biçim desteklenmiyor olabilir</div>';};
+    im.src=resimUrl;
+  };
+  bYukle.onclick=function(){
+    if(!sonucB)return;
+    if(!backendVar()){cikB.innerHTML='<div class="sonuc hata">sunucu yok — kontrol_paneli.py ile başlat</div>';return;}
+    bYukle.disabled=true;
+    cikB.insertAdjacentHTML('beforeend','<div class="bosNot">GitHub\'a yükleniyor… resimler/'+sonucB.ad+'_rkm.js</div>');
+    fetch('/api/gh/resim-yukle',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ad:sonucB.ad,icerik:sonucB.metin})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+    .then(function(x){
+      if(!x.ok||!x.j.ok)throw new Error(x.j&&x.j.hata||('HTTP hata'));
+      cikB.insertAdjacentHTML('beforeend','<div class="sonuc ok">Yüklendi: resimler/'+esc(sonucB.ad)+
+        '_rkm.js (commit '+(x.j.commit||'?')+') — raw CDN ~5 dk içinde güncellenir.</div>');
+      if(RESIMLER_GH.indexOf(sonucB.ad)<0){RESIMLER_GH.push(sonucB.ad);agacCiz();}
+    })
+    .catch(function(e){
+      cikB.insertAdjacentHTML('beforeend','<div class="sonuc hata">Yükleme hatası: '+esc(e.message)+' (token: Ayarlar bölümünde kayıtlı olmalı — Contents: write)</div>');
+      bYukle.disabled=false;
+    });
+  };
 }
 </script>
 <script>
@@ -1295,7 +1778,19 @@ function backendVar(){ return location.protocol==='http:'||location.protocol==='
     }).catch(function(){});
   }catch(e){}
 })();
-
+/* E194: GitHub resimler/ klasörünü yükle — logo önerileri + RESİMLER bölümü datalist'i canlı olur */
+(function(){
+  if(!backendVar())return;
+  fetch('/api/gh/liste?klasor=resimler',{cache:'no-store'})
+  .then(function(r){return r.json();})
+  .then(function(j){
+    if(!j||!j.ok||!Array.isArray(j.dosyalar))return;
+    RESIMLER_GH=j.dosyalar.filter(function(x){return x&&x.tur==='file'&&/_rkm\.js$/i.test(x.ad||'');})
+      .map(function(x){return String(x.ad).replace(/_rkm\.js$/i,'');});
+    try{agacCiz();}catch(e){}   /* ağaçtaki RESİMLER sayacı + öneriler tazelenir */
+  })
+  .catch(function(){});
+})();
 </script>
 </body>
 </html>
