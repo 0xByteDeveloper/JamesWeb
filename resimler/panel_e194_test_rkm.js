@@ -1,0 +1,3 @@
+/* RKM VERI v4 · panel_e194_test · 64x32 · webp-q92 · XOR64 + base64 · otomatik uretim, elle degistirme! */
+window.RKM_VERI=window.RKM_VERI||{};
+RKM_VERI['panel_e194_test']={"w":64,"h":32,"f":"w","k":[154,47,217,88,20,17,95,31,182,99,202,252,91,169,209,223,106,184,89,32,214,35,134,53,160,50,133,197,86,75,33,237,144,134,79,231,17,251,145,157,219,24,164,123,254,116,118,194,227,28,193,31,235,69,226,106,26,220,107,247,247,110,27,16],"d":"yGafHloRXx/hJoisDfnp/yi4WSCmIIaooRjFxXZLH8SEDgzGsNqDmdsApv9N9E3CnRzBP2Zhg8oaIp9UGJHnRmWlBqlP7r2oSZwfXal5KLcUD1kg1iM="};
