@@ -1,9 +1,9 @@
 {
   "schema": "epin-surum/1.0",
-  "surum": "E192.20261015.1",
-  "tarih": "2026-10-15",
-  "site_surumu": "v3.13",
-  "not": "E192: resim turu 2 — kalite dogrulamali IKINCI sikistirma dalgasi. 46 resim yeniden kodlandi (orijinal kaynaktan TEK kayipli nesil): bannerlar AVIF q85 (ayni gorunum, ~%%25-30 kucuk), oyun logolari WebP q88/q92 + sharp_yuv (alfa kusursuz, ~%%50 kucuk), ekran gorselleri AVIF/WebP. Secim kapisi: PSNR>=38.5-41 dB + SSIM>=0.988 (mevcut kalitenin altina inmez) + A/B seritleriyle goz dogrulamasi. Resim dosya trafigi 2.18 MB -> 1.33 MB (toplamda ~6x: ilk 16 MB'den). RKM motor v5.1: f:'a' AVIF destegi (createImageBitmap yerli cozucu).",
+  "surum": "E196.20261017.1",
+  "tarih": "2026-10-17",
+  "site_surumu": "v3.14",
+  "not": "E196: resim adı karmaşası kökten bitti — icerik'teki tüm resim değerleri artık AÇIK dosya adı (ör. newage_rkm.js); RKM motor v5.2 listesiz dinamik _rkm.js adlarını da şifreli yükler (panelden eklenen yeni resimler motor güncellemesi gerektirmez). Listede olmayan .png değeri = normal düz resim (png modu). Panelde her resim alanında 🐙 şifreli rkm.js / 🖼 normal png seçici. Kontrol paneli E196: mod seçici + değer normalizasyonu.",
   "degisiklikler": [
     "E192: 46 resim tur 2 sikistirma — bannerlar AVIF q85, logolar WebP q88/q92 sharp_yuv, ekran goruntuleri AVIF q85/WebP q92; resim trafigi 2.18 MB -> 1.33 MB",
     "E192: RKM motor v5.1 — f:'a' AVIF kare destegi (yerli createImageBitmap cozucusu; eski tarayici yedegi aynen)",
