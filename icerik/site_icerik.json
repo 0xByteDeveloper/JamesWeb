@@ -2,8 +2,8 @@
   "sema": "epinsitesi-icerik",
   "semaSurum": "1.0",
   "surum": "3.09",
-  "zaman": 1792173918,
-  "olusturma": "2026-10-16T18:05:18.195Z",
+  "zaman": 1792174054,
+  "olusturma": "2026-10-16T18:07:34.084Z",
   "varsayilanDil": "en",
   "diller": [
     "en",
@@ -765,14 +765,14 @@
             "paraBirimi": "USD"
           },
           "periyot": "MONTH",
-          "surum": "v1.0",
+          "surum": "v1.1",
           "guncelleme": "16.10.26",
           "aciklama": "",
           "bayraklar": {
             "darkside": true,
             "farmbot": true,
             "shopbot": true,
-            "slotYok": true
+            "slotYok": false
           },
           "donatorMin": 11.5,
           "paketKur": "USD",
