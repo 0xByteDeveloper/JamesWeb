@@ -3,11 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>M2God Kontrol Paneli v7 — İçerik Otomasyonu (E196 · Python)</title>
+<title>M2God Kontrol Paneli v8 — İçerik Otomasyonu (E197 · Python)</title>
 <!--
-  E196 · M2GOD KONTROL PANELİ v7 — İÇERİK OTOMASYONU (Python sunuculu)
+  E197 · M2GOD KONTROL PANELİ v8 — İÇERİK OTOMASYONU (Python sunuculu)
   ═════════════════════════════════════════════
   (E195 taban — E177_resim-avif-v6 uyumlu; arama/boyutlandırma/temizle/çeviri/kur AYNEN)
+  E197 YENİLİKLERİ ("m2god_logo.png NORMAL PNG mi?!" karmaşası TAMAMEN bitti):
+  · PANEL HER AÇILIŞTA GITHUB'DAN OTOMATİK TAZE ÇEKER. Tarayıcı taslağı artık
+    yalnız anlık iskelet/çevrimdışı yedek: açılışta güncel site_icerik.json
+    gelip eski kopyanın üstüne yazar — "panelde eski veri kalıyor" durumu
+    teknik olarak imkânsızlaşır.
+  · OTOMATİK YÜKSELTME (pngYukselt): değeri .png/.jpg/… ile biten bir resim
+    alanının şifreli karşılığı (<taban>_rkm.js) GitHub resimler/ klasöründe
+    VARSA, değer açılışta/çekimde OTOMATİK <taban>_rkm.js'e çevrilir
+    (GitHub'da png durmuyorken .png değeri kırık link üretir — newage/m2god
+    dersi). Gerçek png niyetine dokunulmaz: yalnız şifreli karşılığı GitHub'da
+    duran adlar düzeltilir, sayısı durum çipinde bildirilir.
+  · 🖼 png modu ipucu güçlendi: adın şifreli karşılığı GitHub'da varsa alanın
+    altında ⚠ uyarısı çıkar ("GitHub'da <taban>.png YÜKLÜ DEĞİL —
+    <taban>_rkm.js duruyor; bu değer sitede resim ÇÖZDÜRMEZ — 🐙 moduna geç").
   E196 YENİLİKLERİ (resim adı karmaşası KÖKTEN bitti):
   · HER resim alanında 🐙/🖼 MOD SEÇİCİ: "🐙 Şifreli rkm.js" (GitHub — png indirilmez,
     KORUMALI) ↔ "🖼 Normal png" (korumasız, dosyayı sen hostlarsın). Seçim değişince
@@ -571,6 +585,43 @@ function secAlan(obj,anahtar,etiket,kapsa,listele){
 }
 /* E196: değer → mod. '_rkm.js' ile bitiyorsa şifreli (GitHub), değilse normal png */
 function resimModu(v){return /_rkm\.js\s*$/i.test(sGuven(v).trim())?'rkm':'png';}
+/* ── E197: eski .png değeri otomatik _rkm.js'e yükseltme ──
+   rkmBiliniyor(taban): şifreli <taban>_rkm.js GitHub resimler/ klasöründe var mı?
+   (canlı RESIMLER_GH listesi + sabit RESIMLER listesi — ikisi de aynı havuz) */
+function rkmBiliniyor(taban){
+  taban=String(taban||'').trim().replace(/_rkm\.js$/i,'');
+  if(!taban)return false;
+  if(RESIMLER_GH.indexOf(taban)>=0)return true;
+  for(var i=0;i<RESIMLER.length;i++){if(String(RESIMLER[i]).replace(/_rkm\.js$/i,'')===taban)return true;}
+  return false;
+}
+/* pngYukselt(d): oyun/ürün/trailer/client foto değerleri arasında .png/.jpg/…
+   ile biten ve şifreli karşılığı GitHub'da duran adları <taban>_rkm.js yapar.
+   Dönen değer: kaç alan düzeltildi (0 = dokunulmadı). */
+function pngYukselt(d){
+  if(!d||!Array.isArray(d.oyunlar))return 0;
+  var n=0;
+  function yukselt(obj,anahtar){
+    if(!obj)return;
+    var v=String(obj[anahtar]==null?'':obj[anahtar]).trim();
+    var m=v.match(/\.(png|jpe?g|webp|gif|bmp|avif)$/i);
+    if(!m)return;
+    var taban=v.slice(0,v.length-m[0].length);
+    if(!taban||!rkmBiliniyor(taban))return;
+    obj[anahtar]=taban+'_rkm.js';n++;
+  }
+  d.oyunlar.forEach(function(o){
+    if(!o||typeof o!=='object')return;
+    yukselt(o,'logo');
+    (o.urunler||[]).forEach(function(u){
+      if(!u||typeof u!=='object')return;
+      yukselt(u,'logo');
+      if(u.trailer&&typeof u.trailer==='object')yukselt(u.trailer,'foto');
+      if(u.client&&Array.isArray(u.client.fotolar))u.client.fotolar.forEach(function(f,i){yukselt(u.client.fotolar,i);});
+    });
+  });
+  return n;
+}
 /* E196: mod seçici — 🐙 GitHub şifreli (rkm.js) ↔ 🖼 normal png; seçim değişince
    alan değeri OTOMATİK yeniden yazılır (<taban>_rkm.js ↔ <taban>.png) */
 function resimModSec(degerAl,yaz){
@@ -973,7 +1024,7 @@ function resimAraclari(kapsa,adAlFn,cikti,adYazFn){
   var bOn=document.createElement('button');bOn.textContent='🔍 Önizle';bOn.title='GitHub\'daki şifreli resmi çözüp burada gösterir';
   bOn.onclick=function(){
     var t=taban();
-    if(!t){hata('resim adı boş — önce alana bir ad yaz (ör. m2god_logo.png)');return;}
+    if(!t){hata('resim adı boş — önce alana bir ad yaz (ör. m2god_logo_rkm.js)');return;}
     rkmCoz(t,function(j){kareGoster(j,'GitHub raw\'dan çözüldü — site motoruyla aynı yol · kopya: panel_alan/'+j.ad+'_'+j.w+'x'+j.h);});
   };
   satir.appendChild(bOn);
@@ -1014,7 +1065,7 @@ function resimAraclari(kapsa,adAlFn,cikti,adYazFn){
   var bDon=document.createElement('button');bDon.textContent='🖼 PNG→RMK';bDon.title='Masaüstünden resim seç → küçült/WebP → RKM şifrele → GitHub\'a yükle';
   bDon.onclick=function(){
     var t=taban();
-    if(!t){hata('resim adı boş — önce alana bir ad yaz (ör. newage_logo.png)');return;}
+    if(!t){hata('resim adı boş — önce alana bir ad yaz (ör. newage_rkm.js)');return;}
     fPNG.click();
   };
   fPNG.onchange=function(){
@@ -1125,7 +1176,9 @@ function resimIpucuSatiri(adAlFn,kapsa){
     if(resimModu(v)==='rkm'){
       ip.innerHTML='🐙 değer: <code>'+esc(v)+'</code> → site <code>resimler/'+esc(v)+'</code> dosyasını GitHub\'dan çözer <b style="color:#7ee2a0">(şifreli RKM — png indirilmez, korumalı)</b>';
     }else{
-      ip.innerHTML='🖼 değer: <code>'+esc(v)+'</code> → site düz resim gösterir <b style="color:#e7c56a">(KORUMASIZ — png dosyasını kendi hostuna sen koyarsın; şifreli istiyorsan 🐙 moduna geç)</b>';
+      var pngTaban=v.replace(/\.(png|jpe?g|webp|gif|bmp|avif)$/i,'');
+      var uyar=rkmBiliniyor(pngTaban)?('<br>⚠ GitHub\'da <code>'+esc(pngTaban)+'.png</code> YÜKLÜ DEĞİL — şifreli hali <code>'+esc(pngTaban)+'_rkm.js</code> duruyor. Bu .png değeri sitede resim ÇÖZDÜRMEZ (kırık link)! <b style="color:#e78a5a">Yukarıdan 🐙 moduna geç — değer otomatik düzelir.</b>'):'';
+      ip.innerHTML='🖼 değer: <code>'+esc(v)+'</code> → site düz resim gösterir <b style="color:#e7c56a">(KORUMASIZ — png dosyasını kendi hostuna sen koyarsın; şifreli istiyorsan 🐙 moduna geç)</b>'+uyar;
     }
   }
   yaz();
@@ -1506,7 +1559,7 @@ function renderResimler(){
   RESIMLER_GH.forEach(function(n){var o=document.createElement('option');o.value=n+'_rkm.js';dA.appendChild(o);});   /* E196: tam dosya adı önerisi */
   gA.appendChild(dA);
   var inA=document.createElement('input');inA.type='text';inA.setAttribute('list','dl_rkm_gh');
-  inA.placeholder='resim adı (ör. metin2_logo, metin2_logo.png)';inA.style.maxWidth='340px';
+  inA.placeholder='resim adı (ör. metin2_logo — dosya: metin2_logo_rkm.js)';inA.style.maxWidth='340px';
   satA.appendChild(inA);
   var bA=document.createElement('button');bA.className='ana';bA.textContent='🔍 GitHub\'dan Önizle';
   satA.appendChild(bA);
@@ -2055,9 +2108,9 @@ function ghApiUrl(){
   var c=ghCfg();
   return 'https://api.github.com/repos/'+c.sahip+'/'+c.repo+'/contents/'+c.yol+'?ref='+c.dal;
 }
-function ghCek(){
-  if(!ghCfg().sahip||!ghCfg().repo){ghSonuc('GitHub ayarları eksik — Ayarlar bölümünü doldurun.','hata');return;}
-  ghSonuc('GitHub\'dan TAZE çekiliyor… (E183: önbellek kırıcı aktif — tarayıcı + raw CDN eski kopya kullanmaz)');
+function ghCek(otomatik){
+  if(!ghCfg().sahip||!ghCfg().repo){if(!otomatik)ghSonuc('GitHub ayarları eksik — Ayarlar bölümünü doldurun.','hata');return;}
+  ghSonuc((otomatik?'Açılışta otomatik taze çekim… ':'GitHub\'dan TAZE çekiliyor… ')+'(E183: önbellek kırıcı aktif — tarayıcı + raw CDN eski kopya kullanmaz)');
   fetch('/api/gh/icerik?t='+Date.now(),{cache:'no-store'})
   .then(function(r){if(!r.ok)throw new Error('BEK-'+r.status);return r.text();})
   .catch(function(){return fetch(ghRawUrl()+'?t='+Date.now(),{cache:'no-store'})
@@ -2065,13 +2118,13 @@ function ghCek(){
   .then(function(t){
     var j=null;try{j=JSON.parse(t);}catch(e){throw new Error('JSON parse hatası: '+e);}
     if(!j||j.sema!=='epinsitesi-icerik')throw new Error('sema "epinsitesi-icerik" değil — bu dosya site içeriği değil.');
-    D=normalize(j);metinGrup=null;
+    D=normalize(j);var yuks=pngYukselt(D);metinGrup=null;
     secim={tur:'oyun',oyun:0,urun:0};
     agacAcik={0:true};   /* E183: ilk oyunun ürünleri açık gelsin */
     agacArama='';var ai=$('agacArama');if(ai)ai.value='';var at=$('agacAramaTemizle');if(at)at.style.display='none';
     temizleModu=false;   /* E184: temizle askısı bitti — taze veri taslak olarak yazılabilir */
     dokun();sahneCiz();agacCiz();
-    ghSonuc('GitHub\'dan TAZE yüklendi ('+t.length+' bayt'+(j.zaman?(' · içerik zamanı: '+new Date(j.zaman*1000).toLocaleString()):'')+') — güncel veri bu.','ok');
+    ghSonuc((otomatik?'Açılışta otomatik: ':'')+'GitHub\'dan TAZE yüklendi ('+t.length+' bayt'+(j.zaman?(' · içerik zamanı: '+new Date(j.zaman*1000).toLocaleString()):'')+(yuks?(' · ⚠ '+yuks+' eski .png değer otomatik <taban>_rkm.js yapıldı — GitHub\'da png yok'):'')+') — güncel veri bu.','ok');
   })
   .catch(function(e){temizleModu=false;ghSonuc('Çekme hatası: '+e.message,'hata');});   /* E184: askı kalkar, hata çipte görünür */
 }
@@ -2112,10 +2165,10 @@ function dosyaYukleFn(dosya){
     try{
       var j=JSON.parse(String(oku.result));
       if(!j||j.sema!=='epinsitesi-icerik')throw new Error('sema "epinsitesi-icerik" değil');
-      D=normalize(j);metinGrup=null;secim={tur:'oyun',oyun:0,urun:0};
+      D=normalize(j);var yDosya=pngYukselt(D);metinGrup=null;secim={tur:'oyun',oyun:0,urun:0};
       agacAcik={0:true};   /* E183 */
       dokun();sahneCiz();agacCiz();
-      sonucYaz($('sahne'),'Dosyadan yüklendi: '+dosya.name,'ok');
+      sonucYaz($('sahne'),'Dosyadan yüklendi: '+dosya.name+(yDosya?(' · ⚠ '+yDosya+' eski .png değer otomatik <taban>_rkm.js yapıldı (şifreli karşılığı GitHub\'da var)'):''),'ok');
     }catch(e){alert('Dosya yüklenemedi: '+e.message);}
   };
   oku.readAsText(dosya);
@@ -2244,14 +2297,19 @@ function bagla(){
       var jt=JSON.parse(tas);
       if(jt&&jt.sema==='epinsitesi-icerik'){
         D=normalize(jt);
+        var yTaslak=pngYukselt(D);   /* E197: taslaktaki eski .png adları anında düzeltilir */
         secim={tur:'oyun',oyun:0,urun:0};
         agacAcik={0:true};   /* E183 */
         dokun();sahneCiz();agacCiz();
-        $('durumCip').innerHTML='taslak geri yüklendi — '+$('durumCip').innerHTML;
+        $('durumCip').innerHTML='taslak geri yüklendi'+(yTaslak?(' · ⚠ '+yTaslak+' eski .png → _rkm.js'):'')+' — '+$('durumCip').innerHTML;
       }
     }catch(e){}
   }
   sahneCiz();agacCiz();
+  /* E197: AÇILIŞTA OTOMATİK TAZE ÇEKİM — taslak yalnız anlık iskelettir; GitHub'daki
+     güncel site_icerik.json her açılışta üstüne yazılır. Böylece panelde "eski veri"
+     kalması (ör. m2god_logo.png + NORMAL PNG görünmesi) teknik olarak imkânsızlaşır. */
+  try{if(ghCfg().sahip&&ghCfg().repo)setTimeout(function(){ghCek(true);},80);}catch(e){}
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bagla);
 else bagla();
@@ -2281,6 +2339,7 @@ function backendVar(){ return location.protocol==='http:'||location.protocol==='
     if(!j||!j.ok||!Array.isArray(j.dosyalar))return;
     RESIMLER_GH=j.dosyalar.filter(function(x){return x&&x.tur==='file'&&/_rkm\.js$/i.test(x.ad||'');})
       .map(function(x){return String(x.ad).replace(/_rkm\.js$/i,'');});
+    try{var yL=D?pngYukselt(D):0;if(yL){dokun();sahneCiz();}}catch(e){}   /* E197: liste gelince 2. yükseltme turu */
     try{agacCiz();}catch(e){}   /* ağaçtaki RESİMLER sayacı + öneriler tazelenir */
   })
   .catch(function(){});
