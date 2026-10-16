@@ -1,1 +1,0 @@
-RKM_VERI["deneme_x"]={}
