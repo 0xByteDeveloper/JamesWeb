@@ -2,8 +2,8 @@
   "sema": "epinsitesi-icerik",
   "semaSurum": "1.0",
   "surum": "3.09",
-  "zaman": 1792168640,
-  "olusturma": "2026-10-16T16:37:20.829Z",
+  "zaman": 1792173883,
+  "olusturma": "2026-10-16T18:04:43.894Z",
   "varsayilanDil": "en",
   "diller": [
     "en",
@@ -759,7 +759,7 @@
       "urunler": [
         {
           "ad": "NewAge FarmBot",
-          "logo": "csgo_logo.png",
+          "logo": "newage.png",
           "fiyat": {
             "tutar": 31,
             "paraBirimi": "USD"
@@ -772,7 +772,7 @@
             "darkside": true,
             "farmbot": true,
             "shopbot": true,
-            "slotYok": false
+            "slotYok": true
           },
           "donatorMin": 11.5,
           "paketKur": "USD",
