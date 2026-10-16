@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 """
 ═══════════════════════════════════════════════════════════════════════
- M2GOD KONTROL PANELİ v4 (E193) — PYTHON SUNUCULU · E177_resim-avif-v6 uyumlu
-      (E186 tabanlı panel: Toplu Sıkıştır/RKMP bölümü KALDIRILDI —
-       canlı site paket tüketmiyor; kullanıcı: "şimdilik yapmıcaz")
-      (E186'dan devralınan özellikler AYNEN: ağaç arama + boyutlandırma,
-       Verileri Temizle, Metinler tek kaynak + otomatik çeviri)
+ M2GOD KONTROL PANELİ v5 (E194) — PYTHON SUNUCULU · E177_resim-avif-v6 uyumlu
+      (E193 taban: Toplu Sıkıştır yok; arama/boyutlandırma/temizle/çeviri aynen)
+      E194 YENİ UÇLAR:
+        · /api/rkm/coz        → resimler/<ad>_rkm.js'i çözüp resme çevirir
+                                (b64 → XOR64 → kare; mime f'ye göre) — önizleme
+        · /api/gh/resim-yukle → RKM JS metnini resimler/<ad>_rkm.js olarak
+                                GitHub'a pushlar (tarayıcıda canvas ile üretildi)
 ═══════════════════════════════════════════════════════════════════════
  KULLANIM:
      python kontrol_paneli.py               → http://127.0.0.1:8777 açılır
@@ -19,6 +21,7 @@
      TOKEN OPSİYONELDİR: public depoda token'sız da çalışır; token yalnız
      private depo + push için
    · /api/gh/surum · /api/gh/liste: sürüm notu okuma + klasör listeleme
+   · /api/rkm/coz · /api/gh/resim-yukle: RKM çözme + resim yükleme (E194)
    · /api/cevir: otomatik çeviri (Google → MyMemory yedeği)
    · /api/durum · /api/token: sunucu-token eşzamanlaması (token dosyaya
      yazılır, tarayıcıya asla geri gönderilmez)
@@ -26,7 +29,7 @@
  GEREKSİNİM: Python 3.8+ — ek paket YOK (yalnız standart kütüphane)
  TOKEN: ilk çalıştırmada paneldeki "Tarayıcıdaki Token'ı Sunucuya Kaydet"
         düğmesini kullanın (github_token.txt oluşturur) veya:
-        E193_GH_TOKEN=github_pat_... python kontrol_paneli.py
+        E194_GH_TOKEN=github_pat_... python kontrol_paneli.py
 ═══════════════════════════════════════════════════════════════════════
 """
 import base64
@@ -61,7 +64,9 @@ PANEL_HTML = os.path.join(KOK_DIZIN, "kontrol_paneli.html")
 
 # ═══════════════════ GITHUB İSTEMCİSİ ═══════════════════
 def token_al():
-    t = os.environ.get("E193_GH_TOKEN", "").strip()
+    t = os.environ.get("E194_GH_TOKEN", "").strip()
+    if not t:
+        t = os.environ.get("E193_GH_TOKEN", "").strip()
     if not t:
         t = os.environ.get("E179_GH_TOKEN", "").strip()
     if not t:
@@ -122,6 +127,61 @@ def gh_liste(klasor, token):
         raise ValueError("klasör okunamadı: " + klasor)
     return [{"ad": x.get("name"), "boyut": x.get("size"), "tur": x.get("type"), "sha": x.get("sha")}
             for x in j]
+
+# ═══════════════════ E194 · RKM RESİM ÇÖZÜCÜ (/api/rkm/coz) ═══════════════════
+# Sitenin resim motoruyla BİREBİR protokol: d=base64(kare XOR k[i%64]),
+# f: 'w'=image/webp · 'a'=image/avif · 'p'=image/png. Sunucu yalnız ÇÖZER —
+# şifreleme/kare üretimi tarayıcıda canvas ile yapılır (eksik codec derdi yok).
+RKM_F_MIME = {"w": "image/webp", "a": "image/avif", "p": "image/png"}
+RKM_AD_RE = re.compile(r"^[A-Za-z0-9_\-]{1,80}$")
+
+
+def rkm_taban(ad):
+    """metin2_logo | metin2_logo.png | metin2_logo_rkm.js → metin2_logo"""
+    s = str(ad or "").strip()
+    s = re.sub(r"_rkm\.js$", "", s, flags=re.I)
+    s = re.sub(r"\.(png|webp|avif|jpe?g|gif)$", "", s, flags=re.I)
+    return s
+
+
+def rkm_coz(ad, token):
+    """GitHub raw'dan resimler/<ad>_rkm.js çeker → kareyi çözüp döndürür."""
+    taban = rkm_taban(ad)
+    if not RKM_AD_RE.match(taban):
+        raise ValueError("resim adı geçersiz: %r" % ad)
+    metin = gh_raw(RESIM_KLASORU + "/" + taban + "_rkm.js", token, taze=True)
+    m = re.search(r"RKM_VERI\[\s*['\"]([^'\"]+)['\"]\s*\]\s*=\s*(\{.*\})\s*;?\s*$",
+                  metin.strip(), re.S)
+    if not m:
+        raise ValueError("RKM_VERI bulunamadı — dosya biçimi bilinmiyor")
+    obj = json.loads(m.group(2))
+    w, h, f, k, d = obj.get("w"), obj.get("h"), obj.get("f"), obj.get("k"), obj.get("d")
+    if not (isinstance(w, int) and isinstance(h, int) and isinstance(k, list) and isinstance(d, str)):
+        raise ValueError("RKM objesi w/h/f/k/d alanlarını içermiyor")
+    kare = bytearray(base64.b64decode(d))
+    for i in range(len(kare)):
+        kare[i] ^= k[i % len(k)]
+    mime = RKM_F_MIME.get(f, "image/webp")
+    return {"ok": True, "ad": taban, "w": w, "h": h, "f": f, "mime": mime,
+            "veri": base64.b64encode(bytes(kare)).decode("ascii"),
+            "boyut": len(kare), "dosyaBoyut": len(metin.encode("utf-8"))}
+
+
+def rkm_yukle(ad, icerik, token):
+    """RKM JS metnini resimler/<ad>_rkm.js olarak GitHub'a pushlar."""
+    taban = rkm_taban(ad)
+    if not RKM_AD_RE.match(taban):
+        raise ValueError("resim adı geçersiz — harf/rakam/_/- (ör. yeni_oyun_logo)")
+    icerik = str(icerik or "")
+    if len(icerik) > 12 * 1024 * 1024:
+        raise ValueError("dosya çok büyük (maks 12 MB)")
+    if "RKM_VERI['%s']" % taban not in icerik and 'RKM_VERI["%s"]' % taban not in icerik:
+        raise ValueError("içerik RKM_VERI['%s'] tanımını içermiyor — panelin 'Dönüştür' adımını kullan" % taban)
+    commit = gh_push(RESIM_KLASORU + "/" + taban + "_rkm.js",
+                     icerik.encode("utf-8"),
+                     "resimler/%s_rkm.js — kontrol paneli v5 (E194) tarayıcı-canvas RKM üretimi %s" % (taban, datetime.datetime.utcnow().isoformat()),
+                     token)
+    return commit
 
 # ═══════════════════ E183 · OTOMATİK ÇEVİRİ (/api/cevir) ═══════════════════
 # Panelin Metinler bölümündeki 🔄 düğmeleri buraya düşer: tek dil yazılır,
@@ -210,7 +270,7 @@ def gunluk(s):
 
 # ═══════════════════ SUNUCU ═══════════════════
 class Panel(BaseHTTPRequestHandler):
-    server_version = "EpinPanelE193/4.0"
+    server_version = "EpinPanelE194/5.0"
 
     def log_message(self, fmt, *args):
         sys.stderr.write("[panel] %s\n" % (fmt % args))
@@ -252,7 +312,7 @@ class Panel(BaseHTTPRequestHandler):
             return
         if yol == "/api/durum":
             t = token_al()
-            self.json_gonder({"ok": True, "sunucu": "E193-python", "port": self.server.server_address[1],
+            self.json_gonder({"ok": True, "sunucu": "E194-python", "port": self.server.server_address[1],
                               "token": bool(t), "tokenSon4": (t[-4:] if t else ""),
                               "repo": {"sahip": SAHIP, "repo": REPO, "dal": DAL,
                                        "icerikYolu": ICERIK_YOLU}})
@@ -317,6 +377,18 @@ class Panel(BaseHTTPRequestHandler):
                 else:
                     self.hata_gonder(son.get("mesaj") or "çeviri başarısız", 502)
                 return
+            if yol == "/api/rkm/coz":   # E194: RMK → resim (önizleme)
+                self.json_gonder(rkm_coz(g.get("ad"), token))
+                return
+            if yol == "/api/gh/resim-yukle":   # E194: resim→RMK → GitHub push
+                if not token:
+                    self.hata_gonder("token yok — Ayarlar bölümüne github_pat_… yazıp kaydet (Contents: write)", 401)
+                    return
+                commit = rkm_yukle(g.get("ad"), g.get("icerik"), token)
+                gunluk("resim yüklendi: resimler/%s_rkm.js → commit %s" % (rkm_taban(g.get("ad")), commit))
+                self.json_gonder({"ok": True, "commit": commit,
+                                  "yol": RESIM_KLASORU + "/" + rkm_taban(g.get("ad")) + "_rkm.js"})
+                return
             if yol == "/api/token":
                 t = str(g.get("token") or "").strip()
                 if not t or len(t) > 255 or " " in t:
@@ -369,14 +441,14 @@ def main():
 
     t = token_al()
     print("═" * 66)
-    print(" M2GOD KONTROL PANELİ v4 (E193) — Python sunuculu · E177_resim-avif-v6 uyumlu")
+    print(" M2GOD KONTROL PANELİ v5 (E194) — Python sunuculu · E177_resim-avif-v6 uyumlu")
     print("═" * 66)
     print(" Adres      : http://127.0.0.1:%d  (kapatmak için Ctrl+C)" % port)
     print(" Panel      : kontrol_paneli.html %s" %
           ("✓ bulundu" if os.path.exists(PANEL_HTML) else "✗ YOK — aynı klasöre koyun!"))
     print(" GitHub     : %s/%s (%s)" % (SAHIP, REPO, DAL))
     print(" Token      : %s" % (("kayıtlı …" + t[-4:]) if t else
-                                   "YOK — public depoda gerekmez; private depo/push için panelde 'Tarayıcıdaki Token'ı Sunucuya Kaydet' veya E193_GH_TOKEN"))
+                                   "YOK — public depoda gerekmez; private depo/push için panelde 'Tarayıcıdaki Token'ı Sunucuya Kaydet' veya E194_GH_TOKEN"))
     print("═" * 66)
 
     srv = ThreadingHTTPServer((arayuz, port), Panel)
