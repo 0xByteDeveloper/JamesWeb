@@ -3,15 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>M2God Kontrol Paneli v6 — İçerik Otomasyonu (E195 · Python)</title>
+<title>M2God Kontrol Paneli v7 — İçerik Otomasyonu (E196 · Python)</title>
 <!--
-  E195 · M2GOD KONTROL PANELİ v6 — İÇERİK OTOMASYONU (Python sunuculu)
+  E196 · M2GOD KONTROL PANELİ v7 — İÇERİK OTOMASYONU (Python sunuculu)
   ═════════════════════════════════════════════
-  (E193 taban — E177_resim-avif-v6 uyumlu; arama/boyutlandırma/temizle/çeviri AYNEN)
-  E195 YENİLİKLERİ:
-  · RESİM ADI ANLAMI: alan değeri MANTIKSAL ad (ör. m2god_logo.png) — gerçek dosya
-    GitHub'ta resimler/<ad>_rkm.js olarak ŞİFRELİ durur; site motoru uzantıyı silip
-    _rkm.js çeker. Alanların altında canlı ipucu + 4 araç düğmesi:
+  (E195 taban — E177_resim-avif-v6 uyumlu; arama/boyutlandırma/temizle/çeviri/kur AYNEN)
+  E196 YENİLİKLERİ (resim adı karmaşası KÖKTEN bitti):
+  · HER resim alanında 🐙/🖼 MOD SEÇİCİ: "🐙 Şifreli rkm.js" (GitHub — png indirilmez,
+    KORUMALI) ↔ "🖼 Normal png" (korumasız, dosyayı sen hostlarsın). Seçim değişince
+    alan değeri OTOMATİK yeniden yazılır: <taban>_rkm.js ↔ <taban>.png — artık
+    ne yazacağını düşünmene gerek yok.
+  · Alan değeri = GERÇEK dosya adı. Şifreli ise değer BİREBİR <ad>_rkm.js'dir
+    (ör. newage_rkm.js); site o dosyayı GitHub'dan çeker. Eski mantıksal .png
+    adları (m2god_logo.png gibi listede kayıtlılar) site motoru v5.2'de HÂLÂ
+    çalışır — eski önbellekler bozulmaz.
+  · Site motoru v5.2 (surum E196): listede OLMAYAN <ad>_rkm.js değerleri artık
+    şifreli yüklenir → panelden eklenen YENİ resimler motor güncellemesi gerektirmez.
+  · Tüm resim araçları (🔍 ⬆ 🖼 🗜) yükleme sonrası alan değerini otomatik
+    <taban>_rkm.js yapar.
+  E195 ÖZELLİKLERİ (aynen korunuyor):
+  · RESİM ADI ANLAMI: alanların altında canlı ipucu + 4 araç düğmesi:
     🔍 Önizle · ⬆ RMK Yükle · 🖼 PNG→RMK (masaüstünden seç → şifrele) ·
     🗜 Sıkıştır (çöz → canvas WebP kilobayt küçültme → karşılaştır → yükle)
   · KUR MOTORU (sitenin EpinFX 6-API zinciri ile aynı): Parasal Eğri sütunlarında
@@ -176,6 +187,11 @@ main{flex:1;overflow-y:auto;padding:16px 20px;min-width:0}
 .resimCikti .rkmKare{background:repeating-conic-gradient(#1a2233 0% 25%,#121826 0% 50%) 50%/18px 18px;border:1px solid var(--hat);border-radius:8px;padding:6px;min-width:80px;min-height:56px;display:flex;align-items:center;justify-content:center}
 .resimCikti img{max-width:280px;max-height:170px;display:block}
 .oSatir .resimAraclar{margin-top:0;display:inline-flex}
+/* ── E196: resim mod seçici (🐙 şifreli rkm.js ↔ 🖼 normal png) ── */
+.resimSatir{display:flex;gap:6px;align-items:center}
+.resimSatir input{flex:1 1 auto}
+select.resimMod{width:auto;flex:0 0 auto;min-width:132px;font-size:11.5px;padding:4px 6px}
+.oSatir select.resimMod{min-width:104px;font-size:11px;padding:3px 4px}
 
 /* ── E195: kur araçları (parasal eğri + paketler) ── */
 .kurSatir{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:8px 0 4px 0;padding:8px 10px;background:var(--panel2);border:1px solid var(--hat);border-radius:8px}
@@ -253,8 +269,8 @@ var metinGrup=null;                      /* metinler sekmesi */
 var agacAcik={};                         /* E183: ağaçta ürün listesi açık olan oyunlar (bağımsız durum) */
 var agacArama='';                        /* E183: ağaç arama filtresi */
 var metinAcik={};                        /* E185: metinler satırlarında diller ızgarası açık mı (anahtar→bool) */
-var RESIMLER=['SiteLogo.png','metin2_logo.png','knight_logo.png','sro_logo.png','cabal_logo.png','ranonline_logo.png','rakion_logo.png','csgo_logo.png','m2god_logo.png','example_farmbot_logo.png','example_koxp_logo.png','example_farmbot_trailer.png','example_farmbot_client_1.png','example_farmbot_client_2.png','example_koxp_trailer.png','example_koxp_client_1.png','example_koxp_client_2.png','b1.png','b3.png','xxxx-img.png'];
-var RESIMLER_GH=[];                     /* E194: GitHub resimler/ klasöründen gelen canlı liste (ad.png biçiminde öneriler) */
+var RESIMLER=['SiteLogo_rkm.js','metin2_logo_rkm.js','knight_logo_rkm.js','sro_logo_rkm.js','cabal_logo_rkm.js','ranonline_logo_rkm.js','rakion_logo_rkm.js','csgo_logo_rkm.js','m2god_logo_rkm.js','example_farmbot_logo_rkm.js','example_koxp_logo_rkm.js','example_farmbot_trailer_rkm.js','example_farmbot_client_1_rkm.js','example_farmbot_client_2_rkm.js','example_koxp_trailer_rkm.js','example_koxp_client_1_rkm.js','example_koxp_client_2_rkm.js','b1_rkm.js','b3_rkm.js','xxxx-img_rkm.js','newage_rkm.js'];
+var RESIMLER_GH=[];                     /* E194: GitHub resimler/ klasöründen gelen canlı liste (taban adları; öneriler <taban>_rkm.js olarak sunulur) */
 var akDurum={};                         /* E194: akordeon bölüm açık/kapalı durumu (anahtar→bool); seçim değişince korunur */
 var LS_TASLAK='kp2_taslak',LS_TOKEN='jw_gh_token',LS_CFG='jw_gh_cfg';
 var taslakZam=null,agacZam=null,temizleModu=false;   /* E184: temizle sırasında otomatik taslak yazımı askıda */
@@ -481,7 +497,7 @@ function urunEkle(oi){
        · parasal eğri: 2 SÜTUN — 3 gün → 0.8 · 30 gün → 8 (M2God eğrisinin ilk iki noktası;
          M2God'da 3. sütun 31 → 8.27'dir — isteyen "+ Sütun Ekle" ile ekler)
        · donatorMin 11.5 · paketKur USD */
-  var oneri=slug(o.ad)+'_logo.png';
+  var oneri=slug(o.ad)+'_logo_rkm.js';   /* E196: şifreli rkm.js adı — araçlar bunu GitHub'a yükler */
   o.urunler.push({ad:'Yeni Ürün',logo:oneri,fiyat:{tutar:8,paraBirimi:'USD'},periyot:'MONTH',surum:'v1.0',guncelleme:bugun(),aciklama:'',bayraklar:{darkside:false,farmbot:false,shopbot:false,slotYok:false},donatorMin:11.5,paketKur:'USD',paketler:[{ad:'15 GÜNLÜK',gun:15,fiyat:4.56,hediye:3},{ad:'30 GÜNLÜK',gun:30,fiyat:8,hediye:6}],darksidePaketler:[],parasalEgri:[{gun:3,fiyat:0.8},{gun:30,fiyat:8}],client:{baslik:'',aciklama:'',fotolar:[],ozellikler:[]},trailer:{oyun:sGuven(o.ad).toUpperCase(),urun:'YENİ ÜRÜN',slogan:'',term:'',aciklama:'',foto:''}});
   secim={tur:'urun',oyun:oi,urun:o.urunler.length-1};
   agacAcik[oi]=true;   /* E183: ürün eklerken liste açık kalsın */
@@ -553,18 +569,41 @@ function secAlan(obj,anahtar,etiket,kapsa,listele){
   s.onchange=function(){obj[anahtar]=s.value;dokun();};
   kapsa.appendChild(s);return s;
 }
+/* E196: değer → mod. '_rkm.js' ile bitiyorsa şifreli (GitHub), değilse normal png */
+function resimModu(v){return /_rkm\.js\s*$/i.test(sGuven(v).trim())?'rkm':'png';}
+/* E196: mod seçici — 🐙 GitHub şifreli (rkm.js) ↔ 🖼 normal png; seçim değişince
+   alan değeri OTOMATİK yeniden yazılır (<taban>_rkm.js ↔ <taban>.png) */
+function resimModSec(degerAl,yaz){
+  var mod=document.createElement('select');mod.className='resimMod';
+  mod.title='🐙 Şifreli rkm.js: site resmi GitHub\'dan çözer — png indirilmez, korumalı (önerilen)\n🖼 Normal png: dosya açık adresle gösterilir — korumasız, png dosyasını kendi hostuna sen koyarsın';
+  [['rkm','🐙 Şifreli rkm.js'],['png','🖼 Normal png']].forEach(function(x){
+    var o=document.createElement('option');o.value=x[0];o.textContent=x[1];mod.appendChild(o);});
+  mod.value=resimModu(degerAl());
+  mod.onchange=function(){
+    var t=rkmTaban(degerAl());
+    if(!t){mod.value=resimModu(degerAl());return;}   /* boş değer: yalnız görünüm */
+    var yeni=(mod.value==='rkm')?(t+'_rkm.js'):(t+'.png');
+    yaz(yeni);mod.value=resimModu(yeni);
+  };
+  return mod;
+}
 function logoSec(obj,anahtar,etiket,kapsa){
   aln(kapsa,etiket+' (resim adı — boşsa yok)');
   var d=document.createElement('datalist');var did='dl_'+Math.random().toString(36).slice(2,8);d.id=did;
   resimOnerileri().forEach(function(r){var o=document.createElement('option');o.value=r;d.appendChild(o);});
   var i=document.createElement('input');i.type='text';i.setAttribute('list',did);i.value=sGuven(obj[anahtar]);
+  kapsa.appendChild(d);
+  /* E196: değer + 🐙/🖼 mod seçici aynı satırda */
+  var satir=document.createElement('div');satir.className='resimSatir';
+  satir.appendChild(i);
+  satir.appendChild(resimModSec(function(){return i.value;},function(y){i.value=y;obj[anahtar]=y;dokun();if(ip)ip.yaz();}));
+  kapsa.appendChild(satir);
   i.oninput=function(){obj[anahtar]=i.value;dokun();if(ip)ip.yaz();};
-  kapsa.appendChild(d);kapsa.appendChild(i);
-  /* E195: canlı eşleme ipucu — JSON değeri → GitHub'taki gerçek şifreli dosya */
+  /* canlı eşleme ipucu — değerin türüne göre ne olacağını yazar (E196: mod duyarlı) */
   var ip=resimIpucuSatiri(function(){return i.value;},kapsa);
-  /* E195: 4 araç — Önizle · RMK Yükle · PNG→RMK · Sıkıştır */
+  /* 4 araç — Önizle · RMK Yükle · PNG→RMK · Sıkıştır */
   var cikti=document.createElement('div');cikti.className='resimCikti';kapsa.appendChild(cikti);
-  resimAraclari(kapsa,function(){return i.value;},cikti,function(y){i.value=y;obj[anahtar]=y;dokun();ip.yaz();});
+  resimAraclari(kapsa,function(){return i.value;},cikti,function(y){i.value=y;obj[anahtar]=y;dokun();if(ip)ip.yaz();});
   return i;
 }
 function chkSatir(obj,anahtar,etiket,kapsa){
@@ -740,7 +779,7 @@ function listeMetin(o,etiket){
 }
 function listeFoto(o,etiket){
   var k=document.createElement('div');k.className='kutu';
-  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">client fotoğrafları — sırayla görünür · her satırda: 🔍 önizle · ⬆ RMK yükle · 🖼 PNG→RMK · 🗜 sıkıştır</div>';
+  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">client fotoğrafları — sırayla görünür · her satırda: 🔍 önizle · ⬆ RMK yükle · 🖼 PNG→RMK · 🗜 sıkıştır · 🐙/🖼 mod</div>';
   var L=document.createElement('div');L.className='satirListe';k.appendChild(L);
   /* E195: satır araçlarının ortak sonuç kutusu */
   var cikti=document.createElement('div');cikti.className='resimCikti';
@@ -749,8 +788,10 @@ function listeFoto(o,etiket){
     (o||[]).forEach(function(v,i){
       var r=document.createElement('div');r.className='oSatir';
       var inp=document.createElement('input');inp.type='text';inp.setAttribute('list','dl_foto');inp.value=sGuven(v);
-      inp.oninput=function(){o[i]=inp.value;dokun();};
+      inp.oninput=function(){o[i]=inp.value;dokun();md2.value=resimModu(inp.value);};
       r.appendChild(inp);
+      var md2=resimModSec((function(inp2){return function(){return inp2.value;};})(inp),
+                          (function(inp2){return function(y){inp2.value=y;o[i]=y;dokun();};})(inp));   /* E196 */
       /* E195: satır içi 4 resim aracı — sonuçlar alttaki ortak kutuya yazılır */
       resimAraclari(r,(function(inp2){return function(){return inp2.value;};})(inp),cikti,(function(inp2){return function(y){inp2.value=y;o[i]=y;dokun();};})(inp));
       r.appendChild(aracBtn('✕',function(){o.splice(i,1);ciz();dokun();},'tehlike'));
@@ -960,7 +1001,7 @@ function resimAraclari(kapsa,adAlFn,cikti,adYazFn){
           var kaliteEt='rkm-yeniden-adlandirildi';
           metin=rkmJsUret(t,pak.obj.w,pak.obj.h,pak.obj.f,bayt,kaliteEt);
         }
-        yukleJs(t,metin);
+        yukleJs(t,metin,function(){if(adYazFn)adYazFn(t+'_rkm.js');});   /* E196: alan değerini şifreli ada yaz */
       }catch(e){hata(e.message);}
     };
     oku.readAsText(f);
@@ -1012,7 +1053,7 @@ function resimAraclari(kapsa,adAlFn,cikti,adYazFn){
           bUp.onclick=function(){
             bUp.disabled=true;
             yukleJs(t,r.metin,function(){
-              if(adYazFn&&!sGuven(adAlFn()).trim())adYazFn(t+'.png');
+              if(adYazFn)adYazFn(t+'_rkm.js');   /* E196: şifreli dosya yüklendi → değer de şifreli ad olsun */
             });
           };
           cikti.appendChild(bUp);
@@ -1061,7 +1102,7 @@ function resimAraclari(kapsa,adAlFn,cikti,adYazFn){
               '<br>kare: <b>'+kb(onceKb)+'</b> → <b>'+kb(r.bayt.length)+'</b> <span style="color:'+(yuzde>0?'#7ee2a0':'#e7c56a')+'">('+(yuzde>0?'−'+yuzde+'%':'+ '+(-yuzde)+'%')+' kilobayt)</span>'+
               '<br>js dosyası: <b>'+kb(dosyaOnceKb)+'</b> → <b>'+kb(r.metin.length)+'</b></div>');
             var bUp=document.createElement('button');bUp.className='ana';bUp.textContent='⬆ GitHub\'a Yükle';bUp.style.marginTop='8px';
-            bUp.onclick=function(){bUp.disabled=true;yukleJs(t,sonuc.metin);};
+            bUp.onclick=function(){bUp.disabled=true;yukleJs(t,sonuc.metin,function(){if(adYazFn)adYazFn(t+'_rkm.js');});};   /* E196 */
             cikti.appendChild(bUp);
             if(r.bayt.length>=onceKb&&!confirm('Sonuç küçülmedi ('+kb(r.bayt.length)+' ≥ '+kb(onceKb)+').\nYine de yüklemek istiyor musun? Kaliteyi düşürüp tekrar deneyebilirsin.'))bUp.remove();
           });
@@ -1075,14 +1116,17 @@ function resimAraclari(kapsa,adAlFn,cikti,adYazFn){
 
   kapsa.appendChild(satir);
 }
-/* E195: alan altı canlı ipucu — JSON değeri ↔ gerçek GitHub dosyası eşlemesi */
+/* E196: alan altı canlı ipucu — değerin TÜRÜNE göre ne olacağını yazar */
 function resimIpucuSatiri(adAlFn,kapsa){
   var ip=document.createElement('div');ip.className='resimIpucu';
   function yaz(){
     var v=sGuven(adAlFn()).trim();
-    ip.innerHTML=v
-      ?('JSON değeri: <code>'+esc(v)+'</code> → gerçek dosya: <code>resimler/'+esc(rkmTaban(v))+'_rkm.js</code> <b style="color:#e7c56a">(şifreli RKM)</b> — site uzantıyı silip _rkm.js çeker; .png asla indirilmez')
-      :'resim adı boş — boşsa resim yok';
+    if(!v){ip.innerHTML='resim adı boş — boşsa resim yok';return;}
+    if(resimModu(v)==='rkm'){
+      ip.innerHTML='🐙 değer: <code>'+esc(v)+'</code> → site <code>resimler/'+esc(v)+'</code> dosyasını GitHub\'dan çözer <b style="color:#7ee2a0">(şifreli RKM — png indirilmez, korumalı)</b>';
+    }else{
+      ip.innerHTML='🖼 değer: <code>'+esc(v)+'</code> → site düz resim gösterir <b style="color:#e7c56a">(KORUMASIZ — png dosyasını kendi hostuna sen koyarsın; şifreli istiyorsan 🐙 moduna geç)</b>';
+    }
   }
   yaz();
   kapsa.appendChild(ip);
@@ -1459,7 +1503,7 @@ function renderResimler(){
     'GitHub\'dan veya dosyadan',true);
   var satA=document.createElement('div');satA.className='yatay';gA.appendChild(satA);
   var dA=document.createElement('datalist');dA.id='dl_rkm_gh';
-  RESIMLER_GH.forEach(function(n){var o=document.createElement('option');o.value=n;dA.appendChild(o);});
+  RESIMLER_GH.forEach(function(n){var o=document.createElement('option');o.value=n+'_rkm.js';dA.appendChild(o);});   /* E196: tam dosya adı önerisi */
   gA.appendChild(dA);
   var inA=document.createElement('input');inA.type='text';inA.setAttribute('list','dl_rkm_gh');
   inA.placeholder='resim adı (ör. metin2_logo, metin2_logo.png)';inA.style.maxWidth='340px';
