@@ -2,8 +2,8 @@
   "sema": "epinsitesi-icerik",
   "semaSurum": "1.0",
   "surum": "3.09",
-  "zaman": 1792174054,
-  "olusturma": "2026-10-16T18:07:34.084Z",
+  "zaman": 1792174157,
+  "olusturma": "2026-10-16T18:09:17.900Z",
   "varsayilanDil": "en",
   "diller": [
     "en",
@@ -728,7 +728,7 @@
     {
       "ad": "NewAge",
       "vitrinAd": "",
-      "logo": "csgo_logo.png",
+      "logo": "newage.png",
       "ikon": "🎮",
       "tur": "MMORPG",
       "surum": "v1.0",
@@ -765,14 +765,14 @@
             "paraBirimi": "USD"
           },
           "periyot": "MONTH",
-          "surum": "v1.1",
+          "surum": "v1.0",
           "guncelleme": "16.10.26",
           "aciklama": "",
           "bayraklar": {
             "darkside": true,
             "farmbot": true,
             "shopbot": true,
-            "slotYok": false
+            "slotYok": true
           },
           "donatorMin": 11.5,
           "paketKur": "USD",
