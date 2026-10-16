@@ -1,996 +1,996 @@
 {
-  "sema": "epinsitesi-icerik",
-  "semaSurum": "1.0",
-  "surum": "3.09",
-  "zaman": 1792174157,
-  "olusturma": "2026-10-16T18:09:17.900Z",
-  "varsayilanDil": "en",
-  "diller": [
-    "en",
-    "tr"
-  ],
-  "kullanim": {
-    "not": "Bu dosya sitenin TEK içerik kaynağıdır. Kontrol paneli (kontrol_paneli.html) ile düzenlenip GitHub'a (JamesWeb) yüklenir; site açılışta buradan çeker. Bilinmeyen alanlar korunur — dilediğiniz anahtarı ekleyebilirsiniz.",
-    "ozellikEkleme": "Herhangi bir oyuna/ürüne yeni anahtar ekleyin; site bilinmeyenleri yok sayar, panel korur.",
-    "dilEkleme": "degerler içine yeni dil kodu (de, ru…) ekleyin; site o dili otomatik kullanır. Çeviri API'si YOK — metinler elle yönetilir (deterministik, çevrimdışı, maliyetsiz)."
+ "sema": "epinsitesi-icerik",
+ "semaSurum": "1.0",
+ "surum": "3.10",
+ "zaman": 1792175604,
+ "olusturma": "2026-10-16T18:09:17.900Z",
+ "varsayilanDil": "en",
+ "diller": [
+  "en",
+  "tr"
+ ],
+ "kullanim": {
+  "not": "Bu dosya sitenin TEK içerik kaynağıdır. Kontrol paneli (kontrol_paneli.html) ile düzenlenip GitHub'a (JamesWeb) yüklenir; site açılışta buradan çeker. Bilinmeyen alanlar korunur — dilediğiniz anahtarı ekleyebilirsiniz.",
+  "ozellikEkleme": "Herhangi bir oyuna/ürüne yeni anahtar ekleyin; site bilinmeyenleri yok sayar, panel korur.",
+  "dilEkleme": "degerler içine yeni dil kodu (de, ru…) ekleyin; site o dili otomatik kullanır. Çeviri API'si YOK — metinler elle yönetilir (deterministik, çevrimdışı, maliyetsiz)."
+ },
+ "github": {
+  "sahip": "0xByteDeveloper",
+  "repo": "JamesWeb",
+  "dal": "main",
+  "icerikYolu": "icerik/site_icerik.json",
+  "resimKlasoru": "resimler",
+  "korumaKlasoru": "koruma",
+  "rawKok": "https://raw.githubusercontent.com/0xByteDeveloper/JamesWeb/main"
+ },
+ "site": {
+  "ad": "M2God",
+  "baslik": {
+   "tr": "M2God Community",
+   "en": "M2God Community",
+   "de": "M2God Community",
+   "pl": "M2God Community",
+   "vi": "M2God Community",
+   "ro": "M2God Community",
+   "ru": "M2God Community",
+   "cn": "M2God Community",
+   "ja": "M2God Community",
+   "ar": "M2God Community"
   },
-  "github": {
-    "sahip": "0xByteDeveloper",
-    "repo": "JamesWeb",
-    "dal": "main",
-    "icerikYolu": "icerik/site_icerik.json",
-    "resimKlasoru": "resimler",
-    "korumaKlasoru": "koruma",
-    "rawKok": "https://raw.githubusercontent.com/0xByteDeveloper/JamesWeb/main"
-  },
-  "site": {
-    "ad": "M2God",
-    "baslik": {
-      "tr": "M2God Community",
-      "en": "M2God Community",
-      "de": "M2God Community",
-      "pl": "M2God Community",
-      "vi": "M2God Community",
-      "ro": "M2God Community",
-      "ru": "M2God Community",
-      "cn": "M2God Community",
-      "ja": "M2God Community",
-      "ar": "M2God Community"
-    },
-    "logo": {
-      "dosya": "SiteLogo.png",
-      "taban": "SiteLogo",
-      "paket": "SiteLogo_rkm.js",
-      "cozunurluk": 660,
-      "alt": "M2God",
-      "not": "E174: eski adı logomuz — SiteLogo olarak yeniden adlandı"
-    }
-  },
-  "metinler": {
-    "videolar": {
-      "etiket": {
-        "anahtar": "VIDEO GALLERY",
-        "degerler": {
-          "en": "VIDEO GALLERY",
-          "tr": "VİDEO GALERİ"
-        }
-      },
-      "baslikSol": {
-        "anahtar": "Watch our bots",
-        "degerler": {
-          "en": "Watch our bots",
-          "tr": "Botlarımız"
-        }
-      },
-      "baslikVurgu": {
-        "anahtar": "in action",
-        "degerler": {
-          "en": "in action",
-          "tr": "çalışırken"
-        }
-      },
-      "baslikSag": {
-        "anahtar": "— live now",
-        "degerler": {
-          "en": "— live now",
-          "tr": "izle"
-        }
-      },
-      "aciklama": {
-        "anahtar": "Real usage recordings — Farm, Shop, Skill and Fish Bot. Click a tile to watch it right in the tile; press Watch large for the big view.",
-        "degerler": {
-          "en": "Real usage recordings — Farm, Shop, Skill and Fish Bot. Click a tile to watch it right in the tile; press Watch large for the big view.",
-          "tr": "Gerçek kullanım kayıtları — Farm, Shop, Skill ve Fish Bot. Kareye tıkla, kareden izle; geniş izlemek istersen Geniş izle'ye bas."
-        }
-      },
-      "tumu": {
-        "anahtar": "All",
-        "degerler": {
-          "en": "All",
-          "tr": "Tümü"
-        },
-        "not": "STR sözlüğünde zaten var (All/Tümü) — referans"
-      },
-      "devaminiGor": {
-        "anahtar": "SHOW MORE",
-        "degerler": {
-          "en": "SHOW MORE",
-          "tr": "DEVAMINI GÖR"
-        }
-      },
-      "dahaAzGor": {
-        "anahtar": "SHOW LESS",
-        "degerler": {
-          "en": "SHOW LESS",
-          "tr": "DAHA AZ GÖR"
-        }
-      },
-      "genisIzle": {
-        "anahtar": "Watch large",
-        "degerler": {
-          "en": "Watch large",
-          "tr": "Geniş izle"
-        }
-      },
-      "genisHint": {
-        "anahtar": "Wide view — the video opens here; the bar above stays in place",
-        "degerler": {
-          "en": "Wide view — the video opens here; the bar above stays in place",
-          "tr": "Geniş izleme — video burada açılır, üstteki şerit yerinde kalır"
-        }
-      },
-      "durdur": {
-        "anahtar": "Stop",
-        "degerler": {
-          "en": "Stop",
-          "tr": "Durdur"
-        },
-        "aria": true
-      },
-      "oyunSecimi": {
-        "anahtar": "Game selection",
-        "degerler": {
-          "en": "Game selection",
-          "tr": "Oyun seçimi"
-        },
-        "aria": true
-      }
-    }
-  },
-  "oyunlar": [
-    {
-      "ad": "Metin2",
-      "vitrinAd": "",
-      "logo": "metin2_logo.png",
-      "ikon": "🐉",
-      "tur": "MMORPG",
-      "surum": "v2.4",
-      "guncelleme": "26.08.21",
-      "mimari": "x32/x64",
-      "baslatma": "Start",
-      "renk": "#d9a441",
-      "gelistirici": "M2God Team",
-      "puan": 4.8,
-      "kullanici": 1250,
-      "songun": 2,
-      "rozetler": [
-        "hot",
-        "fav"
-      ],
-      "versiyonlar": [
-        "v2.4",
-        "v2.3"
-      ],
-      "aciklama": "M2God Metin2 enhancement suite - farming automation, movement tweaks and quality of life features. Updated frequently and compatible with both client builds.",
-      "ozellikler": [
-        {
-          "ad": "Farm Bot",
-          "pro": true
-        },
-        {
-          "ad": "Shop Bot",
-          "pro": false
-        },
-        {
-          "ad": "Energy Bot",
-          "pro": false
-        },
-        {
-          "ad": "Fish Bot",
-          "pro": true
-        }
-      ],
-      "urunler": [
-        {
-          "ad": "M2God",
-          "logo": "m2god_logo.png",
-          "fiyat": {
-            "tutar": 8,
-            "paraBirimi": "USD"
-          },
-          "periyot": "MONTH",
-          "surum": "v1.2",
-          "guncelleme": "26.08.21",
-          "aciklama": "",
-          "bayraklar": {
-            "darkside": true,
-            "farmbot": true,
-            "shopbot": true,
-            "slotYok": false
-          },
-          "donatorMin": 11.5,
-          "paketKur": "USD",
-          "paketler": [
-            {
-              "ad": "15 GÜNLÜK",
-              "gun": 15,
-              "fiyat": 4.56,
-              "hediye": 3
-            },
-            {
-              "ad": "30 GÜNLÜK",
-              "gun": 30,
-              "fiyat": 8,
-              "hediye": 6
-            },
-            {
-              "ad": "60 GÜNLÜK",
-              "gun": 60,
-              "fiyat": 14.9,
-              "hediye": 15
-            }
-          ],
-          "darksidePaketler": [
-            {
-              "ad": "Darkside Aylık",
-              "gun": 30,
-              "fiyat": 20,
-              "hediye": 0
-            },
-            {
-              "ad": "Darkside 2 Aylık",
-              "gun": 60,
-              "fiyat": 36,
-              "hediye": 0
-            }
-          ],
-          "parasalEgri": [
-            {
-              "gun": 3,
-              "fiyat": 0.8
-            },
-            {
-              "gun": 30,
-              "fiyat": 8
-            },
-            {
-              "gun": 31,
-              "fiyat": 8.27
-            }
-          ],
-          "client": {
-            "baslik": "",
-            "aciklama": "M2God farm botu arayüzü, sade ama güçlü. Karakterini seç, rotanı belirle, \"Start\"a bas. Gerisini program halleder — sen uyurken yang farmlar.",
-            "fotolar": [
-              "b1.png",
-              "b3.png"
-            ],
-            "ozellikler": [
-              {
-                "ad": "Visual macro editor",
-                "aciklama": "kod yazmadan kendi makronu oluştur"
-              },
-              {
-                "ad": "Real-time stats",
-                "aciklama": "yang/dakika, uptime, item sayısı"
-              },
-              {
-                "ad": "Hotkey system",
-                "aciklama": "her özelliği tek tuşla aç/kapat"
-              },
-              {
-                "ad": "Profile system",
-                "aciklama": "farklı karakterler için farklı ayarlar"
-              },
-              {
-                "ad": "Auto-update",
-                "aciklama": "oyun güncellendiğinde otomatik patch"
-              }
-            ]
-          },
-          "trailer": {
-            "oyun": "METIN2",
-            "urun": "M2GOD",
-            "slogan": "Working All Servers. (900+ Server)",
-            "term": "",
-            "aciklama": "",
-            "foto": "xxxx-img.png"
-          }
-        },
-        {
-          "ad": "Example Farmbot",
-          "logo": "example_farmbot_logo.png",
-          "fiyat": {
-            "tutar": 16,
-            "paraBirimi": "USD"
-          },
-          "periyot": "MONTH",
-          "surum": "v1.0",
-          "guncelleme": "10.09.26",
-          "aciklama": "Example Farmbot, Metin2 için rota tabanlı farm otomasyonu: metin taşı avı, otomatik loot ve mob kontrolü tek pakette. Her güncellemede yeni server desteği.",
-          "bayraklar": {
-            "darkside": true,
-            "farmbot": true,
-            "shopbot": false,
-            "slotYok": true
-          },
-          "donatorMin": 23,
-          "paketKur": "USD",
-          "paketler": [
-            {
-              "ad": "15 GÜNLÜK",
-              "gun": 15,
-              "fiyat": 9.12,
-              "hediye": 3
-            },
-            {
-              "ad": "30 GÜNLÜK",
-              "gun": 30,
-              "fiyat": 16,
-              "hediye": 6
-            },
-            {
-              "ad": "60 GÜNLÜK",
-              "gun": 60,
-              "fiyat": 29.8,
-              "hediye": 15
-            }
-          ],
-          "darksidePaketler": [
-            {
-              "ad": "Darkside Aylık",
-              "gun": 30,
-              "fiyat": 20,
-              "hediye": 0
-            },
-            {
-              "ad": "Darkside 2 Aylık",
-              "gun": 60,
-              "fiyat": 36,
-              "hediye": 0
-            }
-          ],
-          "parasalEgri": [
-            {
-              "gun": 3,
-              "fiyat": 1.6
-            },
-            {
-              "gun": 30,
-              "fiyat": 16
-            },
-            {
-              "gun": 31,
-              "fiyat": 16.53
-            }
-          ],
-          "client": {
-            "baslik": "",
-            "aciklama": "Example Farmbot arayüzü sade ve hızlıdır. Haritayı seç, farm rotanı çiz, \"Start\"a bas. Bot metin taşlarını kırar, mobları çeker, loot'u yerden toplar — sen uyurken envanter dolar.",
-            "fotolar": [
-              "example_farmbot_client_1.png",
-              "example_farmbot_client_2.png"
-            ],
-            "ozellikler": [
-              {
-                "ad": "Metin radarı",
-                "aciklama": "haritadaki tüm metin taşlarını otomatik bulur ve hedefler"
-              },
-              {
-                "ad": "Smart loot filter",
-                "aciklama": "yang ve itemleri filtreleyip sırayla toplar"
-              },
-              {
-                "ad": "Mob pull (aggro)",
-                "aciklama": "etraftaki mobları tek noktada toplar"
-              },
-              {
-                "ad": "Farm route editor",
-                "aciklama": "rotanı kod yazmadan çiz, bot birebir izler"
-              },
-              {
-                "ad": "Auto reconnect",
-                "aciklama": "atılma veya DC sonrası otomatik geri bağlanır"
-              }
-            ]
-          },
-          "trailer": {
-            "oyun": "METIN2",
-            "urun": "EXAMPLE FARBOT",
-            "slogan": "Tüm Serverlarda 7/24 Yang Farmı. (900+ Server)",
-            "term": "Metin Kıran Botun Yeni Dönemi Başladı",
-            "aciklama": "Metin taşı farmı, otomatik loot ve mob kontrolü — tamamen Metin2 için tasarlandı. Example Farmbot, karakterini senin yerine çalıştıran farm otomasyonu: rota tabanlı çalışır, %100 doğrulukta, anti-ban korumalı. Sen uyumaya devam et, envanter Example Farmbot ile dolar.",
-            "foto": "example_farmbot_trailer.png"
-          }
-        }
-      ]
-    },
-    {
-      "ad": "Knight Online",
-      "vitrinAd": "Knight",
-      "logo": "knight_logo.png",
-      "ikon": "⚔️",
-      "tur": "MMORPG",
-      "surum": "v1.9",
-      "guncelleme": "21.08.21",
-      "mimari": "x32",
-      "baslatma": "Inject",
-      "renk": "#d95a5a",
-      "gelistirici": "AtlasDev",
-      "puan": 4.6,
-      "kullanici": 980,
-      "songun": 5,
-      "rozetler": [],
-      "versiyonlar": [
-        "v1.9"
-      ],
-      "aciklama": "Knight Online combo helpers and utility tools.",
-      "ozellikler": [
-        {
-          "ad": "Minor Combo",
-          "pro": false
-        },
-        {
-          "ad": "Light Feet",
-          "pro": false
-        },
-        {
-          "ad": "Cure Macro",
-          "pro": true
-        }
-      ],
-      "urunler": [
-        {
-          "ad": "Example Koxp",
-          "logo": "example_koxp_logo.png",
-          "fiyat": {
-            "tutar": 24,
-            "paraBirimi": "USD"
-          },
-          "periyot": "MONTH",
-          "surum": "v1.0",
-          "guncelleme": "10.09.26",
-          "aciklama": "Example Koxp, Knight Online için hafif istemci otomasyonu: minor combo, wall skip, party assist ve auto login düşük kaynakla çalışır.",
-          "bayraklar": {
-            "darkside": true,
-            "farmbot": false,
-            "shopbot": false,
-            "slotYok": true
-          },
-          "donatorMin": 34.5,
-          "paketKur": "USD",
-          "paketler": [
-            {
-              "ad": "15 GÜNLÜK",
-              "gun": 15,
-              "fiyat": 13.68,
-              "hediye": 3
-            },
-            {
-              "ad": "30 GÜNLÜK",
-              "gun": 30,
-              "fiyat": 24,
-              "hediye": 6
-            },
-            {
-              "ad": "60 GÜNLÜK",
-              "gun": 60,
-              "fiyat": 44.7,
-              "hediye": 15
-            }
-          ],
-          "darksidePaketler": [
-            {
-              "ad": "Darkside Aylık",
-              "gun": 30,
-              "fiyat": 29,
-              "hediye": 0
-            },
-            {
-              "ad": "Darkside 2 Aylık",
-              "gun": 60,
-              "fiyat": 52,
-              "hediye": 0
-            }
-          ],
-          "parasalEgri": [
-            {
-              "gun": 3,
-              "fiyat": 2.4
-            },
-            {
-              "gun": 30,
-              "fiyat": 24
-            },
-            {
-              "gun": 31,
-              "fiyat": 24.8
-            }
-          ],
-          "client": {
-            "baslik": "",
-            "aciklama": "Example Koxp arayüzü hafif ve yönetilebilirdir. Karakterini yükle, kombo ayarını yap, \"Start\"a bas. Minor, heal ve pathfinding otomatik — sen izlerken seviye ve item birikir.",
-            "fotolar": [
-              "example_koxp_client_1.png",
-              "example_koxp_client_2.png"
-            ],
-            "ozellikler": [
-              {
-                "ad": "Minor combo",
-                "aciklama": "düşük HP'de otomatik minor basar, ölümü engeller"
-              },
-              {
-                "ad": "Light feet + speed",
-                "aciklama": "hız ve kaçış ayarlarını tek panelden yönet"
-              },
-              {
-                "ad": "Wall skip",
-                "aciklama": "duvar ve engebe geçişleri için rota kaydı"
-              },
-              {
-                "ad": "Party assist",
-                "aciklama": "oto heal, oto cure ve oto rez ile partiye destek"
-              },
-              {
-                "ad": "Auto login",
-                "aciklama": "oyun kapansa bile hesabına otomatik girer"
-              }
-            ]
-          },
-          "trailer": {
-            "oyun": "KNIGHT ONLINE",
-            "urun": "EXAMPLE KOXP",
-            "slogan": "Tüm Serverlarda Combo ve Farm Desteği. (131 Server)",
-            "term": "Knight Online Koxp Dönemi Yeniden Başladı",
-            "aciklama": "Minor combo, wall skip, oto party ve pathfinding — tamamen Knight Online için tasarlandı. Example Koxp, karakterini senin yerine yöneten hafif istemci otomasyonu: düşük kaynak kullanır, %100 doğrulukta, anti-ban korumalı. Sen komboyu seç, gerisini Example Koxp halleder.",
-            "foto": "example_koxp_trailer.png"
-          }
-        }
-      ]
-    },
-    {
-      "ad": "Silkroad Online",
-      "vitrinAd": "Silkroad",
-      "logo": "sro_logo.png",
-      "ikon": "🏜️",
-      "tur": "MMORPG",
-      "surum": "v3.1",
-      "guncelleme": "25.08.21",
-      "mimari": "x64",
-      "baslatma": "Inject",
-      "renk": "#41c9d9",
-      "gelistirici": "PhoenixTeam",
-      "puan": 4.9,
-      "kullanici": 1105,
-      "songun": 1,
-      "rozetler": [
-        "new"
-      ],
-      "versiyonlar": [
-        "v3.1"
-      ],
-      "aciklama": "Silkroad assistant with auto hunting and smart item filtering.",
-      "ozellikler": [
-        {
-          "ad": "Auto Hunt",
-          "pro": false
-        },
-        {
-          "ad": "Item Filter",
-          "pro": false
-        },
-        {
-          "ad": "Party XP Boost",
-          "pro": true
-        }
-      ],
-      "urunler": []
-    },
-    {
-      "ad": "Cabal Online",
-      "vitrinAd": "Cabal",
-      "logo": "cabal_logo.png",
-      "ikon": "🔮",
-      "tur": "MMORPG",
-      "surum": "v2.7",
-      "guncelleme": "23.08.21",
-      "mimari": "x64",
-      "baslatma": "Inject",
-      "renk": "#a06ee8",
-      "gelistirici": "NovaDev",
-      "puan": 4.4,
-      "kullanici": 720,
-      "songun": 3,
-      "rozetler": [
-        "prem"
-      ],
-      "versiyonlar": [
-        "v2.7"
-      ],
-      "aciklama": "Premium grade Cabal toolkit: dungeon automation and currency farming.",
-      "ozellikler": [
-        {
-          "ad": "Combo Bot",
-          "pro": true
-        },
-        {
-          "ad": "Dungeon Rush",
-          "pro": false
-        },
-        {
-          "ad": "Alz Farm",
-          "pro": true
-        }
-      ],
-      "urunler": []
-    },
-    {
-      "ad": "RAN Online",
-      "vitrinAd": "Ran Online",
-      "logo": "ranonline_logo.png",
-      "ikon": "🎓",
-      "tur": "MMORPG",
-      "surum": "v1.4",
-      "guncelleme": "14.08.21",
-      "mimari": "x32",
-      "baslatma": "Start",
-      "renk": "#59c96e",
-      "gelistirici": "LegacyDev",
-      "puan": 4.2,
-      "kullanici": 450,
-      "songun": 12,
-      "rozetler": [],
-      "versiyonlar": [
-        "v1.4"
-      ],
-      "aciklama": "Standalone launcher based tool for RAN Online.",
-      "ozellikler": [
-        {
-          "ad": "Auto Quest",
-          "pro": false
-        },
-        {
-          "ad": "Stat Point Editor",
-          "pro": true
-        }
-      ],
-      "urunler": []
-    },
-    {
-      "ad": "Rakion",
-      "vitrinAd": "",
-      "logo": "rakion_logo.png",
-      "ikon": "🗡️",
-      "tur": "FPS",
-      "surum": "v1.2",
-      "guncelleme": "26.07.21",
-      "mimari": "x32",
-      "baslatma": "Inject",
-      "renk": "#e8933d",
-      "gelistirici": "CoreTeam",
-      "puan": 3.9,
-      "kullanici": 0,
-      "songun": 30,
-      "rozetler": [],
-      "versiyonlar": [
-        "v1.2"
-      ],
-      "aciklama": "Legacy Rakion utilities. Currently offline.",
-      "ozellikler": [
-        {
-          "ad": "Aimbot",
-          "pro": true
-        },
-        {
-          "ad": "Cell Hack",
-          "pro": false
-        },
-        {
-          "ad": "Gold Hack",
-          "pro": false
-        }
-      ],
-      "urunler": []
-    },
-    {
-      "ad": "CS:GO",
-      "vitrinAd": "CSGO",
-      "logo": "csgo_logo.png",
-      "ikon": "🔫",
-      "tur": "FPS",
-      "surum": "v4.2",
-      "guncelleme": "22.08.21",
-      "mimari": "x32/x64",
-      "baslatma": "Inject",
-      "renk": "#5a8fe8",
-      "gelistirici": "NightDev",
-      "puan": 4.7,
-      "kullanici": 2100,
-      "songun": 4,
-      "rozetler": [
-        "hot"
-      ],
-      "versiyonlar": [
-        "v4.2",
-        "v4.1"
-      ],
-      "aciklama": "Competitive CS:GO assist with recoil control and triggerbot.",
-      "ozellikler": [
-        {
-          "ad": "RCS",
-          "pro": true
-        },
-        {
-          "ad": "Triggerbot",
-          "pro": false
-        },
-        {
-          "ad": "Skin Changer",
-          "pro": true
-        },
-        {
-          "ad": "Radar Hack",
-          "pro": false
-        }
-      ],
-      "urunler": []
-    },
-    {
-      "ad": "NewAge",
-      "vitrinAd": "",
-      "logo": "newage.png",
-      "ikon": "🎮",
-      "tur": "MMORPG",
-      "surum": "v1.0",
-      "guncelleme": "16.10.26",
-      "mimari": "x32/x64",
-      "baslatma": "Start",
-      "renk": "#d9a441",
-      "gelistirici": "M2God Team",
-      "puan": 5,
-      "kullanici": 0,
-      "songun": 2,
-      "rozetler": [
-        "hot",
-        "new",
-        "prem",
-        "fav"
-      ],
-      "versiyonlar": [
-        "v1.0"
-      ],
-      "aciklama": "",
-      "ozellikler": [
-        {
-          "ad": "Fark Bot",
-          "pro": true
-        }
-      ],
-      "urunler": [
-        {
-          "ad": "NewAge FarmBot",
-          "logo": "newage.png",
-          "fiyat": {
-            "tutar": 31,
-            "paraBirimi": "USD"
-          },
-          "periyot": "MONTH",
-          "surum": "v1.0",
-          "guncelleme": "16.10.26",
-          "aciklama": "",
-          "bayraklar": {
-            "darkside": true,
-            "farmbot": true,
-            "shopbot": true,
-            "slotYok": true
-          },
-          "donatorMin": 11.5,
-          "paketKur": "USD",
-          "paketler": [
-            {
-              "ad": "15 GÜNLÜK",
-              "gun": 15,
-              "fiyat": 85,
-              "hediye": 31
-            }
-          ],
-          "darksidePaketler": [
-            {
-              "ad": "Darkside Aylık",
-              "gun": 30,
-              "fiyat": 185,
-              "hediye": 20
-            }
-          ],
-          "parasalEgri": [],
-          "client": {
-            "baslik": "",
-            "aciklama": "NewAge Client",
-            "fotolar": [],
-            "ozellikler": []
-          },
-          "trailer": {
-            "oyun": "NEWAGE",
-            "urun": "NewAge Yeni",
-            "slogan": "Working 31",
-            "term": "",
-            "aciklama": "",
-            "foto": "xxxx-img.png"
-          }
-        }
-      ]
-    }
-  ],
-  "videolar": {
-    "listedeGosterilen": 5,
-    "sekmeler": [
-      "all",
-      "Metin2",
-      "Knight Online"
-    ],
-    "ikonlar": {
-      "Farm Bot": "ri-leaf-line",
-      "Shop Bot": "ri-store-2-line",
-      "Skill Bot": "ri-magic-line",
-      "Fish Bot": "ri-fish-line"
-    },
-    "videolar": [
-      {
-        "oyun": "Metin2",
-        "kategori": "Farm Bot",
-        "baslik": "Farm Bot — Genel Bakış",
-        "sure": "02:14",
-        "link": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
-      },
-      {
-        "oyun": "Metin2",
-        "kategori": "Farm Bot",
-        "baslik": "Farm Bot — Kurulum ve Rota",
-        "sure": "03:40",
-        "link": ""
-      },
-      {
-        "oyun": "Metin2",
-        "kategori": "Farm Bot",
-        "baslik": "Farm Bot — Gelişmiş Ayarlar",
-        "sure": "04:05",
-        "link": ""
-      },
-      {
-        "oyun": "Metin2",
-        "kategori": "Farm Bot",
-        "baslik": "Farm Bot — Yang Raporu",
-        "sure": "02:58",
-        "link": ""
-      },
-      {
-        "oyun": "Metin2",
-        "kategori": "Shop Bot",
-        "baslik": "Shop Bot — Market Otomasyonu",
-        "sure": "02:48",
-        "link": ""
-      },
-      {
-        "oyun": "Metin2",
-        "kategori": "Shop Bot",
-        "baslik": "Shop Bot — Fiyat Senkronu",
-        "sure": "01:57",
-        "link": ""
-      },
-      {
-        "oyun": "Metin2",
-        "kategori": "Shop Bot",
-        "baslik": "Shop Bot — NPC Satışı",
-        "sure": "02:05",
-        "link": ""
-      },
-      {
-        "oyun": "Metin2",
-        "kategori": "Skill Bot",
-        "baslik": "Skill Bot — Beceri Dizilimi",
-        "sure": "02:31",
-        "link": ""
-      },
-      {
-        "oyun": "Metin2",
-        "kategori": "Skill Bot",
-        "baslik": "Skill Bot — Savaş Profili",
-        "sure": "03:12",
-        "link": ""
-      },
-      {
-        "oyun": "Metin2",
-        "kategori": "Fish Bot",
-        "baslik": "Fish Bot — Balık Tutma Döngüsü",
-        "sure": "02:22",
-        "link": ""
-      },
-      {
-        "oyun": "Metin2",
-        "kategori": "Fish Bot",
-        "baslik": "Fish Bot — Otomatik Yem",
-        "sure": "01:44",
-        "link": ""
-      },
-      {
-        "oyun": "Metin2",
-        "kategori": "Fish Bot",
-        "baslik": "Fish Bot — Gece Modu",
-        "sure": "03:26",
-        "link": ""
-      },
-      {
-        "oyun": "Knight Online",
-        "kategori": "Farm Bot",
-        "baslik": "Knight Farm Bot — Genel Bakış",
-        "sure": "02:36",
-        "link": ""
-      },
-      {
-        "oyun": "Knight Online",
-        "kategori": "Farm Bot",
-        "baslik": "Knight Farm Bot — Slot Seçimi",
-        "sure": "02:49",
-        "link": ""
-      },
-      {
-        "oyun": "Knight Online",
-        "kategori": "Shop Bot",
-        "baslik": "Knight Shop Bot — Pazar Kurulumu",
-        "sure": "02:18",
-        "link": ""
-      },
-      {
-        "oyun": "Knight Online",
-        "kategori": "Shop Bot",
-        "baslik": "Knight Shop Bot — Otomatik Yenileme",
-        "sure": "01:52",
-        "link": ""
-      },
-      {
-        "oyun": "Knight Online",
-        "kategori": "Skill Bot",
-        "baslik": "Knight Skill Bot — Makro Ayarı",
-        "sure": "02:40",
-        "link": ""
-      },
-      {
-        "oyun": "Knight Online",
-        "kategori": "Skill Bot",
-        "baslik": "Knight Skill Bot — Party Modu",
-        "sure": "03:01",
-        "link": ""
-      },
-      {
-        "oyun": "Knight Online",
-        "kategori": "Fish Bot",
-        "baslik": "Knight Fish Bot — Kurulum",
-        "sure": "02:12",
-        "link": ""
-      },
-      {
-        "oyun": "Knight Online",
-        "kategori": "Fish Bot",
-        "baslik": "Knight Fish Bot — Otomatik Satış",
-        "sure": "01:58",
-        "link": ""
-      }
-    ]
-  },
-  "eksikler": {
-    "urunsuzOyunlar": [
-      "Silkroad Online",
-      "Cabal Online",
-      "RAN Online",
-      "Rakion",
-      "CS:GO"
-    ],
-    "clientBaslikYok": [
-      "M2God",
-      "Example Farmbot",
-      "Example Koxp",
-      "NewAge FarmBot"
-    ],
-    "trailerKismiEksik": {
-      "M2God": [
-        "trailer-term",
-        "trailer-desc"
-      ],
-      "NewAge FarmBot": [
-        "trailer-term",
-        "trailer-desc"
-      ]
-    },
-    "not": "Otomatik: ürünü olmayan oyunlar, client başlığı boş olan ürünler, trailer alanı eksik ürünler."
+  "logo": {
+   "dosya": "SiteLogo.png",
+   "taban": "SiteLogo",
+   "paket": "SiteLogo_rkm.js",
+   "cozunurluk": 660,
+   "alt": "M2God",
+   "not": "E174: eski adı logomuz — SiteLogo olarak yeniden adlandı"
   }
+ },
+ "metinler": {
+  "videolar": {
+   "etiket": {
+    "anahtar": "VIDEO GALLERY",
+    "degerler": {
+     "en": "VIDEO GALLERY",
+     "tr": "VİDEO GALERİ"
+    }
+   },
+   "baslikSol": {
+    "anahtar": "Watch our bots",
+    "degerler": {
+     "en": "Watch our bots",
+     "tr": "Botlarımız"
+    }
+   },
+   "baslikVurgu": {
+    "anahtar": "in action",
+    "degerler": {
+     "en": "in action",
+     "tr": "çalışırken"
+    }
+   },
+   "baslikSag": {
+    "anahtar": "— live now",
+    "degerler": {
+     "en": "— live now",
+     "tr": "izle"
+    }
+   },
+   "aciklama": {
+    "anahtar": "Real usage recordings — Farm, Shop, Skill and Fish Bot. Click a tile to watch it right in the tile; press Watch large for the big view.",
+    "degerler": {
+     "en": "Real usage recordings — Farm, Shop, Skill and Fish Bot. Click a tile to watch it right in the tile; press Watch large for the big view.",
+     "tr": "Gerçek kullanım kayıtları — Farm, Shop, Skill ve Fish Bot. Kareye tıkla, kareden izle; geniş izlemek istersen Geniş izle'ye bas."
+    }
+   },
+   "tumu": {
+    "anahtar": "All",
+    "degerler": {
+     "en": "All",
+     "tr": "Tümü"
+    },
+    "not": "STR sözlüğünde zaten var (All/Tümü) — referans"
+   },
+   "devaminiGor": {
+    "anahtar": "SHOW MORE",
+    "degerler": {
+     "en": "SHOW MORE",
+     "tr": "DEVAMINI GÖR"
+    }
+   },
+   "dahaAzGor": {
+    "anahtar": "SHOW LESS",
+    "degerler": {
+     "en": "SHOW LESS",
+     "tr": "DAHA AZ GÖR"
+    }
+   },
+   "genisIzle": {
+    "anahtar": "Watch large",
+    "degerler": {
+     "en": "Watch large",
+     "tr": "Geniş izle"
+    }
+   },
+   "genisHint": {
+    "anahtar": "Wide view — the video opens here; the bar above stays in place",
+    "degerler": {
+     "en": "Wide view — the video opens here; the bar above stays in place",
+     "tr": "Geniş izleme — video burada açılır, üstteki şerit yerinde kalır"
+    }
+   },
+   "durdur": {
+    "anahtar": "Stop",
+    "degerler": {
+     "en": "Stop",
+     "tr": "Durdur"
+    },
+    "aria": true
+   },
+   "oyunSecimi": {
+    "anahtar": "Game selection",
+    "degerler": {
+     "en": "Game selection",
+     "tr": "Oyun seçimi"
+    },
+    "aria": true
+   }
+  }
+ },
+ "oyunlar": [
+  {
+   "ad": "Metin2",
+   "vitrinAd": "",
+   "logo": "metin2_logo_rkm.js",
+   "ikon": "🐉",
+   "tur": "MMORPG",
+   "surum": "v2.4",
+   "guncelleme": "26.08.21",
+   "mimari": "x32/x64",
+   "baslatma": "Start",
+   "renk": "#d9a441",
+   "gelistirici": "M2God Team",
+   "puan": 4.8,
+   "kullanici": 1250,
+   "songun": 2,
+   "rozetler": [
+    "hot",
+    "fav"
+   ],
+   "versiyonlar": [
+    "v2.4",
+    "v2.3"
+   ],
+   "aciklama": "M2God Metin2 enhancement suite - farming automation, movement tweaks and quality of life features. Updated frequently and compatible with both client builds.",
+   "ozellikler": [
+    {
+     "ad": "Farm Bot",
+     "pro": true
+    },
+    {
+     "ad": "Shop Bot",
+     "pro": false
+    },
+    {
+     "ad": "Energy Bot",
+     "pro": false
+    },
+    {
+     "ad": "Fish Bot",
+     "pro": true
+    }
+   ],
+   "urunler": [
+    {
+     "ad": "M2God",
+     "logo": "m2god_logo_rkm.js",
+     "fiyat": {
+      "tutar": 8,
+      "paraBirimi": "USD"
+     },
+     "periyot": "MONTH",
+     "surum": "v1.2",
+     "guncelleme": "26.08.21",
+     "aciklama": "",
+     "bayraklar": {
+      "darkside": true,
+      "farmbot": true,
+      "shopbot": true,
+      "slotYok": false
+     },
+     "donatorMin": 11.5,
+     "paketKur": "USD",
+     "paketler": [
+      {
+       "ad": "15 GÜNLÜK",
+       "gun": 15,
+       "fiyat": 4.56,
+       "hediye": 3
+      },
+      {
+       "ad": "30 GÜNLÜK",
+       "gun": 30,
+       "fiyat": 8,
+       "hediye": 6
+      },
+      {
+       "ad": "60 GÜNLÜK",
+       "gun": 60,
+       "fiyat": 14.9,
+       "hediye": 15
+      }
+     ],
+     "darksidePaketler": [
+      {
+       "ad": "Darkside Aylık",
+       "gun": 30,
+       "fiyat": 20,
+       "hediye": 0
+      },
+      {
+       "ad": "Darkside 2 Aylık",
+       "gun": 60,
+       "fiyat": 36,
+       "hediye": 0
+      }
+     ],
+     "parasalEgri": [
+      {
+       "gun": 3,
+       "fiyat": 0.8
+      },
+      {
+       "gun": 30,
+       "fiyat": 8
+      },
+      {
+       "gun": 31,
+       "fiyat": 8.27
+      }
+     ],
+     "client": {
+      "baslik": "",
+      "aciklama": "M2God farm botu arayüzü, sade ama güçlü. Karakterini seç, rotanı belirle, \"Start\"a bas. Gerisini program halleder — sen uyurken yang farmlar.",
+      "fotolar": [
+       "b1_rkm.js",
+       "b3_rkm.js"
+      ],
+      "ozellikler": [
+       {
+        "ad": "Visual macro editor",
+        "aciklama": "kod yazmadan kendi makronu oluştur"
+       },
+       {
+        "ad": "Real-time stats",
+        "aciklama": "yang/dakika, uptime, item sayısı"
+       },
+       {
+        "ad": "Hotkey system",
+        "aciklama": "her özelliği tek tuşla aç/kapat"
+       },
+       {
+        "ad": "Profile system",
+        "aciklama": "farklı karakterler için farklı ayarlar"
+       },
+       {
+        "ad": "Auto-update",
+        "aciklama": "oyun güncellendiğinde otomatik patch"
+       }
+      ]
+     },
+     "trailer": {
+      "oyun": "METIN2",
+      "urun": "M2GOD",
+      "slogan": "Working All Servers. (900+ Server)",
+      "term": "",
+      "aciklama": "",
+      "foto": "xxxx-img_rkm.js"
+     }
+    },
+    {
+     "ad": "Example Farmbot",
+     "logo": "example_farmbot_logo_rkm.js",
+     "fiyat": {
+      "tutar": 16,
+      "paraBirimi": "USD"
+     },
+     "periyot": "MONTH",
+     "surum": "v1.0",
+     "guncelleme": "10.09.26",
+     "aciklama": "Example Farmbot, Metin2 için rota tabanlı farm otomasyonu: metin taşı avı, otomatik loot ve mob kontrolü tek pakette. Her güncellemede yeni server desteği.",
+     "bayraklar": {
+      "darkside": true,
+      "farmbot": true,
+      "shopbot": false,
+      "slotYok": true
+     },
+     "donatorMin": 23,
+     "paketKur": "USD",
+     "paketler": [
+      {
+       "ad": "15 GÜNLÜK",
+       "gun": 15,
+       "fiyat": 9.12,
+       "hediye": 3
+      },
+      {
+       "ad": "30 GÜNLÜK",
+       "gun": 30,
+       "fiyat": 16,
+       "hediye": 6
+      },
+      {
+       "ad": "60 GÜNLÜK",
+       "gun": 60,
+       "fiyat": 29.8,
+       "hediye": 15
+      }
+     ],
+     "darksidePaketler": [
+      {
+       "ad": "Darkside Aylık",
+       "gun": 30,
+       "fiyat": 20,
+       "hediye": 0
+      },
+      {
+       "ad": "Darkside 2 Aylık",
+       "gun": 60,
+       "fiyat": 36,
+       "hediye": 0
+      }
+     ],
+     "parasalEgri": [
+      {
+       "gun": 3,
+       "fiyat": 1.6
+      },
+      {
+       "gun": 30,
+       "fiyat": 16
+      },
+      {
+       "gun": 31,
+       "fiyat": 16.53
+      }
+     ],
+     "client": {
+      "baslik": "",
+      "aciklama": "Example Farmbot arayüzü sade ve hızlıdır. Haritayı seç, farm rotanı çiz, \"Start\"a bas. Bot metin taşlarını kırar, mobları çeker, loot'u yerden toplar — sen uyurken envanter dolar.",
+      "fotolar": [
+       "example_farmbot_client_1_rkm.js",
+       "example_farmbot_client_2_rkm.js"
+      ],
+      "ozellikler": [
+       {
+        "ad": "Metin radarı",
+        "aciklama": "haritadaki tüm metin taşlarını otomatik bulur ve hedefler"
+       },
+       {
+        "ad": "Smart loot filter",
+        "aciklama": "yang ve itemleri filtreleyip sırayla toplar"
+       },
+       {
+        "ad": "Mob pull (aggro)",
+        "aciklama": "etraftaki mobları tek noktada toplar"
+       },
+       {
+        "ad": "Farm route editor",
+        "aciklama": "rotanı kod yazmadan çiz, bot birebir izler"
+       },
+       {
+        "ad": "Auto reconnect",
+        "aciklama": "atılma veya DC sonrası otomatik geri bağlanır"
+       }
+      ]
+     },
+     "trailer": {
+      "oyun": "METIN2",
+      "urun": "EXAMPLE FARBOT",
+      "slogan": "Tüm Serverlarda 7/24 Yang Farmı. (900+ Server)",
+      "term": "Metin Kıran Botun Yeni Dönemi Başladı",
+      "aciklama": "Metin taşı farmı, otomatik loot ve mob kontrolü — tamamen Metin2 için tasarlandı. Example Farmbot, karakterini senin yerine çalıştıran farm otomasyonu: rota tabanlı çalışır, %100 doğrulukta, anti-ban korumalı. Sen uyumaya devam et, envanter Example Farmbot ile dolar.",
+      "foto": "example_farmbot_trailer_rkm.js"
+     }
+    }
+   ]
+  },
+  {
+   "ad": "Knight Online",
+   "vitrinAd": "Knight",
+   "logo": "knight_logo_rkm.js",
+   "ikon": "⚔️",
+   "tur": "MMORPG",
+   "surum": "v1.9",
+   "guncelleme": "21.08.21",
+   "mimari": "x32",
+   "baslatma": "Inject",
+   "renk": "#d95a5a",
+   "gelistirici": "AtlasDev",
+   "puan": 4.6,
+   "kullanici": 980,
+   "songun": 5,
+   "rozetler": [],
+   "versiyonlar": [
+    "v1.9"
+   ],
+   "aciklama": "Knight Online combo helpers and utility tools.",
+   "ozellikler": [
+    {
+     "ad": "Minor Combo",
+     "pro": false
+    },
+    {
+     "ad": "Light Feet",
+     "pro": false
+    },
+    {
+     "ad": "Cure Macro",
+     "pro": true
+    }
+   ],
+   "urunler": [
+    {
+     "ad": "Example Koxp",
+     "logo": "example_koxp_logo_rkm.js",
+     "fiyat": {
+      "tutar": 24,
+      "paraBirimi": "USD"
+     },
+     "periyot": "MONTH",
+     "surum": "v1.0",
+     "guncelleme": "10.09.26",
+     "aciklama": "Example Koxp, Knight Online için hafif istemci otomasyonu: minor combo, wall skip, party assist ve auto login düşük kaynakla çalışır.",
+     "bayraklar": {
+      "darkside": true,
+      "farmbot": false,
+      "shopbot": false,
+      "slotYok": true
+     },
+     "donatorMin": 34.5,
+     "paketKur": "USD",
+     "paketler": [
+      {
+       "ad": "15 GÜNLÜK",
+       "gun": 15,
+       "fiyat": 13.68,
+       "hediye": 3
+      },
+      {
+       "ad": "30 GÜNLÜK",
+       "gun": 30,
+       "fiyat": 24,
+       "hediye": 6
+      },
+      {
+       "ad": "60 GÜNLÜK",
+       "gun": 60,
+       "fiyat": 44.7,
+       "hediye": 15
+      }
+     ],
+     "darksidePaketler": [
+      {
+       "ad": "Darkside Aylık",
+       "gun": 30,
+       "fiyat": 29,
+       "hediye": 0
+      },
+      {
+       "ad": "Darkside 2 Aylık",
+       "gun": 60,
+       "fiyat": 52,
+       "hediye": 0
+      }
+     ],
+     "parasalEgri": [
+      {
+       "gun": 3,
+       "fiyat": 2.4
+      },
+      {
+       "gun": 30,
+       "fiyat": 24
+      },
+      {
+       "gun": 31,
+       "fiyat": 24.8
+      }
+     ],
+     "client": {
+      "baslik": "",
+      "aciklama": "Example Koxp arayüzü hafif ve yönetilebilirdir. Karakterini yükle, kombo ayarını yap, \"Start\"a bas. Minor, heal ve pathfinding otomatik — sen izlerken seviye ve item birikir.",
+      "fotolar": [
+       "example_koxp_client_1_rkm.js",
+       "example_koxp_client_2_rkm.js"
+      ],
+      "ozellikler": [
+       {
+        "ad": "Minor combo",
+        "aciklama": "düşük HP'de otomatik minor basar, ölümü engeller"
+       },
+       {
+        "ad": "Light feet + speed",
+        "aciklama": "hız ve kaçış ayarlarını tek panelden yönet"
+       },
+       {
+        "ad": "Wall skip",
+        "aciklama": "duvar ve engebe geçişleri için rota kaydı"
+       },
+       {
+        "ad": "Party assist",
+        "aciklama": "oto heal, oto cure ve oto rez ile partiye destek"
+       },
+       {
+        "ad": "Auto login",
+        "aciklama": "oyun kapansa bile hesabına otomatik girer"
+       }
+      ]
+     },
+     "trailer": {
+      "oyun": "KNIGHT ONLINE",
+      "urun": "EXAMPLE KOXP",
+      "slogan": "Tüm Serverlarda Combo ve Farm Desteği. (131 Server)",
+      "term": "Knight Online Koxp Dönemi Yeniden Başladı",
+      "aciklama": "Minor combo, wall skip, oto party ve pathfinding — tamamen Knight Online için tasarlandı. Example Koxp, karakterini senin yerine yöneten hafif istemci otomasyonu: düşük kaynak kullanır, %100 doğrulukta, anti-ban korumalı. Sen komboyu seç, gerisini Example Koxp halleder.",
+      "foto": "example_koxp_trailer_rkm.js"
+     }
+    }
+   ]
+  },
+  {
+   "ad": "Silkroad Online",
+   "vitrinAd": "Silkroad",
+   "logo": "sro_logo_rkm.js",
+   "ikon": "🏜️",
+   "tur": "MMORPG",
+   "surum": "v3.1",
+   "guncelleme": "25.08.21",
+   "mimari": "x64",
+   "baslatma": "Inject",
+   "renk": "#41c9d9",
+   "gelistirici": "PhoenixTeam",
+   "puan": 4.9,
+   "kullanici": 1105,
+   "songun": 1,
+   "rozetler": [
+    "new"
+   ],
+   "versiyonlar": [
+    "v3.1"
+   ],
+   "aciklama": "Silkroad assistant with auto hunting and smart item filtering.",
+   "ozellikler": [
+    {
+     "ad": "Auto Hunt",
+     "pro": false
+    },
+    {
+     "ad": "Item Filter",
+     "pro": false
+    },
+    {
+     "ad": "Party XP Boost",
+     "pro": true
+    }
+   ],
+   "urunler": []
+  },
+  {
+   "ad": "Cabal Online",
+   "vitrinAd": "Cabal",
+   "logo": "cabal_logo_rkm.js",
+   "ikon": "🔮",
+   "tur": "MMORPG",
+   "surum": "v2.7",
+   "guncelleme": "23.08.21",
+   "mimari": "x64",
+   "baslatma": "Inject",
+   "renk": "#a06ee8",
+   "gelistirici": "NovaDev",
+   "puan": 4.4,
+   "kullanici": 720,
+   "songun": 3,
+   "rozetler": [
+    "prem"
+   ],
+   "versiyonlar": [
+    "v2.7"
+   ],
+   "aciklama": "Premium grade Cabal toolkit: dungeon automation and currency farming.",
+   "ozellikler": [
+    {
+     "ad": "Combo Bot",
+     "pro": true
+    },
+    {
+     "ad": "Dungeon Rush",
+     "pro": false
+    },
+    {
+     "ad": "Alz Farm",
+     "pro": true
+    }
+   ],
+   "urunler": []
+  },
+  {
+   "ad": "RAN Online",
+   "vitrinAd": "Ran Online",
+   "logo": "ranonline_logo_rkm.js",
+   "ikon": "🎓",
+   "tur": "MMORPG",
+   "surum": "v1.4",
+   "guncelleme": "14.08.21",
+   "mimari": "x32",
+   "baslatma": "Start",
+   "renk": "#59c96e",
+   "gelistirici": "LegacyDev",
+   "puan": 4.2,
+   "kullanici": 450,
+   "songun": 12,
+   "rozetler": [],
+   "versiyonlar": [
+    "v1.4"
+   ],
+   "aciklama": "Standalone launcher based tool for RAN Online.",
+   "ozellikler": [
+    {
+     "ad": "Auto Quest",
+     "pro": false
+    },
+    {
+     "ad": "Stat Point Editor",
+     "pro": true
+    }
+   ],
+   "urunler": []
+  },
+  {
+   "ad": "Rakion",
+   "vitrinAd": "",
+   "logo": "rakion_logo_rkm.js",
+   "ikon": "🗡️",
+   "tur": "FPS",
+   "surum": "v1.2",
+   "guncelleme": "26.07.21",
+   "mimari": "x32",
+   "baslatma": "Inject",
+   "renk": "#e8933d",
+   "gelistirici": "CoreTeam",
+   "puan": 3.9,
+   "kullanici": 0,
+   "songun": 30,
+   "rozetler": [],
+   "versiyonlar": [
+    "v1.2"
+   ],
+   "aciklama": "Legacy Rakion utilities. Currently offline.",
+   "ozellikler": [
+    {
+     "ad": "Aimbot",
+     "pro": true
+    },
+    {
+     "ad": "Cell Hack",
+     "pro": false
+    },
+    {
+     "ad": "Gold Hack",
+     "pro": false
+    }
+   ],
+   "urunler": []
+  },
+  {
+   "ad": "CS:GO",
+   "vitrinAd": "CSGO",
+   "logo": "csgo_logo_rkm.js",
+   "ikon": "🔫",
+   "tur": "FPS",
+   "surum": "v4.2",
+   "guncelleme": "22.08.21",
+   "mimari": "x32/x64",
+   "baslatma": "Inject",
+   "renk": "#5a8fe8",
+   "gelistirici": "NightDev",
+   "puan": 4.7,
+   "kullanici": 2100,
+   "songun": 4,
+   "rozetler": [
+    "hot"
+   ],
+   "versiyonlar": [
+    "v4.2",
+    "v4.1"
+   ],
+   "aciklama": "Competitive CS:GO assist with recoil control and triggerbot.",
+   "ozellikler": [
+    {
+     "ad": "RCS",
+     "pro": true
+    },
+    {
+     "ad": "Triggerbot",
+     "pro": false
+    },
+    {
+     "ad": "Skin Changer",
+     "pro": true
+    },
+    {
+     "ad": "Radar Hack",
+     "pro": false
+    }
+   ],
+   "urunler": []
+  },
+  {
+   "ad": "NewAge",
+   "vitrinAd": "",
+   "logo": "newage_rkm.js",
+   "ikon": "🎮",
+   "tur": "MMORPG",
+   "surum": "v1.0",
+   "guncelleme": "16.10.26",
+   "mimari": "x32/x64",
+   "baslatma": "Start",
+   "renk": "#d9a441",
+   "gelistirici": "M2God Team",
+   "puan": 5,
+   "kullanici": 0,
+   "songun": 2,
+   "rozetler": [
+    "hot",
+    "new",
+    "prem",
+    "fav"
+   ],
+   "versiyonlar": [
+    "v1.0"
+   ],
+   "aciklama": "",
+   "ozellikler": [
+    {
+     "ad": "Fark Bot",
+     "pro": true
+    }
+   ],
+   "urunler": [
+    {
+     "ad": "NewAge FarmBot",
+     "logo": "newage_rkm.js",
+     "fiyat": {
+      "tutar": 31,
+      "paraBirimi": "USD"
+     },
+     "periyot": "MONTH",
+     "surum": "v1.0",
+     "guncelleme": "16.10.26",
+     "aciklama": "",
+     "bayraklar": {
+      "darkside": true,
+      "farmbot": true,
+      "shopbot": true,
+      "slotYok": true
+     },
+     "donatorMin": 11.5,
+     "paketKur": "USD",
+     "paketler": [
+      {
+       "ad": "15 GÜNLÜK",
+       "gun": 15,
+       "fiyat": 85,
+       "hediye": 31
+      }
+     ],
+     "darksidePaketler": [
+      {
+       "ad": "Darkside Aylık",
+       "gun": 30,
+       "fiyat": 185,
+       "hediye": 20
+      }
+     ],
+     "parasalEgri": [],
+     "client": {
+      "baslik": "",
+      "aciklama": "NewAge Client",
+      "fotolar": [],
+      "ozellikler": []
+     },
+     "trailer": {
+      "oyun": "NEWAGE",
+      "urun": "NewAge Yeni",
+      "slogan": "Working 31",
+      "term": "",
+      "aciklama": "",
+      "foto": "xxxx-img_rkm.js"
+     }
+    }
+   ]
+  }
+ ],
+ "videolar": {
+  "listedeGosterilen": 5,
+  "sekmeler": [
+   "all",
+   "Metin2",
+   "Knight Online"
+  ],
+  "ikonlar": {
+   "Farm Bot": "ri-leaf-line",
+   "Shop Bot": "ri-store-2-line",
+   "Skill Bot": "ri-magic-line",
+   "Fish Bot": "ri-fish-line"
+  },
+  "videolar": [
+   {
+    "oyun": "Metin2",
+    "kategori": "Farm Bot",
+    "baslik": "Farm Bot — Genel Bakış",
+    "sure": "02:14",
+    "link": "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+   },
+   {
+    "oyun": "Metin2",
+    "kategori": "Farm Bot",
+    "baslik": "Farm Bot — Kurulum ve Rota",
+    "sure": "03:40",
+    "link": ""
+   },
+   {
+    "oyun": "Metin2",
+    "kategori": "Farm Bot",
+    "baslik": "Farm Bot — Gelişmiş Ayarlar",
+    "sure": "04:05",
+    "link": ""
+   },
+   {
+    "oyun": "Metin2",
+    "kategori": "Farm Bot",
+    "baslik": "Farm Bot — Yang Raporu",
+    "sure": "02:58",
+    "link": ""
+   },
+   {
+    "oyun": "Metin2",
+    "kategori": "Shop Bot",
+    "baslik": "Shop Bot — Market Otomasyonu",
+    "sure": "02:48",
+    "link": ""
+   },
+   {
+    "oyun": "Metin2",
+    "kategori": "Shop Bot",
+    "baslik": "Shop Bot — Fiyat Senkronu",
+    "sure": "01:57",
+    "link": ""
+   },
+   {
+    "oyun": "Metin2",
+    "kategori": "Shop Bot",
+    "baslik": "Shop Bot — NPC Satışı",
+    "sure": "02:05",
+    "link": ""
+   },
+   {
+    "oyun": "Metin2",
+    "kategori": "Skill Bot",
+    "baslik": "Skill Bot — Beceri Dizilimi",
+    "sure": "02:31",
+    "link": ""
+   },
+   {
+    "oyun": "Metin2",
+    "kategori": "Skill Bot",
+    "baslik": "Skill Bot — Savaş Profili",
+    "sure": "03:12",
+    "link": ""
+   },
+   {
+    "oyun": "Metin2",
+    "kategori": "Fish Bot",
+    "baslik": "Fish Bot — Balık Tutma Döngüsü",
+    "sure": "02:22",
+    "link": ""
+   },
+   {
+    "oyun": "Metin2",
+    "kategori": "Fish Bot",
+    "baslik": "Fish Bot — Otomatik Yem",
+    "sure": "01:44",
+    "link": ""
+   },
+   {
+    "oyun": "Metin2",
+    "kategori": "Fish Bot",
+    "baslik": "Fish Bot — Gece Modu",
+    "sure": "03:26",
+    "link": ""
+   },
+   {
+    "oyun": "Knight Online",
+    "kategori": "Farm Bot",
+    "baslik": "Knight Farm Bot — Genel Bakış",
+    "sure": "02:36",
+    "link": ""
+   },
+   {
+    "oyun": "Knight Online",
+    "kategori": "Farm Bot",
+    "baslik": "Knight Farm Bot — Slot Seçimi",
+    "sure": "02:49",
+    "link": ""
+   },
+   {
+    "oyun": "Knight Online",
+    "kategori": "Shop Bot",
+    "baslik": "Knight Shop Bot — Pazar Kurulumu",
+    "sure": "02:18",
+    "link": ""
+   },
+   {
+    "oyun": "Knight Online",
+    "kategori": "Shop Bot",
+    "baslik": "Knight Shop Bot — Otomatik Yenileme",
+    "sure": "01:52",
+    "link": ""
+   },
+   {
+    "oyun": "Knight Online",
+    "kategori": "Skill Bot",
+    "baslik": "Knight Skill Bot — Makro Ayarı",
+    "sure": "02:40",
+    "link": ""
+   },
+   {
+    "oyun": "Knight Online",
+    "kategori": "Skill Bot",
+    "baslik": "Knight Skill Bot — Party Modu",
+    "sure": "03:01",
+    "link": ""
+   },
+   {
+    "oyun": "Knight Online",
+    "kategori": "Fish Bot",
+    "baslik": "Knight Fish Bot — Kurulum",
+    "sure": "02:12",
+    "link": ""
+   },
+   {
+    "oyun": "Knight Online",
+    "kategori": "Fish Bot",
+    "baslik": "Knight Fish Bot — Otomatik Satış",
+    "sure": "01:58",
+    "link": ""
+   }
+  ]
+ },
+ "eksikler": {
+  "urunsuzOyunlar": [
+   "Silkroad Online",
+   "Cabal Online",
+   "RAN Online",
+   "Rakion",
+   "CS:GO"
+  ],
+  "clientBaslikYok": [
+   "M2God",
+   "Example Farmbot",
+   "Example Koxp",
+   "NewAge FarmBot"
+  ],
+  "trailerKismiEksik": {
+   "M2God": [
+    "trailer-term",
+    "trailer-desc"
+   ],
+   "NewAge FarmBot": [
+    "trailer-term",
+    "trailer-desc"
+   ]
+  },
+  "not": "Otomatik: ürünü olmayan oyunlar, client başlığı boş olan ürünler, trailer alanı eksik ürünler."
+ }
 }
