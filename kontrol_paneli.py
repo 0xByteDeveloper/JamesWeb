@@ -2,13 +2,17 @@
 # -*- coding: utf-8 -*-
 """
 ═══════════════════════════════════════════════════════════════════════
- M2GOD KONTROL PANELİ v5 (E194) — PYTHON SUNUCULU · E177_resim-avif-v6 uyumlu
-      (E193 taban: Toplu Sıkıştır yok; arama/boyutlandırma/temizle/çeviri aynen)
-      E194 YENİ UÇLAR:
-        · /api/rkm/coz        → resimler/<ad>_rkm.js'i çözüp resme çevirir
-                                (b64 → XOR64 → kare; mime f'ye göre) — önizleme
-        · /api/gh/resim-yukle → RKM JS metnini resimler/<ad>_rkm.js olarak
-                                GitHub'a pushlar (tarayıcıda canvas ile üretildi)
+ M2GOD KONTROL PANELİ v6 (E195) — PYTHON SUNUCULU · E177_resim-avif-v6 uyumlu
+      (E194 taban: arama/boyutlandırma/temizle/çeviri/akordeon/RESİMLER aynen)
+      E195 YENİ UÇLAR:
+        · /api/kur           → sitenin EpinFX 6-API zinciriyle AYNI kaynak sırası:
+                               open.er-api.com → currency-api.pages.dev → jsDelivr
+                               usd.json → usd.min.json → Coinbase → floatrates;
+                               hepsi düşerse gömülü yedek kur (12 saat sunucu önbelleği)
+        · /api/rkm/coz       → E195: çözülen kare panel_alan/ klasörüne de kaydedilir
+                               (özel çalışma alanı — kullanıcının istediği tahsis)
+        · /api/gh/resim-yukle → E194'ten aynen: RKM JS metnini resimler/<ad>_rkm.js
+                                olarak GitHub'a pushlar (tarayıcıda canvas ile üretildi)
 ═══════════════════════════════════════════════════════════════════════
  KULLANIM:
      python kontrol_paneli.py               → http://127.0.0.1:8777 açılır
@@ -22,6 +26,8 @@
      private depo + push için
    · /api/gh/surum · /api/gh/liste: sürüm notu okuma + klasör listeleme
    · /api/rkm/coz · /api/gh/resim-yukle: RKM çözme + resim yükleme (E194)
+   · /api/kur: canlı döviz kur motoru (E195 — sitenin EpinFX zinciri)
+   · panel_alan/ özel çalışma klasörü: çözülen resim kareleri buraya yazılır
    · /api/cevir: otomatik çeviri (Google → MyMemory yedeği)
    · /api/durum · /api/token: sunucu-token eşzamanlaması (token dosyaya
      yazılır, tarayıcıya asla geri gönderilmez)
@@ -29,7 +35,7 @@
  GEREKSİNİM: Python 3.8+ — ek paket YOK (yalnız standart kütüphane)
  TOKEN: ilk çalıştırmada paneldeki "Tarayıcıdaki Token'ı Sunucuya Kaydet"
         düğmesini kullanın (github_token.txt oluşturur) veya:
-        E194_GH_TOKEN=github_pat_... python kontrol_paneli.py
+        E195_GH_TOKEN=github_pat_... python kontrol_paneli.py
 ═══════════════════════════════════════════════════════════════════════
 """
 import base64
@@ -61,10 +67,13 @@ PORT_VARSAYILAN = 8777
 KOK_DIZIN = os.path.dirname(os.path.abspath(__file__))
 TOKEN_DOSYA = os.path.join(KOK_DIZIN, "github_token.txt")
 PANEL_HTML = os.path.join(KOK_DIZIN, "kontrol_paneli.html")
+ALAN_DIZIN = os.path.join(KOK_DIZIN, "panel_alan")   # E195: özel çalışma klasörü
 
 # ═══════════════════ GITHUB İSTEMCİSİ ═══════════════════
 def token_al():
-    t = os.environ.get("E194_GH_TOKEN", "").strip()
+    t = os.environ.get("E195_GH_TOKEN", "").strip()
+    if not t:
+        t = os.environ.get("E194_GH_TOKEN", "").strip()
     if not t:
         t = os.environ.get("E193_GH_TOKEN", "").strip()
     if not t:
@@ -135,6 +144,40 @@ def gh_liste(klasor, token):
 RKM_F_MIME = {"w": "image/webp", "a": "image/avif", "p": "image/png"}
 RKM_AD_RE = re.compile(r"^[A-Za-z0-9_\-]{1,80}$")
 
+# ═══════════════════ E195 · panel_alan/ ÖZEL ÇALIŞMA KLASÖRÜ ═══════════════════
+# Çözülen resim kareleri buraya kaydedilir (kullanıcı istedi: "özel klasör alanı
+# tahsis edebilirsin") — önizlenen/sıkıştırılan resmin çözülmüş hali elinde bulunabilir.
+ALAN_OKUBENI = """panel_alan/ — KONTROL PANELİ ÖZEL ÇALIŞMA ALANI (E195)
+
+Bu klasör panelin resim işlemleri için ayrılmıştır:
+· /api/rkm/coz ile çözülen her resim karesi buraya kaydedilir:
+    <ad>_<genişlik>x<yükseklik>.<webp|avif|png>
+· Sıkıştırma önizlemeleri ve karşılaştırmalar bu dosyalar üzerinden yapılır.
+· Panel verilerine/sitene ETKİSİ YOKTUR — istediğin zaman temizleyebilirsin.
+"""
+
+def alan_hazirla():
+    try:
+        os.makedirs(ALAN_DIZIN, exist_ok=True)
+        okb = os.path.join(ALAN_DIZIN, "OKUBENI.txt")
+        if not os.path.exists(okb):
+            with open(okb, "w", encoding="utf-8") as f:
+                f.write(ALAN_OKUBENI)
+    except OSError:
+        pass
+
+def alan_kaydet(taban, kare_b, mime, w, h):
+    """Çözülen kareyi panel_alan/ altına yazar (best-effort — hata akışı bozmaz)."""
+    try:
+        alan_hazirla()
+        uz = "png" if mime == "image/png" else ("avif" if mime == "image/avif" else "webp")
+        yol = os.path.join(ALAN_DIZIN, "%s_%dx%d.%s" % (taban, w, h, uz))
+        with open(yol, "wb") as f:
+            f.write(kare_b)
+        return os.path.relpath(yol, KOK_DIZIN)
+    except Exception:
+        return None
+
 
 def rkm_taban(ad):
     """metin2_logo | metin2_logo.png | metin2_logo_rkm.js → metin2_logo"""
@@ -162,9 +205,11 @@ def rkm_coz(ad, token):
     for i in range(len(kare)):
         kare[i] ^= k[i % len(k)]
     mime = RKM_F_MIME.get(f, "image/webp")
+    kopya = alan_kaydet(taban, bytes(kare), mime, w, h)   # E195: panel_alan/ kopyası
     return {"ok": True, "ad": taban, "w": w, "h": h, "f": f, "mime": mime,
             "veri": base64.b64encode(bytes(kare)).decode("ascii"),
-            "boyut": len(kare), "dosyaBoyut": len(metin.encode("utf-8"))}
+            "boyut": len(kare), "dosyaBoyut": len(metin.encode("utf-8")),
+            "alan": kopya}
 
 
 def rkm_yukle(ad, icerik, token):
@@ -179,9 +224,82 @@ def rkm_yukle(ad, icerik, token):
         raise ValueError("içerik RKM_VERI['%s'] tanımını içermiyor — panelin 'Dönüştür' adımını kullan" % taban)
     commit = gh_push(RESIM_KLASORU + "/" + taban + "_rkm.js",
                      icerik.encode("utf-8"),
-                     "resimler/%s_rkm.js — kontrol paneli v5 (E194) tarayıcı-canvas RKM üretimi %s" % (taban, datetime.datetime.utcnow().isoformat()),
+                     "resimler/%s_rkm.js — kontrol paneli v6 (E195) RKM üretimi %s" % (taban, datetime.datetime.utcnow().isoformat()),
                      token)
     return commit
+
+# ═══════════════════ E195 · KUR MOTORU (/api/kur) ═══════════════════
+# Sitenin EpinFX motoruyla BİREBİR kaynak sırası ve kural (HTTP/JSON/eksik/
+# sayısal-olmayan kur → sıradaki API); USD bazlı kur; 12 saat sunucu önbelleği;
+# hepsi düşerse gömülü yedek (site FALLBACK ile aynı değerler).
+KUR_YEDEK = {"USD": 1, "TRY": 48.468802, "EUR": 0.860279, "PLN": 3.711498,
+             "VND": 25932.753145, "RON": 4.519506, "RUB": 86.419769,
+             "CNY": 6.72825, "JPY": 155.53, "AED": 3.6725}
+KUR_GEREKLI = ["USD", "TRY", "EUR", "PLN", "VND", "RON", "RUB", "CNY", "JPY", "AED"]
+KUR_TAZE_SN = 12 * 3600
+
+
+def _kur_sec_eriapi(ad, url, secici):
+    j = json.loads(_istek(url, None, zaman=12).decode("utf-8"))
+    src = secici(j)
+    if not isinstance(src, dict):
+        return None
+    rates = {}
+    for kod in KUR_GEREKLI:
+        v = src.get(kod, src.get(kod.lower()))
+        if v is None:
+            continue
+        try:
+            v = float(str(v).replace(",", ""))
+        except (TypeError, ValueError):
+            continue
+        if v != v or v <= 0:   # NaN / sıfır/negatif → bu kod yok sayılır
+            continue
+        rates[kod] = v
+    if not (rates.get("USD") and rates.get("TRY") and rates.get("EUR")):
+        return None
+    rates.setdefault("USD", 1.0)
+    return {"ok": True, "canli": True, "kaynak": ad, "rates": rates,
+            "zaman": int(time.time())}
+
+
+KUR_API_SIRASI = [
+    ("open.er-api.com", "https://open.er-api.com/v6/latest/USD",
+     lambda d: d.get("rates") if isinstance(d, dict) and d.get("result") == "success" else None),
+    ("currency-api.pages.dev", "https://latest.currency-api.pages.dev/v1/currencies/usd.json",
+     lambda d: d.get("usd") if isinstance(d, dict) else None),
+    ("jsdelivr-currency-api", "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json",
+     lambda d: d.get("usd") if isinstance(d, dict) else None),
+    ("jsdelivr-currency-api-min", "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.min.json",
+     lambda d: d.get("usd") if isinstance(d, dict) else None),
+    ("coinbase", "https://api.coinbase.com/v2/exchange-rates?currency=USD",
+     lambda d: (d.get("data") or {}).get("rates") if isinstance(d, dict) else None),
+    ("floatrates.com", "https://www.floatrates.com/daily/usd.json",
+     lambda d: {k.upper(): v.get("rate") for k, v in d.items() if isinstance(v, dict)} if isinstance(d, dict) else None),
+]
+
+KUR_ONBELLEK = {"zaman": 0.0, "veri": None}
+
+
+def kur_cek():
+    simdi = time.time()
+    v = KUR_ONBELLEK["veri"]
+    if v and simdi - KUR_ONBELLEK["zaman"] < KUR_TAZE_SN:
+        return v
+    for ad, url, secici in KUR_API_SIRASI:
+        try:
+            sonuc = _kur_sec_eriapi(ad, url, secici)
+        except Exception:
+            continue   # kural: HTTP/JSON hatası → sıradaki API
+        if sonuc:
+            KUR_ONBELLEK.update({"zaman": simdi, "veri": sonuc})
+            gunluk("kur: %s (canlı) USD/TRY=%.4f" % (ad, sonuc["rates"].get("TRY", 0)))
+            return sonuc
+    sonuc = {"ok": True, "canli": False, "kaynak": "gömülü yedek",
+             "rates": dict(KUR_YEDEK), "zaman": int(simdi)}
+    KUR_ONBELLEK.update({"zaman": simdi, "veri": sonuc})
+    gunluk("kur: gömülü yedek kullanıldı (API zinciri yanıt vermedi)")
+    return sonuc
 
 # ═══════════════════ E183 · OTOMATİK ÇEVİRİ (/api/cevir) ═══════════════════
 # Panelin Metinler bölümündeki 🔄 düğmeleri buraya düşer: tek dil yazılır,
@@ -270,7 +388,7 @@ def gunluk(s):
 
 # ═══════════════════ SUNUCU ═══════════════════
 class Panel(BaseHTTPRequestHandler):
-    server_version = "EpinPanelE194/5.0"
+    server_version = "EpinPanelE195/6.0"
 
     def log_message(self, fmt, *args):
         sys.stderr.write("[panel] %s\n" % (fmt % args))
@@ -312,7 +430,7 @@ class Panel(BaseHTTPRequestHandler):
             return
         if yol == "/api/durum":
             t = token_al()
-            self.json_gonder({"ok": True, "sunucu": "E194-python", "port": self.server.server_address[1],
+            self.json_gonder({"ok": True, "sunucu": "E195-python", "port": self.server.server_address[1],
                               "token": bool(t), "tokenSon4": (t[-4:] if t else ""),
                               "repo": {"sahip": SAHIP, "repo": REPO, "dal": DAL,
                                        "icerikYolu": ICERIK_YOLU}})
@@ -357,6 +475,12 @@ class Panel(BaseHTTPRequestHandler):
         if yol == "/api/token":
             t = token_al()
             self.json_gonder({"ok": True, "token": bool(t), "tokenSon4": (t[-4:] if t else "")})
+            return
+        if yol == "/api/kur":   # E195: canlı kur (sitenin EpinFX zinciri)
+            try:
+                self.json_gonder(kur_cek())
+            except Exception as e:
+                self.hata_gonder("kur alınamadı: " + str(e), 502)
             return
         self.hata_gonder("bilinmeyen yol", 404)
 
@@ -440,15 +564,17 @@ def main():
         i += 1
 
     t = token_al()
+    alan_hazirla()   # E195: panel_alan/ özel çalışma klasörü
     print("═" * 66)
-    print(" M2GOD KONTROL PANELİ v5 (E194) — Python sunuculu · E177_resim-avif-v6 uyumlu")
+    print(" M2GOD KONTROL PANELİ v6 (E195) — Python sunuculu · E177_resim-avif-v6 uyumlu")
     print("═" * 66)
     print(" Adres      : http://127.0.0.1:%d  (kapatmak için Ctrl+C)" % port)
     print(" Panel      : kontrol_paneli.html %s" %
           ("✓ bulundu" if os.path.exists(PANEL_HTML) else "✗ YOK — aynı klasöre koyun!"))
     print(" GitHub     : %s/%s (%s)" % (SAHIP, REPO, DAL))
     print(" Token      : %s" % (("kayıtlı …" + t[-4:]) if t else
-                                   "YOK — public depoda gerekmez; private depo/push için panelde 'Tarayıcıdaki Token'ı Sunucuya Kaydet' veya E194_GH_TOKEN"))
+                                   "YOK — public depoda gerekmez; private depo/push için panelde 'Tarayıcıdaki Token'ı Sunucuya Kaydet' veya E195_GH_TOKEN"))
+    print(" Çalışma    : panel_alan/ (çözülen resim kareleri buraya kaydedilir)")
     print("═" * 66)
 
     srv = ThreadingHTTPServer((arayuz, port), Panel)
