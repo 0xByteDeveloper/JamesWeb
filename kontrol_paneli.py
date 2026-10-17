@@ -13,6 +13,9 @@
                                (özel çalışma alanı — kullanıcının istediği tahsis)
         · /api/gh/resim-yukle → E194'ten aynen: RKM JS metnini resimler/<ad>_rkm.js
                                 olarak GitHub'a pushlar (tarayıcıda canvas ile üretildi)
+        · /api/gh/dosya-yukle → E198: ŞİFRESİZ ham resim dosyasını resimler/<ad>.<uzantı>
+                                olarak GitHub'a pushlar (maks 4 MB — motor v5.3 bunu
+                                GitHub'dan DOĞRUDAN gösterir; png/jpg/webp/gif/avif)
 ═══════════════════════════════════════════════════════════════════════
  KULLANIM:
      python kontrol_paneli.py               → http://127.0.0.1:8777 açılır
@@ -25,7 +28,8 @@
      TOKEN OPSİYONELDİR: public depoda token'sız da çalışır; token yalnız
      private depo + push için
    · /api/gh/surum · /api/gh/liste: sürüm notu okuma + klasör listeleme
-   · /api/rkm/coz · /api/gh/resim-yukle: RKM çözme + resim yükleme (E194)
+   · /api/rkm/coz · /api/gh/resim-yukle · /api/gh/dosya-yukle: RKM çözme +
+     şifreli resim yükleme (E194) + şifresiz ham resim yükleme (E198)
    · /api/kur: canlı döviz kur motoru (E195 — sitenin EpinFX zinciri)
    · panel_alan/ özel çalışma klasörü: çözülen resim kareleri buraya yazılır
    · /api/cevir: otomatik çeviri (Google → MyMemory yedeği)
@@ -35,7 +39,7 @@
  GEREKSİNİM: Python 3.8+ — ek paket YOK (yalnız standart kütüphane)
  TOKEN: ilk çalıştırmada paneldeki "Tarayıcıdaki Token'ı Sunucuya Kaydet"
         düğmesini kullanın (github_token.txt oluşturur) veya:
-        E197_GH_TOKEN=github_pat_... python kontrol_paneli.py
+        E198_GH_TOKEN=github_pat_... python kontrol_paneli.py
 ═══════════════════════════════════════════════════════════════════════
 """
 import base64
@@ -71,7 +75,9 @@ ALAN_DIZIN = os.path.join(KOK_DIZIN, "panel_alan")   # E195: özel çalışma kl
 
 # ═══════════════════ GITHUB İSTEMCİSİ ═══════════════════
 def token_al():
-    t = os.environ.get("E197_GH_TOKEN", "").strip()
+    t = os.environ.get("E198_GH_TOKEN", "").strip()
+    if not t:
+        t = os.environ.get("E197_GH_TOKEN", "").strip()
     if not t:
         t = os.environ.get("E196_GH_TOKEN", "").strip()
     if not t:
@@ -231,6 +237,31 @@ def rkm_yukle(ad, icerik, token):
                      "resimler/%s_rkm.js — kontrol paneli v6 (E195) RKM üretimi %s" % (taban, datetime.datetime.utcnow().isoformat()),
                      token)
     return commit
+
+# ═══════════════════ E198 · ŞİFRESİZ HAM RESİM YÜKLEME (/api/gh/dosya-yukle) ═══════════════════
+# "kişi rmk'ya çevirmemek isteyebilir": resim dosyası ŞİFRELENMEDEN resimler/
+# klasörüne yüklenir. Site motoru v5.3 bu dosyaları GitHub'dan DOĞRUDAN gösterir.
+HAM_AD_RE = re.compile(r"^([A-Za-z0-9_\-]{1,80})\.(png|jpg|jpeg|webp|gif|avif)$", re.I)
+
+def ham_dosya_yukle(ad, icerik_b64, token):
+    """Şifresiz ham resim dosyasını resimler/<ad>.<uzantı> olarak GitHub'a pushlar (E198)."""
+    m = HAM_AD_RE.match(str(ad or "").strip())
+    if not m:
+        raise ValueError("dosya adı geçersiz — <ad>.png/.jpg/.webp/.gif/.avif olmalı (ör. yeni_resim.png)")
+    ad = m.group(1) + "." + (m.group(2).lower() if m.group(2).lower() != "jpeg" else "jpg")
+    try:
+        veri = base64.b64decode(str(icerik_b64 or "").strip(), validate=True)
+    except Exception:
+        raise ValueError("dosya içeriği okunamadı (base64 bozuk)")
+    if not veri:
+        raise ValueError("dosya boş")
+    if len(veri) > 4 * 1024 * 1024:
+        raise ValueError("şifresiz dosya çok büyük (maks 4 MB) — büyük resmi 🖼 PNG→RMK ile küçültüp şifrele")
+    commit = gh_push(RESIM_KLASORU + "/" + ad, veri,
+                     "resimler/%s — kontrol paneli v9 (E198) şifresiz ham resim %s"
+                     % (ad, datetime.datetime.utcnow().isoformat()),
+                     token)
+    return commit, ad
 
 # ═══════════════════ E195 · KUR MOTORU (/api/kur) ═══════════════════
 # Sitenin EpinFX motoruyla BİREBİR kaynak sırası ve kural (HTTP/JSON/eksik/
@@ -392,7 +423,7 @@ def gunluk(s):
 
 # ═══════════════════ SUNUCU ═══════════════════
 class Panel(BaseHTTPRequestHandler):
-    server_version = "EpinPanelE197/8.0"
+    server_version = "EpinPanelE198/9.0"
 
     def log_message(self, fmt, *args):
         sys.stderr.write("[panel] %s\n" % (fmt % args))
@@ -434,7 +465,7 @@ class Panel(BaseHTTPRequestHandler):
             return
         if yol == "/api/durum":
             t = token_al()
-            self.json_gonder({"ok": True, "sunucu": "E197-python", "port": self.server.server_address[1],
+            self.json_gonder({"ok": True, "sunucu": "E198-python", "port": self.server.server_address[1],
                               "token": bool(t), "tokenSon4": (t[-4:] if t else ""),
                               "repo": {"sahip": SAHIP, "repo": REPO, "dal": DAL,
                                        "icerikYolu": ICERIK_YOLU}})
@@ -516,6 +547,18 @@ class Panel(BaseHTTPRequestHandler):
                 gunluk("resim yüklendi: resimler/%s_rkm.js → commit %s" % (rkm_taban(g.get("ad")), commit))
                 self.json_gonder({"ok": True, "commit": commit,
                                   "yol": RESIM_KLASORU + "/" + rkm_taban(g.get("ad")) + "_rkm.js"})
+                return
+            if yol == "/api/gh/dosya-yukle":   # E198: şifresiz ham resim → GitHub push
+                if not token:
+                    self.hata_gonder("token yok — Ayarlar bölümüne github_pat_… yazıp kaydet (Contents: write)", 401)
+                    return
+                try:
+                    commit, ad = ham_dosya_yukle(g.get("ad"), g.get("icerik"), token)
+                except ValueError as e:
+                    self.hata_gonder(str(e), 400)
+                    return
+                gunluk("şifresiz resim yüklendi: resimler/%s → commit %s" % (ad, commit))
+                self.json_gonder({"ok": True, "commit": commit, "yol": RESIM_KLASORU + "/" + ad})
                 return
             if yol == "/api/token":
                 t = str(g.get("token") or "").strip()
