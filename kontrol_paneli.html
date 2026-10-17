@@ -3,11 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>M2God Kontrol Paneli v8 — İçerik Otomasyonu (E197 · Python)</title>
+<title>M2God Kontrol Paneli v9 — İçerik Otomasyonu (E198 · Python)</title>
 <!--
-  E197 · M2GOD KONTROL PANELİ v8 — İÇERİK OTOMASYONU (Python sunuculu)
+  E198 · M2GOD KONTROL PANELİ v9 — İÇERİK OTOMASYONU (Python sunuculu)
   ═════════════════════════════════════════════
   (E195 taban — E177_resim-avif-v6 uyumlu; arama/boyutlandırma/temizle/çeviri/kur AYNEN)
+  E198 YENİLİKLERİ (şifresiz PNG yükleme — "rmk'ya çevirmemek isteyebilir"):
+  · HER resim alanının araç satırına 📤 PNG YÜKLE eklendi: resmi ŞİFRELEMEDEN
+    olduğu gibi GitHub resimler/<ad>.<uzantı> olarak yükler, alan değerini
+    OTOMATİK <ad>.<uzantı> yapar ve 🖼 Normal png moduna geçirir.
+    (🖼 PNG→RMK AYNEN duruyor — şifreli isteyen onu kullanır.)
+  · RESİMLER bölümüne de genel "📤 PNG Yükle (şifresiz)" kutusu eklendi.
+  · SİTE MOTORU v5.3 (site paketi, surum E198): listede OLMAYAN .png/.jpg/
+    .webp/.gif/.avif değerleri artık GitHub resimler/ klasöründen DOĞRUDAN
+    yüklenir → şifresiz png panelden yüklendiği an SİTEDE DE GÖRÜNÜR
+    (eski "localhost/…png arıyor" hatası imkânsız).
+  · Akıllı koruma: bir adın .png karşılığı GitHub'a yüklüyse pngYukselt o
+    değeri ARTIK _rkm.js'e çevirmez (kasıtlı png seçimi saygı görür); alan
+    ipucunda "GitHub'da yüklü ✓" yazar.
   E197 YENİLİKLERİ ("m2god_logo.png NORMAL PNG mi?!" karmaşası TAMAMEN bitti):
   · PANEL HER AÇILIŞTA GITHUB'DAN OTOMATİK TAZE ÇEKER. Tarayıcı taslağı artık
     yalnız anlık iskelet/çevrimdışı yedek: açılışta güncel site_icerik.json
@@ -285,6 +298,7 @@ var agacArama='';                        /* E183: ağaç arama filtresi */
 var metinAcik={};                        /* E185: metinler satırlarında diller ızgarası açık mı (anahtar→bool) */
 var RESIMLER=['SiteLogo_rkm.js','metin2_logo_rkm.js','knight_logo_rkm.js','sro_logo_rkm.js','cabal_logo_rkm.js','ranonline_logo_rkm.js','rakion_logo_rkm.js','csgo_logo_rkm.js','m2god_logo_rkm.js','example_farmbot_logo_rkm.js','example_koxp_logo_rkm.js','example_farmbot_trailer_rkm.js','example_farmbot_client_1_rkm.js','example_farmbot_client_2_rkm.js','example_koxp_trailer_rkm.js','example_koxp_client_1_rkm.js','example_koxp_client_2_rkm.js','b1_rkm.js','b3_rkm.js','xxxx-img_rkm.js','newage_rkm.js'];
 var RESIMLER_GH=[];                     /* E194: GitHub resimler/ klasöründen gelen canlı liste (taban adları; öneriler <taban>_rkm.js olarak sunulur) */
+var RESIMLER_GH_TUM=[];                 /* E198: resimler/'deki TÜM dosyalar (şifresiz .png/.jpg dahil — çakışma kontrolü + pngBiliniyor) */
 var akDurum={};                         /* E194: akordeon bölüm açık/kapalı durumu (anahtar→bool); seçim değişince korunur */
 var LS_TASLAK='kp2_taslak',LS_TOKEN='jw_gh_token',LS_CFG='jw_gh_cfg';
 var taslakZam=null,agacZam=null,temizleModu=false;   /* E184: temizle sırasında otomatik taslak yazımı askıda */
@@ -595,6 +609,15 @@ function rkmBiliniyor(taban){
   for(var i=0;i<RESIMLER.length;i++){if(String(RESIMLER[i]).replace(/_rkm\.js$/i,'')===taban)return true;}
   return false;
 }
+/* pngBiliniyor(taban): <taban>.png/.jpg/… ŞİFRESİZ dosya GitHub resimler/'de var mı? (E198)
+   Yüklüyse bu bir KASITLI png seçimidir — pngYukselt dokunmaz, ipucu "✓ yüklü" yazar. */
+function pngBiliniyor(taban){
+  taban=String(taban||'').trim().replace(/_rkm\.js$/i,'');
+  if(!taban||!RESIMLER_GH_TUM.length)return false;
+  var re=new RegExp('^'+taban.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\.(png|jpe?g|webp|gif|avif)$','i');
+  for(var j=0;j<RESIMLER_GH_TUM.length;j++){if(re.test(RESIMLER_GH_TUM[j]))return true;}
+  return false;
+}
 /* pngYukselt(d): oyun/ürün/trailer/client foto değerleri arasında .png/.jpg/…
    ile biten ve şifreli karşılığı GitHub'da duran adları <taban>_rkm.js yapar.
    Dönen değer: kaç alan düzeltildi (0 = dokunulmadı). */
@@ -608,6 +631,7 @@ function pngYukselt(d){
     if(!m)return;
     var taban=v.slice(0,v.length-m[0].length);
     if(!taban||!rkmBiliniyor(taban))return;
+    if(pngBiliniyor(taban))return;   /* E198: şifresiz png GitHub'daysa kasıtlı seçim — dokunma */
     obj[anahtar]=taban+'_rkm.js';n++;
   }
   d.oyunlar.forEach(function(o){
@@ -626,10 +650,11 @@ function pngYukselt(d){
    alan değeri OTOMATİK yeniden yazılır (<taban>_rkm.js ↔ <taban>.png) */
 function resimModSec(degerAl,yaz){
   var mod=document.createElement('select');mod.className='resimMod';
-  mod.title='🐙 Şifreli rkm.js: site resmi GitHub\'dan çözer — png indirilmez, korumalı (önerilen)\n🖼 Normal png: dosya açık adresle gösterilir — korumasız, png dosyasını kendi hostuna sen koyarsın';
+  mod.title='🐙 Şifreli rkm.js: site resmi GitHub\'dan çözer — png indirilmez, korumalı (önerilen)\n🖼 Normal png: şifresiz dosya GitHub resimler/ klasöründen düz gösterilir — korumasız (📤 PNG Yükle ile yükle)';
   [['rkm','🐙 Şifreli rkm.js'],['png','🖼 Normal png']].forEach(function(x){
     var o=document.createElement('option');o.value=x[0];o.textContent=x[1];mod.appendChild(o);});
   mod.value=resimModu(degerAl());
+  mod.__senkron=function(){mod.value=resimModu(degerAl());};   /* E198: araç/alan değeri yazılınca mod etiketi de tazelenir */
   mod.onchange=function(){
     var t=rkmTaban(degerAl());
     if(!t){mod.value=resimModu(degerAl());return;}   /* boş değer: yalnız görünüm */
@@ -647,14 +672,15 @@ function logoSec(obj,anahtar,etiket,kapsa){
   /* E196: değer + 🐙/🖼 mod seçici aynı satırda */
   var satir=document.createElement('div');satir.className='resimSatir';
   satir.appendChild(i);
-  satir.appendChild(resimModSec(function(){return i.value;},function(y){i.value=y;obj[anahtar]=y;dokun();if(ip)ip.yaz();}));
+  var modSel=resimModSec(function(){return i.value;},function(y){i.value=y;obj[anahtar]=y;dokun();if(ip)ip.yaz();});
+  satir.appendChild(modSel);
   kapsa.appendChild(satir);
   i.oninput=function(){obj[anahtar]=i.value;dokun();if(ip)ip.yaz();};
   /* canlı eşleme ipucu — değerin türüne göre ne olacağını yazar (E196: mod duyarlı) */
   var ip=resimIpucuSatiri(function(){return i.value;},kapsa);
   /* 4 araç — Önizle · RMK Yükle · PNG→RMK · Sıkıştır */
   var cikti=document.createElement('div');cikti.className='resimCikti';kapsa.appendChild(cikti);
-  resimAraclari(kapsa,function(){return i.value;},cikti,function(y){i.value=y;obj[anahtar]=y;dokun();if(ip)ip.yaz();});
+  resimAraclari(kapsa,function(){return i.value;},cikti,function(y){i.value=y;obj[anahtar]=y;dokun();if(ip)ip.yaz();if(modSel.__senkron)modSel.__senkron();});   /* E198: mod etiketi de tazelenir */
   return i;
 }
 function chkSatir(obj,anahtar,etiket,kapsa){
@@ -830,7 +856,7 @@ function listeMetin(o,etiket){
 }
 function listeFoto(o,etiket){
   var k=document.createElement('div');k.className='kutu';
-  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">client fotoğrafları — sırayla görünür · her satırda: 🔍 önizle · ⬆ RMK yükle · 🖼 PNG→RMK · 🗜 sıkıştır · 🐙/🖼 mod</div>';
+  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">client fotoğrafları — sırayla görünür · her satırda: 🔍 önizle · ⬆ RMK yükle · 🖼 PNG→RMK · 📤 PNG yükle · 🗜 sıkıştır · 🐙/🖼 mod</div>';
   var L=document.createElement('div');L.className='satirListe';k.appendChild(L);
   /* E195: satır araçlarının ortak sonuç kutusu */
   var cikti=document.createElement('div');cikti.className='resimCikti';
@@ -843,8 +869,8 @@ function listeFoto(o,etiket){
       r.appendChild(inp);
       var md2=resimModSec((function(inp2){return function(){return inp2.value;};})(inp),
                           (function(inp2){return function(y){inp2.value=y;o[i]=y;dokun();};})(inp));   /* E196 */
-      /* E195: satır içi 4 resim aracı — sonuçlar alttaki ortak kutuya yazılır */
-      resimAraclari(r,(function(inp2){return function(){return inp2.value;};})(inp),cikti,(function(inp2){return function(y){inp2.value=y;o[i]=y;dokun();};})(inp));
+      /* E195: satır içi resim araçları — sonuçlar alttaki ortak kutuya yazılır; E198: yazım sonrası mod etiketi senkron */
+      resimAraclari(r,(function(inp2){return function(){return inp2.value;};})(inp),cikti,(function(inp2){return function(y){inp2.value=y;o[i]=y;dokun();if(md2.__senkron)md2.__senkron();};})(inp));
       r.appendChild(aracBtn('✕',function(){o.splice(i,1);ciz();dokun();},'tehlike'));
       L.appendChild(r);
     });
@@ -1116,6 +1142,52 @@ function resimAraclari(kapsa,adAlFn,cikti,adYazFn){
   };
   satir.appendChild(bDon);
 
+  /* ── 4b) 📤 PNG Yükle (şifresiz ham dosya) — E198 ──
+     "kişi rmk'ya çevirmemek isteyebilir": resim olduğu gibi GitHub resimler/
+     klasörüne yüklenir, alan değeri <taban>.<uzantı> yapılır (🖼 png modu).
+     Site motoru v5.3 bu dosyayı GitHub'dan DOĞRUDAN gösterir. */
+  var fHam=document.createElement('input');fHam.type='file';fHam.accept='image/png,image/jpeg,image/webp,image/gif,image/avif,image/*';fHam.style.display='none';
+  satir.appendChild(fHam);
+  var bHam=document.createElement('button');bHam.textContent='📤 PNG Yükle';bHam.title='Resmi ŞİFRELEMEDEN olduğu gibi GitHub resimler/ klasörüne yükle — alan değeri <ad>.<uzantı> yapılır, 🖼 Normal png moduna geçer (korumasız). Şifreli istiyorsan PNG→RMK kullan.';
+  bHam.onclick=function(){
+    var t=taban();
+    if(!t){hata('resim adı boş — önce alana bir ad yaz (ör. newage_rkm.js)');return;}
+    fHam.click();
+  };
+  fHam.onchange=function(){
+    if(!this.files||!this.files[0]){this.value='';return;}
+    var f=this.files[0];this.value='';
+    var t=taban();
+    var uz=null,m=f.name.match(/\.(png|jpe?g|webp|gif|avif)$/i);
+    if(m){uz=m[1].toLowerCase();if(uz==='jpeg')uz='jpg';}
+    else{
+      var mm=(f.type||'').match(/^image\/(png|jpeg|webp|gif|avif)$/i);
+      if(mm){uz=mm[1].toLowerCase();if(uz==='jpeg')uz='jpg';}
+    }
+    if(!uz){hata('desteklenmeyen biçim — png/jpg/webp/gif/avif yükle (şifrelemek için PNG→RMK)');return;}
+    var hedef=t+'.'+uz;
+    if(!backendVar()){hata('sunucu yok — kontrol_paneli.py ile başlat');return;}
+    if(RESIMLER_GH_TUM.indexOf(hedef)>=0&&!confirm('resimler/'+hedef+' GitHub\'da ZATEN VAR.\nÜzerine yazılsın mı?'))return;
+    var oku=new FileReader();
+    oku.onload=function(){
+      var b64=(String(oku.result).split(',')[1])||'';
+      if(!b64){hata('dosya okunamadı');return;}
+      bekliyor('GitHub\'a yükleniyor (şifresiz)… resimler/'+hedef+' ('+kb(f.size)+')');
+      fetch('/api/gh/dosya-yukle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ad:hedef,icerik:b64})})
+      .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+      .then(function(x){
+        if(!x.ok||!x.j.ok)throw new Error((x.j&&x.j.hata)||('HTTP hata'));
+        if(RESIMLER_GH_TUM.indexOf(hedef)<0)RESIMLER_GH_TUM.push(hedef);
+        goster('<div class="sonuc ok">Yüklendi (ŞİFRESİZ): <b>resimler/'+esc(hedef)+'</b> ('+kb(f.size)+', commit '+(x.j.commit||'?')+')<br>alan değeri <b>'+esc(hedef)+'</b> yapıldı → 🖼 Normal png modu · site motoru v5.3 bunu GitHub\'dan düz gösterir (raw CDN ~5 dk).</div>');
+        if(adYazFn)adYazFn(hedef);   /* E198: değer = gerçek dosya adı; mod 🖼'e döner */
+        try{agacCiz();}catch(e){}
+      })
+      .catch(function(e){hata('şifresiz yükleme hatası: '+e.message+' (token: Ayarlar bölümünde kayıtlı olmalı — Contents: write)');});
+    };
+    oku.readAsDataURL(f);
+  };
+  satir.appendChild(bHam);
+
   /* ── 4) 🗜 Sıkıştır ── */
   var bSik=document.createElement('button');bSik.textContent='🗜 Sıkıştır';bSik.title='GitHub\'daki resmi çöz → WebP kalite ayarıyla kilobayt küçült → karşılaştır → yükle';
   bSik.onclick=function(){
@@ -1177,8 +1249,15 @@ function resimIpucuSatiri(adAlFn,kapsa){
       ip.innerHTML='🐙 değer: <code>'+esc(v)+'</code> → site <code>resimler/'+esc(v)+'</code> dosyasını GitHub\'dan çözer <b style="color:#7ee2a0">(şifreli RKM — png indirilmez, korumalı)</b>';
     }else{
       var pngTaban=v.replace(/\.(png|jpe?g|webp|gif|bmp|avif)$/i,'');
-      var uyar=rkmBiliniyor(pngTaban)?('<br>⚠ GitHub\'da <code>'+esc(pngTaban)+'.png</code> YÜKLÜ DEĞİL — şifreli hali <code>'+esc(pngTaban)+'_rkm.js</code> duruyor. Bu .png değeri sitede resim ÇÖZDÜRMEZ (kırık link)! <b style="color:#e78a5a">Yukarıdan 🐙 moduna geç — değer otomatik düzelir.</b>'):'';
-      ip.innerHTML='🖼 değer: <code>'+esc(v)+'</code> → site düz resim gösterir <b style="color:#e7c56a">(KORUMASIZ — png dosyasını kendi hostuna sen koyarsın; şifreli istiyorsan 🐙 moduna geç)</b>'+uyar;
+      var uyar;
+      if(pngBiliniyor(pngTaban)){
+        uyar='<br>✓ Şifresiz dosya GitHub\'da YÜKLÜ: <code>resimler/'+esc(v)+'</code> — site motoru v5.3 bunu GitHub\'dan DOĞRUDAN gösterir (korumasız png modu · E198).';
+      }else if(rkmBiliniyor(pngTaban)){
+        uyar='<br>⚠ GitHub\'da <code>'+esc(pngTaban)+'.png</code> YÜKLÜ DEĞİL — şifreli hali <code>'+esc(pngTaban)+'_rkm.js</code> duruyor. Bu değer boş görünür! <b style="color:#e78a5a">Ya 🐙 moduna geç ya 📤 PNG Yükle ile şifresiz dosyayı GitHub\'a yükle.</b>';
+      }else{
+        uyar='<br>ℹ Bu adın dosyası henüz GitHub\'da görünmüyor — aşağıdan 📤 PNG Yükle ile şifresiz ya da 🖼 PNG→RMK ile şifreli yükleyebilirsin.';
+      }
+      ip.innerHTML='🖼 değer: <code>'+esc(v)+'</code> → site motoru v5.3 bunu GitHub resimler/ klasöründen düz resim olarak gösterir <b style="color:#e7c56a">(KORUMASIZ — png herkese açık; şifreli istiyorsan 🐙 moduna geç)</b>'+uyar;
     }
   }
   yaz();
@@ -1744,6 +1823,63 @@ function renderResimler(){
       cikB.insertAdjacentHTML('beforeend','<div class="sonuc hata">Yükleme hatası: '+esc(e.message)+' (token: Ayarlar bölümünde kayıtlı olmalı — Contents: write)</div>');
       bYukle.disabled=false;
     });
+  };
+
+  /* ── C) 📤 PNG Yükle (şifresiz ham dosya) — E198 ──
+     Resmi ŞİFRELEMEDEN resimler/ klasörüne yükler; site motoru v5.3 bu
+     dosyayı GitHub'dan DOĞRUDAN gösterir. Bir resim alanında kullanmak
+     için alan değerini <ad>.<uzantı> yazıp 🖼 png modunda bırakman yeterli. */
+  var gC=akordeonKutu(p,'rkm_ham','📤 PNG Yükle (şifresiz — ham dosya)','şifrelemeden yükle',
+    'GitHub resimler/ klasörüne olduğu gider',false);
+  var satC=document.createElement('div');satC.className='yatay';gC.appendChild(satC);
+  var dC=document.createElement('datalist');dC.id='dl_ham_gh';
+  RESIMLER_GH_TUM.forEach(function(n){var o=document.createElement('option');o.value=n;dC.appendChild(o);});
+  gC.appendChild(dC);
+  var inC=document.createElement('input');inC.type='text';inC.setAttribute('list','dl_ham_gh');
+  inC.placeholder='hedef ad (ör. yeni_resim.png)';inC.style.maxWidth='300px';
+  satC.appendChild(inC);
+  var fC=document.createElement('input');fC.type='file';fC.accept='image/png,image/jpeg,image/webp,image/gif,image/avif,image/*';fC.style.display='none';
+  satC.appendChild(fC);
+  var bC=document.createElement('button');bC.className='ana';bC.textContent='📤 Resim Seç ve Şifresiz Yükle';
+  bC.title='Dosya adındaki uzantı kullanılır (ör. resim.jpg → <ad>.jpg). Hedef adın uzantısı dosyayla aynı olmalı.';
+  satC.appendChild(bC);
+  var cikC=document.createElement('div');cikC.className='resimCikti';cikC.style.marginTop='12px';
+  cikC.innerHTML='<div class="bosNot">(henüz yükleme yok — hedef ad yaz, resim seç, yükle. Korumasız olur: png herkese açık gider. Şifreli için B bölümünü kullan.)</div>';
+  gC.appendChild(cikC);
+  bC.onclick=function(){
+    var ad=(inC.value||'').trim();
+    if(!/^[A-Za-z0-9_\-]+\.(png|jpe?g|webp|gif|avif)$/i.test(ad)){cikC.innerHTML='<div class="sonuc hata">hedef ad geçersiz — <ad>.png/.jpg/.webp/.gif/.avif yaz (ör. yeni_resim.png)</div>';return;}
+    ad=ad.replace(/\.jpeg$/i,'.jpg');
+    fC.click();
+  };
+  fC.onchange=function(){
+    if(!this.files||!this.files[0]){this.value='';return;}
+    var f=this.files[0];this.value='';
+    var ad=(inC.value||'').trim().replace(/\.jpeg$/i,'.jpg');
+    if(!/^[A-Za-z0-9_\-]+\.(png|jpg|webp|gif|avif)$/i.test(ad)){cikC.innerHTML='<div class="sonuc hata">hedef ad geçersiz</div>';return;}
+    var m=f.name.match(/\.(png|jpe?g|webp|gif|avif)$/i);
+    if(!m){cikC.innerHTML='<div class="sonuc hata">dosya uzantısı png/jpg/webp/gif/avif olmalı</div>';return;}
+    var fuz=m[1].toLowerCase();if(fuz==='jpeg')fuz='jpg';
+    var huz=ad.split('.').pop().toLowerCase();
+    if(fuz!==huz){cikC.innerHTML='<div class="sonuc hata">uzantı uyuşmuyor — dosya .'+fuz+' ama hedef .'+huz+' (hedef adı .'+fuz+' ile yaz)</div>';return;}
+    if(!backendVar()){cikC.innerHTML='<div class="sonuc hata">sunucu yok — kontrol_paneli.py ile başlat</div>';return;}
+    if(RESIMLER_GH_TUM.indexOf(ad)>=0&&!confirm('resimler/'+ad+' GitHub\'da ZATEN VAR.\nÜzerine yazılsın mı?'))return;
+    var oku=new FileReader();
+    oku.onload=function(){
+      var b64=(String(oku.result).split(',')[1])||'';
+      if(!b64){cikC.innerHTML='<div class="sonuc hata">dosya okunamadı</div>';return;}
+      cikC.innerHTML='<div class="bosNot">GitHub\'a yükleniyor (şifresiz)… resimler/'+esc(ad)+' ('+kb(f.size)+')</div>';
+      fetch('/api/gh/dosya-yukle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ad:ad,icerik:b64})})
+      .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+      .then(function(x){
+        if(!x.ok||!x.j.ok)throw new Error((x.j&&x.j.hata)||('HTTP hata'));
+        if(RESIMLER_GH_TUM.indexOf(ad)<0)RESIMLER_GH_TUM.push(ad);
+        cikC.innerHTML='<div class="sonuc ok">Yüklendi (ŞİFRESİZ): <b>resimler/'+esc(ad)+'</b> ('+kb(f.size)+', commit '+(x.j.commit||'?')+')<br>Kullanmak için: bir resim alanına <code>'+esc(ad)+'</code> yaz ve 🖼 Normal png modunda bırak — site motoru v5.3 GitHub\'dan düz gösterir. Şifreli istersen B bölümünde PNG→RMK.</div>';
+        try{agacCiz();}catch(e){}
+      })
+      .catch(function(e){cikC.innerHTML='<div class="sonuc hata">şifresiz yükleme hatası: '+esc(e.message)+' (token: Ayarlar bölümünde kayıtlı olmalı — Contents: write)</div>';});
+    };
+    oku.readAsDataURL(f);
   };
 }
 </script>
@@ -2337,8 +2473,9 @@ function backendVar(){ return location.protocol==='http:'||location.protocol==='
   .then(function(r){return r.json();})
   .then(function(j){
     if(!j||!j.ok||!Array.isArray(j.dosyalar))return;
-    RESIMLER_GH=j.dosyalar.filter(function(x){return x&&x.tur==='file'&&/_rkm\.js$/i.test(x.ad||'');})
-      .map(function(x){return String(x.ad).replace(/_rkm\.js$/i,'');});
+    RESIMLER_GH_TUM=j.dosyalar.filter(function(x){return x&&x.tur==='file';}).map(function(x){return String(x.ad||'');});   /* E198: resimler/'deki tüm dosyalar */
+    RESIMLER_GH=RESIMLER_GH_TUM.filter(function(a){return /_rkm\.js$/i.test(a);})
+      .map(function(a){return a.replace(/_rkm\.js$/i,'');});
     try{var yL=D?pngYukselt(D):0;if(yL){dokun();sahneCiz();}}catch(e){}   /* E197: liste gelince 2. yükseltme turu */
     try{agacCiz();}catch(e){}   /* ağaçtaki RESİMLER sayacı + öneriler tazelenir */
   })
