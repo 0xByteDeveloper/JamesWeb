@@ -1,9 +1,9 @@
 {
   "schema": "epin-surum/1.0",
-  "surum": "E196.20261017.1",
+  "surum": "E198.20261017.1",
   "tarih": "2026-10-17",
-  "site_surumu": "v3.14",
-  "not": "E196: resim adı karmaşası kökten bitti — icerik'teki tüm resim değerleri artık AÇIK dosya adı (ör. newage_rkm.js); RKM motor v5.2 listesiz dinamik _rkm.js adlarını da şifreli yükler (panelden eklenen yeni resimler motor güncellemesi gerektirmez). Listede olmayan .png değeri = normal düz resim (png modu). Panelde her resim alanında 🐙 şifreli rkm.js / 🖼 normal png seçici. Kontrol paneli E196: mod seçici + değer normalizasyonu.",
+  "site_surumu": "v3.15",
+  "not": "E198: şifresiz png yükleme — kontrol panelinde her resim alanında 📤 PNG Yükle düğmesi (resmi şifrelemeden GitHub resimler/ klasörüne yükler, değeri <ad>.<uzantı> yapar). RKM motor v5.3: listede olmayan .png/.jpg/.webp/.gif/.avif değerleri GitHub resimler/ klasöründen DOĞRUDAN yüklenir — şifresiz png panelden yüklendiği an sitede görünür. pngYukselt artık .png karşılığı GitHub'da yüklü adlara dokunmaz. Şifreli akış (_rkm.js) ve eski beyaz liste AYNEN korunur.",
   "degisiklikler": [
     "E192: 46 resim tur 2 sikistirma — bannerlar AVIF q85, logolar WebP q88/q92 sharp_yuv, ekran goruntuleri AVIF q85/WebP q92; resim trafigi 2.18 MB -> 1.33 MB",
     "E192: RKM motor v5.1 — f:'a' AVIF kare destegi (yerli createImageBitmap cozucusu; eski tarayici yedegi aynen)",
