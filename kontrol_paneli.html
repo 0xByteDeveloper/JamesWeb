@@ -3,11 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>M2God Kontrol Paneli v9 — İçerik Otomasyonu (E198 · Python)</title>
+<title>M2God Kontrol Paneli v9 — İçerik Otomasyonu (E199 · Python)</title>
 <!--
-  E198 · M2GOD KONTROL PANELİ v9 — İÇERİK OTOMASYONU (Python sunuculu)
+  E199 · M2GOD KONTROL PANELİ v9 — İÇERİK OTOMASYONU (Python sunuculu)
   ═════════════════════════════════════════════
   (E195 taban — E177_resim-avif-v6 uyumlu; arama/boyutlandırma/temizle/çeviri/kur AYNEN)
+  E199 YENİLİKLERİ (resim yönetimi TAMPON tabanlı — her adım bağımsız seçenek):
+  · Her resim alanının araç satırı 7 BAĞIMSIZ aksiyona ayrıldı — hiçbir düğme
+    arkasına gizli "seç→çevir→yükle" zinciri kalmadı:
+    📥 PNG Yükle (dosyadan TAMPONA) · 📥 RMK Yükle (dosyadan TAMPONA) ·
+    🔍 Önizle (tampon; boşsa GitHub + tampona alma önerisi) ·
+    🗜 Sıkıştır (tampondaki resmi WebP/PNG küçült → TAMPONA yazar) ·
+    🐙 RMK Yap (tampondaki resmi şifrele → TAMPONA yazar; sıkıştırılmış
+    tampon DOĞRUDAN sarılır — "sıkıştırılmış da olsa") ·
+    ☁ RMK GitHub'a (tampondaki RMK'yi resimler/<ad>_rkm.js'e push) ·
+    ☁ PNG GitHub'a (tampondaki resmi ŞİFRESİZ resimler/<ad>.<uz>'e push).
+  · 🧳 TAMPON çipi: tampondaki ne varsa (biçim · kilobayt · ölçü · kaynak ·
+    GitHub'da yüklü mü) canlı görünür. Dönüşümler tarayıcıda; GitHub'a
+    yalnız ☁ düğmeleri yazar, alan değeri push sonrası otomatik güncellenir.
+  · 🔍 Önizle GitHub'dan çekerken kareyi TAMPONA almayı önerir → dosya
+    elinde yoksa bile GitHub'daki resim panelden sıkıştırılır/RMK yapılır/
+    yeniden yüklenir. ☁ RMK GitHub'a iç anahtarı hedef ada ayarlar
+    (E195 ⬆ mantığı korunudu).
   E198 YENİLİKLERİ (şifresiz PNG yükleme — "rmk'ya çevirmemek isteyebilir"):
   · HER resim alanının araç satırına 📤 PNG YÜKLE eklendi: resmi ŞİFRELEMEDEN
     olduğu gibi GitHub resimler/<ad>.<uzantı> olarak yükler, alan değerini
@@ -49,9 +66,9 @@
   · Tüm resim araçları (🔍 ⬆ 🖼 🗜) yükleme sonrası alan değerini otomatik
     <taban>_rkm.js yapar.
   E195 ÖZELLİKLERİ (aynen korunuyor):
-  · RESİM ADI ANLAMI: alanların altında canlı ipucu + 4 araç düğmesi:
-    🔍 Önizle · ⬆ RMK Yükle · 🖼 PNG→RMK (masaüstünden seç → şifrele) ·
-    🗜 Sıkıştır (çöz → canvas WebP kilobayt küçültme → karşılaştır → yükle)
+  · RESİM ADI ANLAMI: alanların altında canlı ipucu + araç düğmeleri
+    (E199'da TAMPON tabanlı 7 bağımsız aksiyona dönüştü — en üstteki E199
+    bloğuna bak; GitHub push'ları alan değerini otomatik yazar)
   · KUR MOTORU (sitenin EpinFX 6-API zinciri ile aynı): Parasal Eğri sütunlarında
     para birimi etiketi (USD/TL/EU) + 💱 Kura Çevir (canlı kur: open.er-api.com →
     currency-api.pages.dev → jsDelivr → Coinbase → floatrates; yedek gömülü kur)
@@ -210,6 +227,9 @@ main{flex:1;overflow-y:auto;padding:16px 20px;min-width:0}
 .resimAraclar button{padding:3px 8px;font-size:11.5px;border-radius:5px}
 .resimIpucu{font-size:11.5px;color:var(--soluk);margin-top:5px;line-height:1.5}
 .resimIpucu code{font-size:11px}
+.resimTampon{font-size:11.5px;color:var(--yazi);margin-top:5px;line-height:1.6;background:rgba(126,226,160,.05);border:1px dashed rgba(126,226,160,.3);border-radius:6px;padding:4px 8px}
+.resimTampon b{color:#7ee2a0}
+.resimTampon i{color:var(--soluk)}
 .resimCikti{margin-top:8px;border:1px dashed var(--hat);border-radius:8px;padding:8px;background:rgba(255,255,255,.02)}
 .resimCikti .rkmKare{background:repeating-conic-gradient(#1a2233 0% 25%,#121826 0% 50%) 50%/18px 18px;border:1px solid var(--hat);border-radius:8px;padding:6px;min-width:80px;min-height:56px;display:flex;align-items:center;justify-content:center}
 .resimCikti img{max-width:280px;max-height:170px;display:block}
@@ -650,7 +670,7 @@ function pngYukselt(d){
    alan değeri OTOMATİK yeniden yazılır (<taban>_rkm.js ↔ <taban>.png) */
 function resimModSec(degerAl,yaz){
   var mod=document.createElement('select');mod.className='resimMod';
-  mod.title='🐙 Şifreli rkm.js: site resmi GitHub\'dan çözer — png indirilmez, korumalı (önerilen)\n🖼 Normal png: şifresiz dosya GitHub resimler/ klasöründen düz gösterilir — korumasız (📤 PNG Yükle ile yükle)';
+  mod.title='🐙 Şifreli rkm.js: site resmi GitHub\'dan çözer — png indirilmez, korumalı (önerilen)\n🖼 Normal png: şifresiz dosya GitHub resimler/ klasöründen düz gösterilir — korumasız (📥 PNG Yükle ile tampona alıp ☁ PNG GitHub\'a ile yükleyebilirsin)';
   [['rkm','🐙 Şifreli rkm.js'],['png','🖼 Normal png']].forEach(function(x){
     var o=document.createElement('option');o.value=x[0];o.textContent=x[1];mod.appendChild(o);});
   mod.value=resimModu(degerAl());
@@ -678,7 +698,7 @@ function logoSec(obj,anahtar,etiket,kapsa){
   i.oninput=function(){obj[anahtar]=i.value;dokun();if(ip)ip.yaz();};
   /* canlı eşleme ipucu — değerin türüne göre ne olacağını yazar (E196: mod duyarlı) */
   var ip=resimIpucuSatiri(function(){return i.value;},kapsa);
-  /* 4 araç — Önizle · RMK Yükle · PNG→RMK · Sıkıştır */
+  /* E199: 7 bağımsız araç — 📥 PNG Yükle · 📥 RMK Yükle · 🔍 Önizle · 🗜 Sıkıştır · 🐙 RMK Yap · ☁ RMK GitHub\'a · ☁ PNG GitHub\'a (tampon akışı) */
   var cikti=document.createElement('div');cikti.className='resimCikti';kapsa.appendChild(cikti);
   resimAraclari(kapsa,function(){return i.value;},cikti,function(y){i.value=y;obj[anahtar]=y;dokun();if(ip)ip.yaz();if(modSel.__senkron)modSel.__senkron();});   /* E198: mod etiketi de tazelenir */
   return i;
@@ -856,7 +876,7 @@ function listeMetin(o,etiket){
 }
 function listeFoto(o,etiket){
   var k=document.createElement('div');k.className='kutu';
-  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">client fotoğrafları — sırayla görünür · her satırda: 🔍 önizle · ⬆ RMK yükle · 🖼 PNG→RMK · 📤 PNG yükle · 🗜 sıkıştır · 🐙/🖼 mod</div>';
+  k.innerHTML='<h3>'+esc(etiket)+'</h3><div class="ipucu">client fotoğrafları — sırayla görünür · her satırda 7 bağımsız araç (E199 tampon akışı): 📥 PNG yükle · 📥 RMK yükle · 🔍 önizle · 🗜 sıkıştır · 🐙 RMK yap · ☁ RMK GitHub\'a · ☁ PNG GitHub\'a · 🐙/🖼 mod</div>';
   var L=document.createElement('div');L.className='satirListe';k.appendChild(L);
   /* E195: satır araçlarının ortak sonuç kutusu */
   var cikti=document.createElement('div');cikti.className='resimCikti';
@@ -963,13 +983,18 @@ function kurAraci(kapsa,kaynakGet,kaynakSet,fiyatNesneleri,ekstra){
   return satir;
 }
 
-/* ══════════ E195: RESİM ARAÇ KÜMESİ — her resim adı alanının yanına 4 düğme ══════════
-   🔍 Önizle   : GitHub'daki resimler/<taban>_rkm.js'i sunucuda çözüp gösterir
-   ⬆ RMK Yükle : hazır *_rkm.js dosyasını seç → hedef adla GitHub'a push
-   🖼 PNG→RMK  : masaüstünden PNG/WebP/JPG seç → canvas'ta küçült/WebP'le → şifrele → push
-   🗜 Sıkıştır : GitHub'daki resmi çöz → canvas WebP kalite ayarlı küçültme → karşılaştır → push
+/* ══════════ E199: RESİM ARAÇ KÜMESİ — TAMPON TABANLI 7 BAĞIMSIZ AKSİYON ══════════
+   Akış: dosyayı TAMPONA al → adımları İSTEDİĞİN SIRADA yap → GitHub'a KENDİN yükle.
+   📥 PNG Yükle   : masaüstünden resim (png/jpg/webp/gif/avif) → TAMPONA (yükleme yok)
+   📥 RMK Yükle   : hazır *_rkm.js dosyası → TAMPONA (yükleme yok)
+   🔍 Önizle      : tampon RMK'yı çözer/resmi açar; tampon boşsa GitHub'dan çözer + tampona almayı önerir
+   🗜 Sıkıştır    : tampondaki resmi canvas WebP/PNG ile küçültür → TAMPONA yazar (yükleme yok; ham korunur)
+   🐙 RMK Yap     : tampondaki resmi RKM'ye çevirir → TAMPONA yazar (sıkıştırılmış tampon DOĞRUDAN sarılır)
+   ☁ RMK GitHub'a : tampondaki RMK'yı resimler/<taban>_rkm.js'e pushlar (iç anahtar hedefe ayarlanır)
+   ☁ PNG GitHub'a : tampondaki resmi ŞİFRESİZ resimler/<taban>.<uz>'e pushlar (E198 hattı)
    adAlFn(): alanın anlık değeri (m2god_logo.png | m2god_logo | SiteLogo …)
-   cikti: sonuçların yazılacağı div · adYazFn(yeni): (isteğe bağlı) alan değerini yazar */
+   cikti: sonuçların yazılacağı div · adYazFn(yeni): (isteğe bağlı) alan değerini yazar
+   Push sonrası alan değeri otomatik yazılır; tampon durumu 🧳 çipinde canlı izlenir. */
 function resimAraclari(kapsa,adAlFn,cikti,adYazFn){
   var satir=document.createElement('div');satir.className='resimAraclar';
   function taban(){var v=sGuven(adAlFn()).trim();return v?rkmTaban(v):'';}
@@ -977,6 +1002,84 @@ function resimAraclari(kapsa,adAlFn,cikti,adYazFn){
   function kapat(){cikti.innerHTML='';}
   function hata(m){goster('<div class="sonuc hata">'+esc(m)+'</div>');}
   function bekliyor(m){goster('<div class="bosNot">'+esc(m||'çalışıyor…')+'</div>');}
+
+  /* ═══ E199: TAMPON — dosyadan/GitHub'dan alınan çalışma kopyası. Her adım
+     TAMPON üzerinde çalışır; GitHub'a yalnız ☁ düğmeleri yazar. ═══
+     image: {tur:'image',fmt,ad,bayt,ham,hamFmt,w,h,kaynak,sikis,kaliteEt,gonderildi}
+     rkm  : {tur:'rkm',metin,ad,w,h,f,kareBoyut,kaynak,gonderildi} */
+  var tampon=null;
+  var chip=document.createElement('div');chip.className='resimTampon';
+  function fmtMime(f){return f==='png'?'image/png':(f==='jpeg'?'image/jpeg':(f==='gif'?'image/gif':(f==='avif'?'image/avif':'image/webp')));}
+  function fmtUz(f){return f==='jpeg'?'jpg':f;}
+  function baytB64(bayt){var bin='',p=32768;for(var a=0;a<bayt.length;a+=p)bin+=String.fromCharCode.apply(null,bayt.subarray(a,a+p));return btoa(bin);}
+  function tamponCiz(){
+    if(!tampon){chip.innerHTML='🧳 Tampon: <i>boş</i> — akış: 📥 yükle → (🔍 bak) → (🗜 sıkıştır) → (🐙 RMK yap) → ☁ GitHub\'a yükle · her adım bağımsız, istediğin sırayla';return;}
+    var ortak=(tampon.w?' · '+tampon.w+'×'+tampon.h:'')+' · <span style="color:var(--soluk)">'+esc(tampon.kaynak||'')+'</span>'+
+      (tampon.gonderildi?' · <b style="color:#7ee2a0">✓ '+esc(tampon.gonderildi)+' yüklendi</b>':' · <b style="color:#e7c56a">GitHub\'da DEĞİL</b>');
+    if(tampon.tur==='image'){
+      chip.innerHTML='🧳 Tampon: 🖼 <b>'+esc(tampon.fmt.toUpperCase())+' '+kb(tampon.bayt.length)+'</b> · '+esc(tampon.ad)+ortak;
+    }else{
+      chip.innerHTML='🧳 Tampon: 🐙 <b>RMK '+kb(tampon.metin.length)+'</b> · '+esc(tampon.ad)+(tampon.w?' · kare '+tampon.w+'×'+tampon.h+' '+esc(rkmMime(tampon.f||'w')):'')+ortak;
+    }
+  }
+  function tamponOlculeri(cb){   /* w/h garantisi — 📥 arka plan ölçümünü beklemeden güvenli */
+    if(tampon&&tampon.w>0){cb(tampon.w,tampon.h);return;}
+    var im=new Image();
+    im.onload=function(){if(tampon&&tampon.tur==='image'){tampon.w=im.naturalWidth;tampon.h=im.naturalHeight;tamponCiz();}cb(im.naturalWidth,im.naturalHeight);};
+    im.onerror=function(){cb(0,0);};
+    im.src=URL.createObjectURL(new Blob([tampon.bayt],{type:fmtMime(tampon.fmt)}));
+  }
+  function pngAl(ad,fmt,bayt){   /* akış çekirdeği — dosya seçici de bunu çağırır */
+    tampon={tur:'image',fmt:fmt,ad:ad,bayt:bayt,ham:bayt,hamFmt:fmt,w:0,h:0,kaynak:'dosyadan',sikis:false,gonderildi:null};
+    if(adYazFn&&!sGuven(adAlFn()).trim())adYazFn(ad);   /* alan boşsa değer = dosya adı */
+    tamponCiz();
+    goster('<div class="sonuc ok">🧳 Tampona alındı: <b>'+esc(ad)+'</b> ('+kb(bayt.length)+' · '+esc(fmt)+') — GitHub\'a YÜKLENMEDİ.<br>Şimdi istediğini yap: 🔍 Önizle · 🗜 Sıkıştır · 🐙 RMK Yap · ☁ PNG GitHub\'a (şifresiz) · ☁ RMK GitHub\'a (önce 🐙)</div>');
+    tamponOlculeri(function(){});
+  }
+  function rmkAl(ad,metin){   /* hazır *_rkm.js → tampon */
+    try{
+      var pak=rkmObjCikar(metin);
+      var kare=rkmBayt(pak.obj).length;
+      tampon={tur:'rkm',metin:metin,ad:(ad||pak.ad+'_rkm.js'),w:pak.obj.w,h:pak.obj.h,f:pak.obj.f,kareBoyut:kare,kaynak:'dosyadan (iç ad: '+pak.ad+')',gonderildi:null};
+      if(adYazFn&&!sGuven(adAlFn()).trim())adYazFn(pak.ad+'_rkm.js');
+      tamponCiz();
+      goster('<div class="sonuc ok">🧳 RMK tampona alındı: <b>'+esc(tampon.ad)+'</b> — js '+kb(metin.length)+' · kare '+kb(kare)+' ('+esc(rkmMime(pak.obj.f))+') · '+pak.obj.w+'×'+pak.obj.h+'<br>Şimdi: 🔍 Önizle (çözüp gösterir) · ☁ RMK GitHub\'a (iç ad hedefe ayarlanır)</div>');
+    }catch(e){hata(e.message);}
+  }
+  function sikistirMotoru(f,q,genis,cb){   /* tampondaki resmi canvas'tan yeniden kodlar → TAMPONA yazar (ham korunur) */
+    if(!tampon||tampon.tur!=='image'){cb(new Error('🧳 tamponda resim yok — önce 📥 PNG Yükle (ya da 🔍 Önizle ile GitHub\'dan tampona al)'));return;}
+    var onceKb=tampon.bayt.length,onceFmt=tampon.fmt;
+    var im=new Image();
+    im.onload=function(){
+      imgdenRkm(im,taban()||'tampon',f,q,genis,function(e,r){
+        if(e){cb(e);return;}
+        var yeniFmt=(r.mime==='image/png')?'png':'webp';
+        tampon.bayt=r.bayt;tampon.fmt=yeniFmt;tampon.w=r.cw;tampon.h=r.ch;
+        tampon.sikis=true;
+        tampon.kaliteEt=(f==='p'?'png':'webp-q'+Math.round(q*100))+(genis>0?' · '+r.cw+'x'+r.ch:'');
+        tampon.kaynak='sıkıştırıldı ('+kb(onceKb)+' '+onceFmt+' → '+kb(r.bayt.length)+' '+yeniFmt+') · ham korunur';
+        tampon.gonderildi=null;
+        tamponCiz();
+        cb(null,{bayt:r.bayt,cw:r.cw,ch:r.ch,mime:r.mime,yeniFmt:yeniFmt,onceKb:onceKb,onceFmt:onceFmt,yuzde:Math.round((1-r.bayt.length/onceKb)*100)});
+      });
+    };
+    im.onerror=function(){cb(new Error('tampondaki resim tarayıcıda açılamadı (biçim: '+fmtMime(tampon.hamFmt||tampon.fmt)+')'));};
+    im.src=URL.createObjectURL(new Blob([tampon.ham||tampon.bayt],{type:fmtMime(tampon.hamFmt||tampon.fmt)}));
+  }
+  function rmkBitti(t,metin,f,w,h,kareBoyut,not){   /* çevrilen RMK'yi TAMPONA yazar + önizler */
+    tampon={tur:'rkm',metin:metin,ad:t+'_rkm.js',w:w,h:h,f:f,kareBoyut:kareBoyut,kaynak:'RMK yapıldı — '+not,gonderildi:null};
+    tamponCiz();
+    try{
+      var pk=rkmObjCikar(metin);
+      goster('<div class="rkmKare"><img src="'+rkmObjVeriUrl(pk.obj)+'" alt=""></div>'+
+        '<div class="rkmBilgi"><b>🐙 '+esc(t)+'_rkm.js hazır (🧳 TAMPONDA)</b><br>çerçeve: <b>'+w+'×'+h+'</b> · kare: <b>'+kb(kareBoyut)+' ('+esc(rkmMime(f))+')</b> · js dosyası: <b>'+kb(metin.length)+'</b>'+
+        '<br><span style="color:var(--soluk)">'+esc(not)+' · GitHub\'a yüklemek için ☁ RMK GitHub\'a</span></div>');
+    }catch(e){goster('<div class="sonuc ok">🐙 '+esc(t)+'_rkm.js hazır (🧳 TAMPONDA) — ☁ RMK GitHub\'a</div>');}
+  }
+  function rmkSar(t,not){   /* sıkıştırılmış png/webp tamponu yeniden kodlamadan RKM'ye sar */
+    var f=(tampon.fmt==='png')?'p':'w';
+    rmkBitti(t,rkmJsUret(t,tampon.w||0,tampon.h||0,f,tampon.bayt,tampon.kaliteEt||'tampon'),f,tampon.w||0,tampon.h||0,tampon.bayt.length,not);
+  }
 
   /* ortak: RKM objesini baytlara çöz (tarayıcı) */
   function rkmBayt(obj){
@@ -1046,64 +1149,139 @@ function resimAraclari(kapsa,adAlFn,cikti,adYazFn){
     },f==='p'?'image/png':'image/webp',q);
   }
 
-  /* ── 1) 🔍 Önizle ── */
-  var bOn=document.createElement('button');bOn.textContent='🔍 Önizle';bOn.title='GitHub\'daki şifreli resmi çözüp burada gösterir';
+  /* ── 1) 📥 PNG Yükle — dosyadan TAMPONA (yükleme YOK) ── */
+  var fPng2=document.createElement('input');fPng2.type='file';fPng2.accept='image/png,image/jpeg,image/webp,image/gif,image/avif,image/*';fPng2.style.display='none';
+  satir.appendChild(fPng2);
+  var bPngAl=document.createElement('button');bPngAl.textContent='📥 PNG Yükle';
+  bPngAl.title='Masaüstünden resim seç (png/jpg/webp/gif/avif) → TAMPONA alınır. GitHub\'a YÜKLENMEZ — sonra 🔍 bak, 🗜 sıkıştır, 🐙 RMK yap ya da ☁ PNG GitHub\'a ile gönder.';
+  bPngAl.onclick=function(){fPng2.click();};
+  fPng2.onchange=function(){
+    if(!this.files||!this.files[0]){this.value='';return;}
+    var f=this.files[0];this.value='';
+    var fmt=null,m=f.name.match(/\.(png|jpe?g|webp|gif|avif)$/i);
+    if(m){fmt=m[1].toLowerCase();}
+    else{var mm=(f.type||'').match(/^image\/(png|jpeg|webp|gif|avif)$/i);if(mm)fmt=mm[1].toLowerCase();}
+    if(!fmt){hata('desteklenmeyen biçim — png/jpg/webp/gif/avif seç');return;}
+    var oku=new FileReader();
+    oku.onload=function(){pngAl(f.name,fmt,new Uint8Array(oku.result));};
+    oku.readAsArrayBuffer(f);
+  };
+  satir.appendChild(bPngAl);
+
+  /* ── 2) 📥 RMK Yükle — dosyadan TAMPONA (yükleme YOK) ── */
+  var fRmk2=document.createElement('input');fRmk2.type='file';fRmk2.accept='.js,text/javascript';fRmk2.style.display='none';
+  satir.appendChild(fRmk2);
+  var bRmkAl=document.createElement('button');bRmkAl.textContent='📥 RMK Yükle';
+  bRmkAl.title='Hazır şifreli *_rkm.js dosyasını TAMPONA al (GitHub\'a yüklenmez). 🔍 ile çözüp bakabilir, ☁ RMK GitHub\'a ile gönderebilirsin.';
+  bRmkAl.onclick=function(){fRmk2.click();};
+  fRmk2.onchange=function(){
+    if(!this.files||!this.files[0]){this.value='';return;}
+    var f=this.files[0];this.value='';
+    var oku=new FileReader();
+    oku.onload=function(){rmkAl(f.name,String(oku.result));};
+    oku.readAsText(f);
+  };
+  satir.appendChild(bRmkAl);
+
+  /* ── 3) 🔍 Önizle — tampon öncelikli; boşsa GitHub + tampona alma önerisi ── */
+  var bOn=document.createElement('button');bOn.textContent='🔍 Önizle';
+  bOn.title='TAMPON varsa onu gösterir (RMK çözülür / resim açılır — GitHub\'a bakılmaz). Tampon boşsa GitHub\'daki <ad>_rkm.js\'i çözüp gösterir ve tampona almayı önerir.';
   bOn.onclick=function(){
+    if(tampon&&tampon.tur==='image'){
+      tamponOlculeri(function(w,h){
+        if(!w){hata('tampondaki resim açılamadı (biçim: '+fmtMime(tampon.fmt)+')');return;}
+        goster('<div class="rkmKare"><img src="'+URL.createObjectURL(new Blob([tampon.bayt],{type:fmtMime(tampon.fmt)}))+'" alt=""></div>'+
+          '<div class="rkmBilgi"><b>'+esc(tampon.ad)+'</b><br>boyut: <b>'+w+'×'+h+'</b> · biçim: <b>'+esc(fmtMime(tampon.fmt))+'</b> · kare: <b>'+kb(tampon.bayt.length)+'</b>'+
+          '<br><span style="color:var(--soluk)">🧳 tampondan gösterildi · '+esc(tampon.kaynak||'')+(tampon.gonderildi?' · ✓ '+esc(tampon.gonderildi)+' yüklendi':' · GitHub\'a YÜKLENMEDİ')+'</span></div>');
+      });
+      return;
+    }
+    if(tampon&&tampon.tur==='rkm'){
+      try{
+        var pk=rkmObjCikar(tampon.metin);
+        goster('<div class="rkmKare"><img src="'+rkmObjVeriUrl(pk.obj)+'" alt=""></div>'+
+          '<div class="rkmBilgi"><b>'+esc(tampon.ad)+'</b> (iç ad: '+esc(pk.ad)+')<br>boyut: <b>'+pk.obj.w+'×'+pk.obj.h+'</b> · biçim: <b>'+esc(rkmMime(pk.obj.f))+'</b> · kare: <b>'+kb(tampon.kareBoyut||0)+'</b> · js dosyası: <b>'+kb(tampon.metin.length)+'</b>'+
+          '<br><span style="color:var(--soluk)">🧳 tampondaki RMK çözüldü · '+esc(tampon.kaynak||'')+(tampon.gonderildi?' · ✓ '+esc(tampon.gonderildi)+' yüklendi':' · GitHub\'a YÜKLENMEDİ')+'</span></div>');
+      }catch(e){hata(e.message);}
+      return;
+    }
     var t=taban();
-    if(!t){hata('resim adı boş — önce alana bir ad yaz (ör. m2god_logo_rkm.js)');return;}
-    rkmCoz(t,function(j){kareGoster(j,'GitHub raw\'dan çözüldü — site motoruyla aynı yol · kopya: panel_alan/'+j.ad+'_'+j.w+'x'+j.h);});
+    if(!t){hata('resim adı boş — GitHub\'dan çekmek için bir ad yaz ya da 📥 ile dosyadan tampona al');return;}
+    rkmCoz(t,function(j){
+      kareGoster(j,'GitHub raw\'dan çözüldü — site motoruyla aynı yol · kopya: panel_alan/'+j.ad+'_'+j.w+'x'+j.h);
+      try{
+        var ham=atob(j.veri),bayt=new Uint8Array(ham.length);
+        for(var i=0;i<ham.length;i++)bayt[i]=ham.charCodeAt(i);
+        var fmt=j.mime==='image/png'?'png':(j.mime==='image/avif'?'avif':'webp');
+        if(confirm('🧳 GitHub\'dan çözülen bu kare TAMPONA alınsın mı?\n(Ardından 🗜 sıkıştır · 🐙 RMK Yap · ☁ GitHub\'a yükle adımlarını kullanabilirsin)')){
+          tampon={tur:'image',fmt:fmt,ad:t+'_kare.'+(fmt==='png'?'png':'webp'),bayt:bayt,ham:bayt,hamFmt:fmt,w:j.w,h:j.h,kaynak:'GitHub\'dan alındı ('+t+'_rkm.js çözüldü)',sikis:false,gonderildi:null};
+          tamponCiz();
+          cikti.innerHTML+='<div class="sonuc ok">🧳 GitHub\'dan tampona alındı: <b>'+esc(t)+'</b> karesi ('+kb(bayt.length)+' '+fmt+') — 🗜 sıkıştır · 🐙 RMK Yap · ☁ PNG GitHub\'a</div>';
+        }
+      }catch(e2){}
+    });
   };
   satir.appendChild(bOn);
 
-  /* ── 2) ⬆ RMK Yükle ── */
-  var fRMK=document.createElement('input');fRMK.type='file';fRMK.accept='.js,text/javascript';fRMK.style.display='none';
-  satir.appendChild(fRMK);
-  var bYuk=document.createElement('button');bYuk.textContent='⬆ RMK Yükle';bYuk.title='Hazır şifreli *_rkm.js dosyasını bu adla GitHub\'a yükle';
-  bYuk.onclick=function(){
-    var t=taban();
-    if(!t){hata('resim adı boş — önce alana bir ad yaz');return;}
-    fRMK.click();
-  };
-  fRMK.onchange=function(){
-    if(!this.files||!this.files[0]){this.value='';return;}
-    var f=this.files[0];this.value='';
-    var t=taban();
-    var oku=new FileReader();
-    oku.onload=function(){
-      try{
-        var pak=rkmObjCikar(String(oku.result));
-        var metin=String(oku.result);
-        if(pak.ad!==t){   /* iç anahtar hedef adla değiştirilir — site böyle bulur */
-          var bayt=rkmBayt(pak.obj);
-          var kaliteEt='rkm-yeniden-adlandirildi';
-          metin=rkmJsUret(t,pak.obj.w,pak.obj.h,pak.obj.f,bayt,kaliteEt);
-        }
-        yukleJs(t,metin,function(){if(adYazFn)adYazFn(t+'_rkm.js');});   /* E196: alan değerini şifreli ada yaz */
-      }catch(e){hata(e.message);}
-    };
-    oku.readAsText(f);
-  };
-  satir.appendChild(bYuk);
-
-  /* ── 3) 🖼 PNG→RMK ── */
-  var fPNG=document.createElement('input');fPNG.type='file';fPNG.accept='image/png,image/webp,image/jpeg,image/avif,image/*';fPNG.style.display='none';
-  satir.appendChild(fPNG);
-  var bDon=document.createElement('button');bDon.textContent='🖼 PNG→RMK';bDon.title='Masaüstünden resim seç → küçült/WebP → RKM şifrele → GitHub\'a yükle';
-  bDon.onclick=function(){
-    var t=taban();
-    if(!t){hata('resim adı boş — önce alana bir ad yaz (ör. newage_rkm.js)');return;}
-    fPNG.click();
-  };
-  fPNG.onchange=function(){
-    if(!this.files||!this.files[0]){this.value='';return;}
-    var f=this.files[0];this.value='';
-    var t=taban();
-    var url=URL.createObjectURL(f);
+  /* ── 4) 🗜 Sıkıştır — TAMPON üzerinde (yükleme YOK) ── */
+  var bSik=document.createElement('button');bSik.textContent='🗜 Sıkıştır';
+  bSik.title='Tampondaki resmi canvas WebP/PNG ile yeniden kodlayıp KÜÇÜLTÜR → sonuç TAMPONA yazılır (GitHub\'a yüklenmez — ☁ ile gönderirsin). Kaynak: ham kare — üst üste kalite kaybı olmaz.';
+  bSik.onclick=function(){
+    if(!tampon||tampon.tur!=='image'){hata('🧳 tamponda resim yok — önce 📥 PNG Yükle (ya da 🔍 Önizle ile GitHub\'dan tampona al)');return;}
+    var url=URL.createObjectURL(new Blob([tampon.ham||tampon.bayt],{type:fmtMime(tampon.hamFmt||tampon.fmt)}));
     var im=new Image();
     im.onload=function(){
       goster('<div class="rkmKare"><img src="'+url+'" alt=""></div>'+
-        '<div class="rkmBilgi"><b>'+esc(f.name)+'</b> · '+kb(f.size)+' · '+im.naturalWidth+'×'+im.naturalHeight+
-        '<br><span style="color:var(--soluk)">hedef: resimler/'+esc(t)+'_rkm.js</span></div>');
+        '<div class="rkmBilgi"><b>'+esc(tampon.ad)+'</b> · ham: '+im.naturalWidth+'×'+im.naturalHeight+' '+esc(tampon.hamFmt||tampon.fmt)+' · şimdiki tampon: <b>'+kb(tampon.bayt.length)+' '+esc(tampon.fmt)+'</b>'+
+        '<br><span style="color:var(--soluk)">canvas ile yeniden kodlanacak — sonuç TAMPONA yazılır (GitHub\'a yüklenmez)</span></div>');
+      var ayar=document.createElement('div');ayar.className='yatay';ayar.style.marginTop='8px';
+      var w1=document.createElement('div');aln(w1,'Biçim');
+      var selF=document.createElement('select');
+      [['w','WebP (önerilen — küçük)'],['p','PNG (kayıpsız)']].forEach(function(x){var o=document.createElement('option');o.value=x[0];o.textContent=x[1];selF.appendChild(o);});
+      w1.appendChild(selF);ayar.appendChild(w1);
+      var w2=document.createElement('div');aln(w2,'WebP kalite (50-95)');
+      var inQ=document.createElement('input');inQ.type='number';inQ.min='50';inQ.max='95';inQ.value='80';w2.appendChild(inQ);ayar.appendChild(w2);
+      var w3=document.createElement('div');aln(w3,'Genişlik sınırı (px — 0: aynen)');
+      var inW=document.createElement('input');inW.type='number';inW.min='0';inW.value='0';w3.appendChild(inW);ayar.appendChild(w3);
+      cikti.appendChild(ayar);
+      var bS=document.createElement('button');bS.className='ana';bS.textContent='🗜 Sıkıştır ve Tampona Yaz';bS.style.marginTop='8px';
+      cikti.appendChild(bS);
+      bS.onclick=function(){
+        bS.disabled=true;
+        sikistirMotoru(selF.value,Math.min(.95,Math.max(.5,nSay(inQ.value)/100)),nInt(inW.value),function(e,r){
+          bS.disabled=false;
+          if(e){hata(e.message);return;}
+          goster('<div class="rkmKare"><img src="'+URL.createObjectURL(new Blob([r.bayt],{type:r.mime}))+'" alt=""></div>'+
+            '<div class="rkmBilgi"><b>🧳 tampon güncellendi</b> · çerçeve: <b>'+r.cw+'×'+r.ch+'</b> · '+r.yeniFmt+
+            '<br>önceki tampon: <b>'+kb(r.onceKb)+'</b> ('+esc(r.onceFmt)+') → <b>'+kb(r.bayt.length)+'</b> <span style="color:'+(r.yuzde>0?'#7ee2a0':'#e7c56a')+'">('+(r.yuzde>0?'−'+r.yuzde+'%':'+ '+(-r.yuzde)+'%')+' kilobayt)</span>'+
+            '<br><span style="color:var(--soluk)">GitHub\'a göndermek için: ☁ PNG GitHub\'a (şifresiz) ya da 🐙 RMK Yap → ☁ RMK GitHub\'a</span></div>');
+        });
+      };
+    };
+    im.onerror=function(){hata('tampondaki resim tarayıcıda açılamadı (biçim: '+fmtMime(tampon.hamFmt||tampon.fmt)+')');};
+    im.src=url;
+  };
+  satir.appendChild(bSik);
+
+  /* ── 5) 🐙 RMK Yap — TAMPONDaki resmi RKM'ye çevir (yükleme YOK) ──
+     Sıkıştırılmış tampon DOĞRUDAN sarılır ("sıkıştırılmış da olsa"); ham
+     resimde E195 ayarları sorulur (WebP önerilen). */
+  var bRkm=document.createElement('button');bRkm.textContent='🐙 RMK Yap';
+  bRkm.title='Tampondaki resmi RKM şifrelemeye çevirir → TAMPONA yazılır (GitHub\'a yüklenmez — ☁ RMK GitHub\'a ile gönderirsin). Sıkıştırılmış tampon DOĞRUDAN sarılır (yeniden kodlanmaz); ham resimde WebP/PNG ayarı sorulur.';
+  bRkm.onclick=function(){
+    if(!tampon||tampon.tur!=='image'){hata('🧳 tamponda resim yok — önce 📥 PNG Yükle (ya da 🔍 Önizle ile GitHub\'dan tampona al)');return;}
+    var t=taban();
+    if(!t){hata('resim adı boş — hedef: <ad>_rkm.js; önce alana ad yaz');return;}
+    if(tampon.sikis&&(tampon.fmt==='png'||tampon.fmt==='webp')){
+      rmkSar(t,'doğrudan sarıldı (sıkıştırılmış tampon yeniden kodlanmadı · '+(tampon.kaliteEt||'tampon')+')');
+      return;
+    }
+    var url=URL.createObjectURL(new Blob([tampon.bayt],{type:fmtMime(tampon.fmt)}));
+    var im=new Image();
+    im.onload=function(){
+      goster('<div class="rkmKare"><img src="'+url+'" alt=""></div>'+
+        '<div class="rkmBilgi"><b>'+esc(tampon.ad)+'</b> · '+im.naturalWidth+'×'+im.naturalHeight+' '+esc(tampon.fmt)+' · '+kb(tampon.bayt.length)+
+        '<br><span style="color:var(--soluk)">hedef: resimler/'+esc(t)+'_rkm.js — çevirim TAMPONA yazılır, GitHub\'a yüklenmez</span></div>');
       var ayar=document.createElement('div');ayar.className='yatay';ayar.style.marginTop='8px';
       var w1=document.createElement('div');aln(w1,'Biçim');
       var selF=document.createElement('select');
@@ -1114,130 +1292,89 @@ function resimAraclari(kapsa,adAlFn,cikti,adYazFn){
       var w3=document.createElement('div');aln(w3,'Genişlik sınırı (px — 0: aynen)');
       var inW=document.createElement('input');inW.type='number';inW.min='0';inW.value='0';w3.appendChild(inW);ayar.appendChild(w3);
       cikti.appendChild(ayar);
-      var bCev=document.createElement('button');bCev.className='ana';bCev.textContent='🔄 Dönüştür ve Önizle';bCev.style.marginTop='8px';
+      var bCev=document.createElement('button');bCev.className='ana';bCev.textContent='🐙 RMK\'ya Çevir (TAMPONA)';bCev.style.marginTop='8px';
       cikti.appendChild(bCev);
-      var sonuc=null;
       bCev.onclick=function(){
         bCev.disabled=true;
         imgdenRkm(im,t,selF.value,Math.min(1,Math.max(.5,nSay(inQ.value)/100)),nInt(inW.value),function(e,r){
           bCev.disabled=false;
           if(e){hata(e.message);return;}
-          sonuc=r;
-          goster('<div class="rkmKare"><img src="'+URL.createObjectURL(new Blob([r.bayt],{type:r.mime}))+'" alt=""></div>'+
-            '<div class="rkmBilgi"><b>'+esc(t)+'_rkm.js</b> hazır<br>çerçeve: <b>'+r.cw+'×'+r.ch+'</b> · biçim: <b>'+r.mime+
-            '</b><br>orijinal: <b>'+kb(f.size)+'</b> → rkm kare: <b>'+kb(r.bayt.length)+'</b> · js dosyası: <b>'+kb(r.metin.length)+'</b></div>');
-          var bUp=document.createElement('button');bUp.className='ana';bUp.textContent='⬆ GitHub\'a Yükle';bUp.style.marginTop='8px';
-          bUp.onclick=function(){
-            bUp.disabled=true;
-            yukleJs(t,r.metin,function(){
-              if(adYazFn)adYazFn(t+'_rkm.js');   /* E196: şifreli dosya yüklendi → değer de şifreli ad olsun */
-            });
-          };
-          cikti.appendChild(bUp);
+          rmkBitti(t,r.metin,(r.mime==='image/png')?'p':'w',r.cw,r.ch,r.bayt.length,
+            tampon.fmt+'\'den çevrildi ('+(selF.value==='p'?'png':'webp-q'+Math.round(nSay(inQ.value)))+(nInt(inW.value)>0?' · '+r.cw+'x'+r.ch:'')+') · ham '+kb(tampon.bayt.length)+' → kare '+kb(r.bayt.length));
         });
       };
     };
-    im.onerror=function(){hata('resim açılamadı — biçim desteklenmiyor olabilir');};
+    im.onerror=function(){hata('tampondaki resim tarayıcıda açılamadı (biçim: '+fmtMime(tampon.fmt)+')');};
     im.src=url;
   };
-  satir.appendChild(bDon);
+  satir.appendChild(bRkm);
 
-  /* ── 4b) 📤 PNG Yükle (şifresiz ham dosya) — E198 ──
-     "kişi rmk'ya çevirmemek isteyebilir": resim olduğu gibi GitHub resimler/
-     klasörüne yüklenir, alan değeri <taban>.<uzantı> yapılır (🖼 png modu).
-     Site motoru v5.3 bu dosyayı GitHub'dan DOĞRUDAN gösterir. */
-  var fHam=document.createElement('input');fHam.type='file';fHam.accept='image/png,image/jpeg,image/webp,image/gif,image/avif,image/*';fHam.style.display='none';
-  satir.appendChild(fHam);
-  var bHam=document.createElement('button');bHam.textContent='📤 PNG Yükle';bHam.title='Resmi ŞİFRELEMEDEN olduğu gibi GitHub resimler/ klasörüne yükle — alan değeri <ad>.<uzantı> yapılır, 🖼 Normal png moduna geçer (korumasız). Şifreli istiyorsan PNG→RMK kullan.';
-  bHam.onclick=function(){
+  /* ── 6) ☁ RMK GitHub'a — TAMPONDaki RMK'yi resimler/<ad>_rkm.js'e push ── */
+  var bGhR=document.createElement('button');bGhR.textContent='☁ RMK GitHub\'a';
+  bGhR.title='Tampondaki RMK\'yı resimler/<ad>_rkm.js olarak GitHub\'a yükle (iç anahtar hedef ada ayarlanır) → alan değeri <ad>_rkm.js yapılır. Tamponda RMK yoksa: 🐙 RMK Yap ya da 📥 RMK Yükle.';
+  bGhR.onclick=function(){
+    if(!tampon||tampon.tur!=='rkm'){hata('🧳 tamponda RMK yok — 🐙 RMK Yap ya da 📥 RMK Yükle');return;}
     var t=taban();
-    if(!t){hata('resim adı boş — önce alana bir ad yaz (ör. newage_rkm.js)');return;}
-    fHam.click();
-  };
-  fHam.onchange=function(){
-    if(!this.files||!this.files[0]){this.value='';return;}
-    var f=this.files[0];this.value='';
-    var t=taban();
-    var uz=null,m=f.name.match(/\.(png|jpe?g|webp|gif|avif)$/i);
-    if(m){uz=m[1].toLowerCase();if(uz==='jpeg')uz='jpg';}
-    else{
-      var mm=(f.type||'').match(/^image\/(png|jpeg|webp|gif|avif)$/i);
-      if(mm){uz=mm[1].toLowerCase();if(uz==='jpeg')uz='jpg';}
-    }
-    if(!uz){hata('desteklenmeyen biçim — png/jpg/webp/gif/avif yükle (şifrelemek için PNG→RMK)');return;}
-    var hedef=t+'.'+uz;
-    if(!backendVar()){hata('sunucu yok — kontrol_paneli.py ile başlat');return;}
-    if(RESIMLER_GH_TUM.indexOf(hedef)>=0&&!confirm('resimler/'+hedef+' GitHub\'da ZATEN VAR.\nÜzerine yazılsın mı?'))return;
-    var oku=new FileReader();
-    oku.onload=function(){
-      var b64=(String(oku.result).split(',')[1])||'';
-      if(!b64){hata('dosya okunamadı');return;}
-      bekliyor('GitHub\'a yükleniyor (şifresiz)… resimler/'+hedef+' ('+kb(f.size)+')');
-      fetch('/api/gh/dosya-yukle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ad:hedef,icerik:b64})})
-      .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
-      .then(function(x){
-        if(!x.ok||!x.j.ok)throw new Error((x.j&&x.j.hata)||('HTTP hata'));
-        if(RESIMLER_GH_TUM.indexOf(hedef)<0)RESIMLER_GH_TUM.push(hedef);
-        goster('<div class="sonuc ok">Yüklendi (ŞİFRESİZ): <b>resimler/'+esc(hedef)+'</b> ('+kb(f.size)+', commit '+(x.j.commit||'?')+')<br>alan değeri <b>'+esc(hedef)+'</b> yapıldı → 🖼 Normal png modu · site motoru v5.3 bunu GitHub\'dan düz gösterir (raw CDN ~5 dk).</div>');
-        if(adYazFn)adYazFn(hedef);   /* E198: değer = gerçek dosya adı; mod 🖼'e döner */
-        try{agacCiz();}catch(e){}
-      })
-      .catch(function(e){hata('şifresiz yükleme hatası: '+e.message+' (token: Ayarlar bölümünde kayıtlı olmalı — Contents: write)');});
-    };
-    oku.readAsDataURL(f);
-  };
-  satir.appendChild(bHam);
-
-  /* ── 4) 🗜 Sıkıştır ── */
-  var bSik=document.createElement('button');bSik.textContent='🗜 Sıkıştır';bSik.title='GitHub\'daki resmi çöz → WebP kalite ayarıyla kilobayt küçült → karşılaştır → yükle';
-  bSik.onclick=function(){
-    var t=taban();
-    if(!t){hata('resim adı boş — önce alana bir ad yaz');return;}
-    rkmCoz(t,function(j){
-      var ham=atob(j.veri);
-      var bayt=new Uint8Array(ham.length);
-      for(var i=0;i<ham.length;i++)bayt[i]=ham.charCodeAt(i);
-      var onceKb=j.boyut,dosyaOnceKb=j.dosyaBoyut;
-      var url=URL.createObjectURL(new Blob([bayt],{type:j.mime}));
-      var im=new Image();
-      im.onload=function(){
-        goster('<div class="rkmKare"><img src="'+url+'" alt=""></div>'+
-          '<div class="rkmBilgi"><b>'+esc(j.ad)+'</b> · '+j.w+'×'+j.h+' · biçim: '+j.mime+' · kare: <b>'+kb(onceKb)+'</b> · js dosyası: <b>'+kb(dosyaOnceKb)+'</b>'+
-          '<br><span style="color:var(--soluk)">canvas WebP ile yeniden kodlanacak — kaliteyi düşürdükçe kilobayt düşer</span></div>');
-        var ayar=document.createElement('div');ayar.className='yatay';ayar.style.marginTop='8px';
-        var w2=document.createElement('div');aln(w2,'WebP kalite (50-95)');
-        var inQ=document.createElement('input');inQ.type='number';inQ.min='50';inQ.max='95';inQ.value='80';w2.appendChild(inQ);ayar.appendChild(w2);
-        var w3=document.createElement('div');aln(w3,'Genişlik sınırı (px — 0: aynen)');
-        var inW=document.createElement('input');inW.type='number';inW.min='0';inW.value='0';w3.appendChild(inW);ayar.appendChild(w3);
-        cikti.appendChild(ayar);
-        var bS=document.createElement('button');bS.className='ana';bS.textContent='🗜 Sıkıştır ve Önizle';bS.style.marginTop='8px';
-        cikti.appendChild(bS);
-        var sonuc=null;
-        bS.onclick=function(){
-          bS.disabled=true;
-          imgdenRkm(im,t,'w',Math.min(.95,Math.max(.5,nSay(inQ.value)/100)),nInt(inW.value),function(e,r){
-            bS.disabled=false;
-            if(e){hata(e.message);return;}
-            sonuc=r;
-            var yuzde=Math.round((1-r.bayt.length/onceKb)*100);
-            goster('<div class="rkmKare"><img src="'+URL.createObjectURL(new Blob([r.bayt],{type:r.mime}))+'" alt=""></div>'+
-              '<div class="rkmBilgi"><b>'+esc(t)+'_rkm.js</b> (sıkıştırılmış)<br>çerçeve: <b>'+r.cw+'×'+r.ch+'</b> · webp'+
-              '<br>kare: <b>'+kb(onceKb)+'</b> → <b>'+kb(r.bayt.length)+'</b> <span style="color:'+(yuzde>0?'#7ee2a0':'#e7c56a')+'">('+(yuzde>0?'−'+yuzde+'%':'+ '+(-yuzde)+'%')+' kilobayt)</span>'+
-              '<br>js dosyası: <b>'+kb(dosyaOnceKb)+'</b> → <b>'+kb(r.metin.length)+'</b></div>');
-            var bUp=document.createElement('button');bUp.className='ana';bUp.textContent='⬆ GitHub\'a Yükle';bUp.style.marginTop='8px';
-            bUp.onclick=function(){bUp.disabled=true;yukleJs(t,sonuc.metin,function(){if(adYazFn)adYazFn(t+'_rkm.js');});};   /* E196 */
-            cikti.appendChild(bUp);
-            if(r.bayt.length>=onceKb&&!confirm('Sonuç küçülmedi ('+kb(r.bayt.length)+' ≥ '+kb(onceKb)+').\nYine de yüklemek istiyor musun? Kaliteyi düşürüp tekrar deneyebilirsin.'))bUp.remove();
-          });
-        };
-      };
-      im.onerror=function(){hata('çözülen kare tarayıcıda açılamadı (biçim: '+j.mime+')');};
-      im.src=url;
+    if(!t){hata('resim adı boş — hedef: <ad>_rkm.js; önce alana ad yaz');return;}
+    var metin=tampon.metin;
+    try{
+      var pak=rkmObjCikar(metin);
+      if(pak.ad!==t){   /* iç anahtarı hedef adla değiştir — site böyle bulur (E195 mantığı) */
+        metin=rkmJsUret(t,pak.obj.w,pak.obj.h,pak.obj.f,rkmBayt(pak.obj),'rkm-yeniden-adlandirildi');
+        tampon.metin=metin;tampon.ad=t+'_rkm.js';
+        tampon.kaynak='iç ad yeniden ayarlandı: '+pak.ad+' → '+t;
+        tamponCiz();
+      }
+    }catch(e){hata('RMK okunamadı: '+e.message);return;}
+    yukleJs(t,metin,function(){
+      tampon.gonderildi='resimler/'+t+'_rkm.js';
+      tamponCiz();
+      if(adYazFn)adYazFn(t+'_rkm.js');   /* E196: alan değeri = şifreli dosya adı */
     });
   };
-  satir.appendChild(bSik);
+  satir.appendChild(bGhR);
+
+  /* ── 7) ☁ PNG GitHub'a — TAMPONDaki resmi ŞİFRESİZ push (E198 hattı) ── */
+  var bGhP=document.createElement('button');bGhP.textContent='☁ PNG GitHub\'a';
+  bGhP.title='Tampondaki resmi ŞİFRELEMEDEN resimler/<ad>.<uz> olarak GitHub\'a yükle → alan değeri güncellenir, 🖼 Normal png modu (KORUMASIZ — herkese açık). Sıkıştırılmış tampon da olduğu gibi gider (webp ise .webp).';
+  bGhP.onclick=function(){
+    if(!tampon||tampon.tur!=='image'){hata('🧳 tamponda resim yok — 📥 PNG Yükle (ya da 🔍 Önizle ile GitHub\'dan al)');return;}
+    var t=taban();
+    if(!t){hata('resim adı boş — hedef: <ad>.<uzantı>; önce alana ad yaz');return;}
+    if(!backendVar()){hata('sunucu yok — kontrol_paneli.py ile başlat');return;}
+    var hedef=t+'.'+fmtUz(tampon.fmt);
+    if(RESIMLER_GH_TUM.indexOf(hedef)>=0&&!confirm('resimler/'+hedef+' GitHub\'da ZATEN VAR.\nÜzerine yazılsın mı?'))return;
+    bekliyor('GitHub\'a yükleniyor (ŞİFRESİZ)… resimler/'+hedef+' ('+kb(tampon.bayt.length)+' '+tampon.fmt+')');
+    fetch('/api/gh/dosya-yukle',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ad:hedef,icerik:baytB64(tampon.bayt)})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+    .then(function(x){
+      if(!x.ok||!x.j.ok)throw new Error((x.j&&x.j.hata)||('HTTP hata'));
+      if(RESIMLER_GH_TUM.indexOf(hedef)<0)RESIMLER_GH_TUM.push(hedef);
+      tampon.gonderildi='resimler/'+hedef;
+      tamponCiz();
+      goster('<div class="sonuc ok">Yüklendi (ŞİFRESİZ): <b>resimler/'+esc(hedef)+'</b> ('+kb(tampon.bayt.length)+', commit '+(x.j.commit||'?')+')<br>alan değeri <b>'+esc(hedef)+'</b> yapıldı → 🖼 Normal png modu · site motoru v5.3 GitHub\'dan düz gösterir (raw CDN ~5 dk).</div>');
+      if(adYazFn)adYazFn(hedef);
+      try{agacCiz();}catch(e){}
+    })
+    .catch(function(e){hata('şifresiz yükleme hatası: '+e.message+' (token: Ayarlar bölümünde kayıtlı olmalı — Contents: write)');});
+  };
+  satir.appendChild(bGhP);
 
   kapsa.appendChild(satir);
+  kapsa.appendChild(chip);
+  tamponCiz();
+  /* E199 test kanca — son çizilen alanın tampon motoruna programatik erişim
+     (agent-browser birim/E2E testleri için; üretim akışını değiştirmez) */
+  resimAraclari.__kanca={
+    pngAl:pngAl,rmkAl:rmkAl,sikistir:sikistirMotoru,
+    onizle:function(){bOn.click();},
+    rmkYap:function(){bRkm.click();},
+    ghRkm:function(){bGhR.click();},
+    ghPng:function(){bGhP.click();},
+    durum:function(){
+      return {tampon:tampon?{tur:tampon.tur,fmt:(tampon.fmt||tampon.f||''),ad:tampon.ad,boyut:(tampon.tur==='image'?tampon.bayt.length:tampon.metin.length),kareBoyut:tampon.kareBoyut||null,w:tampon.w,h:tampon.h,kaynak:tampon.kaynak,sikis:!!tampon.sikis,gonderildi:tampon.gonderildi||null}:null,chip:chip.innerHTML};
+    }
+  };
 }
 /* E196: alan altı canlı ipucu — değerin TÜRÜNE göre ne olacağını yazar */
 function resimIpucuSatiri(adAlFn,kapsa){
@@ -1253,9 +1390,9 @@ function resimIpucuSatiri(adAlFn,kapsa){
       if(pngBiliniyor(pngTaban)){
         uyar='<br>✓ Şifresiz dosya GitHub\'da YÜKLÜ: <code>resimler/'+esc(v)+'</code> — site motoru v5.3 bunu GitHub\'dan DOĞRUDAN gösterir (korumasız png modu · E198).';
       }else if(rkmBiliniyor(pngTaban)){
-        uyar='<br>⚠ GitHub\'da <code>'+esc(pngTaban)+'.png</code> YÜKLÜ DEĞİL — şifreli hali <code>'+esc(pngTaban)+'_rkm.js</code> duruyor. Bu değer boş görünür! <b style="color:#e78a5a">Ya 🐙 moduna geç ya 📤 PNG Yükle ile şifresiz dosyayı GitHub\'a yükle.</b>';
+        uyar='<br>⚠ GitHub\'da <code>'+esc(pngTaban)+'.png</code> YÜKLÜ DEĞİL — şifreli hali <code>'+esc(pngTaban)+'_rkm.js</code> duruyor. Bu değer boş görünür! <b style="color:#e78a5a">Ya 🐙 moduna geç ya 📥 PNG Yükle ile tampona alıp ☁ PNG GitHub\'a ile yükle.</b>';
       }else{
-        uyar='<br>ℹ Bu adın dosyası henüz GitHub\'da görünmüyor — aşağıdan 📤 PNG Yükle ile şifresiz ya da 🖼 PNG→RMK ile şifreli yükleyebilirsin.';
+        uyar='<br>ℹ Bu adın dosyası henüz GitHub\'da görünmüyor — aşağıdan 📥 PNG Yükle + ☁ PNG GitHub\'a (şifresiz) ya da 📥 PNG Yükle + 🐙 RMK Yap + ☁ RMK GitHub\'a (şifreli) akışıyla yükleyebilirsin.';
       }
       ip.innerHTML='🖼 değer: <code>'+esc(v)+'</code> → site motoru v5.3 bunu GitHub resimler/ klasöründen düz resim olarak gösterir <b style="color:#e7c56a">(KORUMASIZ — png herkese açık; şifreli istiyorsan 🐙 moduna geç)</b>'+uyar;
     }
