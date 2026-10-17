@@ -2,8 +2,11 @@
 # -*- coding: utf-8 -*-
 """
 ═══════════════════════════════════════════════════════════════════════
- M2GOD KONTROL PANELİ v6 (E195) — PYTHON SUNUCULU · E177_resim-avif-v6 uyumlu
+ M2GOD KONTROL PANELİ v9 (E199) — PYTHON SUNUCULU · E177_resim-avif-v6 uyumlu
       (E194 taban: arama/boyutlandırma/temizle/çeviri/akordeon/RESİMLER aynen)
+      E199 NOTU: resim araçları TAMPON tabanlı 7 bağımsız aksiyona ayrıldı
+      (tarayıcı tarafı — sunucu uçları değişmedi: /api/rkm/coz ·
+      /api/gh/resim-yukle · /api/gh/dosya-yukle aynen kullanılır)
       E195 YENİ UÇLAR:
         · /api/kur           → sitenin EpinFX 6-API zinciriyle AYNI kaynak sırası:
                                open.er-api.com → currency-api.pages.dev → jsDelivr
@@ -39,7 +42,7 @@
  GEREKSİNİM: Python 3.8+ — ek paket YOK (yalnız standart kütüphane)
  TOKEN: ilk çalıştırmada paneldeki "Tarayıcıdaki Token'ı Sunucuya Kaydet"
         düğmesini kullanın (github_token.txt oluşturur) veya:
-        E198_GH_TOKEN=github_pat_... python kontrol_paneli.py
+        E199_GH_TOKEN=github_pat_... python kontrol_paneli.py
 ═══════════════════════════════════════════════════════════════════════
 """
 import base64
@@ -75,7 +78,9 @@ ALAN_DIZIN = os.path.join(KOK_DIZIN, "panel_alan")   # E195: özel çalışma kl
 
 # ═══════════════════ GITHUB İSTEMCİSİ ═══════════════════
 def token_al():
-    t = os.environ.get("E198_GH_TOKEN", "").strip()
+    t = os.environ.get("E199_GH_TOKEN", "").strip()
+    if not t:
+        t = os.environ.get("E198_GH_TOKEN", "").strip()
     if not t:
         t = os.environ.get("E197_GH_TOKEN", "").strip()
     if not t:
@@ -423,7 +428,7 @@ def gunluk(s):
 
 # ═══════════════════ SUNUCU ═══════════════════
 class Panel(BaseHTTPRequestHandler):
-    server_version = "EpinPanelE198/9.0"
+    server_version = "EpinPanelE199/9.1"
 
     def log_message(self, fmt, *args):
         sys.stderr.write("[panel] %s\n" % (fmt % args))
@@ -465,7 +470,7 @@ class Panel(BaseHTTPRequestHandler):
             return
         if yol == "/api/durum":
             t = token_al()
-            self.json_gonder({"ok": True, "sunucu": "E198-python", "port": self.server.server_address[1],
+            self.json_gonder({"ok": True, "sunucu": "E199-python", "port": self.server.server_address[1],
                               "token": bool(t), "tokenSon4": (t[-4:] if t else ""),
                               "repo": {"sahip": SAHIP, "repo": REPO, "dal": DAL,
                                        "icerikYolu": ICERIK_YOLU}})
